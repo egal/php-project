@@ -1,25 +1,64 @@
-# Egal Framework microservice
+<p align="center"><img src="https://raw.githubusercontent.com/smartworldteam/art/main/logo.svg" height="150"></p>
 
-For config docker-compose.yml:
+[comment]: <> (Replase Name)
+<p align="center" style="font-size: 35px; font-weight: bold;">Egal</p>
 
-```yml
-  monolit-service:
-    container_name: ${PROJECT_NAME}-monolit-service
-    build: ${PATH_TO_SERVICE}
-    volumes:
-      - ${PATH_TO_SERVICE}:/app
-    environment:
-    APP_SERVICE_NAME: ${APP_SERVICE_NAME}
-    APP_SERVICE_KEY: ${APP_SERVICE_KEY}
-    DB_HOST: ${PROJECT_NAME}-database
-    DB_DATABASE: ${APP_SERVICE_NAME}
-    DB_PASSWORD: ${DATABASE_PASSWORD:-password}
-    RABBITMQ_HOST: ${PROJECT_NAME}-rabbitmq
-    RABBITMQ_PORT: 5672
-    RABBITMQ_USER: ${RABBITMQ_USERNAME:-admin}
-    RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-password}
-    WAIT_HOSTS: ${PROJECT_NAME}-rabbitmq:5672, ${PROJECT_NAME}-database:5432
-    depends_on:
-        - rabbitmq
-        - database
-```
+[comment]: <> (Replase Description)
+<p align="center" style="font-size: 18px; font-weight: bold;">PHP шаблон сервиса Egal</p>
+
+[comment]: <> (Replase badges)
+<p align="center">
+ <a href="https://packagist.org/packages/egal/egal"><img src="https://poser.pugx.org/egal/egal/v"></a>
+ <a href="https://packagist.org/packages/egal/egal"><img src="https://poser.pugx.org/egal/egal/v/unstable"></a>
+ <a href="https://packagist.org/packages/egal/egal"><img src="https://poser.pugx.org/egal/egal/downloads"></a>
+ <a href="https://packagist.org/packages/egal/framework"><img src="https://poser.pugx.org/egal/egal/license"></a>
+</p>
+
+
+## Новости
+
+Следить за обновлениями можно в нашем телеграм канале:
+
+[![](https://img.shields.io/badge/Channel%20on-Telegram-informational)](https://t.me/egalbox)
+
+## Документация 
+
+С подробной документацией по продукту можно ознакомиться [здесь](https://smartworldteam.github.io/egal-docs/#/).
+
+
+## Поддержка
+
+Нам важно Ваше мнение и обратная связь.
+
+Задать вопрос: 
+
+[![](https://img.shields.io/badge/Chat%20on-Telegram-blue)](https://t.me/joinchat/n175xzBrCUswMWU6)
+<a href="mailto:egal@smartworld.team"><img src="https://img.shields.io/badge/Mail%20to-egal%40smartworld.team-red"></a>
+
+## Репозитории
+
+[Docs](https://github.com/smartworldteam/egal-docs) - документация проекта Egal.
+
+[Egal/Framework PHP Package](https://github.com/smartworldteam/egal-framework-php-package) - исходный код Egal/Framework PHP библиотеки.
+
+[Web Service](https://github.com/smartworldteam/egal-web-service) - коробочный сервис Egal, предназначенный для адаптации HTTP запросов к архитектуре Egal.
+
+[Auth Service](https://github.com/smartworldteam/egal-auth-service) - коробочный сервис Egal, реализующий базовые функции авторизации.
+
+[Interface Service](https://github.com/smartworldteam/egal-interface-service) - коробочный сервис Egal, предназначенный для управления метаданными интерфейсов.
+
+[Postgres](https://github.com/smartworldteam/postgres) - надстроенная Система управления базами данных PostgreSQL.
+
+[.github](https://github.com/smartworldteam/.github) - репозиторий состояния сообщества по умолчанию для проектов SmartWorldTeam.
+
+## Разработчик
+
+<p align="center">
+<a href="https://smartworld.team/">
+<img src="https://raw.githubusercontent.com/smartworldteam/art/main/smartworld/logo.svg" width="150"></a>
+</p>
+
+Компания ООО "Умный Мир" (Smart World) занимается разработкой IT продуктов,
+а также предоставляет команды опытных IT-специалистов для Ваших проектов.
+Мы решаем самые сложные задачи быстро и без проблем! 
+
