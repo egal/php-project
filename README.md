@@ -1,11 +1,11 @@
 <p align="center"><img src="https://raw.githubusercontent.com/smartworldteam/art/main/logo.svg" height="150"></p>
-<h1 align="center">Egal | Egal/Framework PHP Package</h1>
+<h1 align="center">Egal | Egal/Egal PHP Project</h1>
 <p align="center">
- <a href="https://packagist.org/packages/egal/framework"><img src="https://poser.pugx.org/egal/framework/v"></a>
- <a href="https://packagist.org/packages/egal/framework"><img src="https://poser.pugx.org/egal/framework/v/unstable"></a>
- <a href="https://packagist.org/packages/egal/framework"><img src="https://poser.pugx.org/egal/framework/downloads"></a>
- <a href="https://packagist.org/packages/egal/framework"><img src="https://poser.pugx.org/egal/framework/license"></a>
- <a href="https://packagist.org/packages/egal/framework"><img src="https://img.shields.io/github/last-commit/smartworldteam/egal-framework-php-package"></a>
+ <a href="https://packagist.org/packages/egal/egal"><img src="https://poser.pugx.org/egal/egal/v"></a>
+ <a href="https://packagist.org/packages/egal/egal"><img src="https://poser.pugx.org/egal/egal/v/unstable"></a>
+ <a href="https://packagist.org/packages/egal/egal"><img src="https://poser.pugx.org/egal/egal/downloads"></a>
+ <a href="https://packagist.org/packages/egal/egal"><img src="https://poser.pugx.org/egal/egal/license"></a>
+ <a href="https://packagist.org/packages/egal/egal"><img src="https://img.shields.io/github/last-commit/smartworldteam/egal-egal-php-project"></a>
 </p>
 
 ## Новости
