@@ -6,7 +6,7 @@
     "require": {
         "php": "^7.4|^8.0",
         "ext-json": "*",
-        "egal/framework": "^2.0.0beta16"
+        "egal/framework": "^2.0.0beta23"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
