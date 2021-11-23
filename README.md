@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/egal/art/main/logo.svg" height="150"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/egal/.art/main/logo.svg" height="150"></p>
 <h1 align="center">Egal | Egal/Egal PHP Project</h1>
 <p align="center">
  <a href="https://packagist.org/packages/egal/egal"><img src="https://poser.pugx.org/egal/egal/v"></a>
