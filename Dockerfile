@@ -16,7 +16,7 @@ RUN if [ $DEBUG != 'true' && $DEBUG != 'false' ]; then echo 'DEBUG argument must
 
 # Preparing system
 RUN echo "UTC" > /etc/timezone
-RUN adduser -S $user -u $uid -H -G root
+RUN adduser -S $USER -u $UID -H -G root
 COPY --from=wait /wait /.
 RUN chmod +x /wait
 RUN apk add --no-cache --virtual .build-deps $BUILD_DEPS \
@@ -24,21 +24,21 @@ RUN apk add --no-cache --virtual .build-deps $BUILD_DEPS \
     && apk del .build-deps
 RUN apk add --no-cache --virtual .run-deps $RUN_DEPS
 COPY --from=composer /usr/bin/composer /usr/bin/composer
-USER $user
+USER $USER
 WORKDIR /app
 
 # Preparing code base
-COPY --chown=$user composer.json .
-COPY --chown=$user composer.lock .
+COPY --chown=$USER composer.json .
+COPY --chown=$USER composer.lock .
 RUN composer install --no-interaction --no-progress --no-autoloader --no-cache \
     $(if [ $DEBUG == 'true' ]; then echo '--dev'; else echo '--no-dev'; fi)
 COPY . .
 RUN composer dump-autoload
-COPY --chown=$user . .
+COPY --chown=$USER . .
 
 # Cleanup before run
 USER 'root'
 RUN if [ $DEBUG == 'false' ]; then rm /usr/bin/composer; fi
-USER $user
+USER $USER
 
 CMD /wait && php artisan egal:run
