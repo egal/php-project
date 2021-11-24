@@ -1,6 +1,6 @@
 {
     "name": "egal/egal",
-    "description": "Egal Framework microservice",
+    "description": "Egal Service",
     "type": "project",
     "license": "Apache-2.0",
     "require": {
@@ -31,10 +31,5 @@
         "optimize-autoloader": true
     },
     "minimum-stability": "dev",
-    "prefer-stable": true,
-    "scripts": {
-        "post-root-package-install": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
-        ]
-    }
+    "prefer-stable": true
 }
