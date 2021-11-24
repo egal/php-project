@@ -5,8 +5,8 @@ ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.8.0/wait
 FROM php:8.0.13-alpine
 
 ARG DEBUG='false'
-ARG user='nonroot'
-ARG uid=1000
+ARG USER='nonroot'
+ARG UID=1000
 ARG RUN_DEPS='postgresql-libs'
 ARG BUILD_DEPS='postgresql-dev'
 ARG PHP_EXTENSIONS='sockets pcntl pdo_pgsql'
