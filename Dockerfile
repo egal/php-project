@@ -5,8 +5,6 @@ ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.8.0/wait
 FROM php:8.0.13-alpine
 
 ARG DEBUG='false'
-ARG USER='nonroot'
-ARG UID=1000
 ARG RUN_DEPS='postgresql-libs'
 ARG BUILD_DEPS='postgresql-dev'
 ARG PHP_EXTENSIONS='sockets pcntl pdo_pgsql'
@@ -15,8 +13,7 @@ ARG PHP_EXTENSIONS='sockets pcntl pdo_pgsql'
 RUN if [ $DEBUG != 'true' && $DEBUG != 'false' ]; then echo 'DEBUG argument must be `true` or `false`!'; exit 1; fi
 
 # Preparing system
-RUN echo "UTC" > /etc/timezone
-RUN adduser -S $USER -u $UID -H -G root
+RUN echo 'UTC' > /etc/timezone
 COPY --from=wait /wait /.
 RUN chmod +x /wait
 RUN apk add --no-cache --virtual .build-deps $BUILD_DEPS \
@@ -24,21 +21,17 @@ RUN apk add --no-cache --virtual .build-deps $BUILD_DEPS \
     && apk del .build-deps
 RUN apk add --no-cache --virtual .run-deps $RUN_DEPS
 COPY --from=composer /usr/bin/composer /usr/bin/composer
-USER $USER
 WORKDIR /app
 
 # Preparing code base
-COPY --chown=$USER composer.json .
-COPY --chown=$USER composer.lock .
+COPY composer.json .
+COPY composer.lock .
 RUN composer install --no-interaction --no-progress --no-autoloader --no-cache \
     $(if [ $DEBUG == 'true' ]; then echo '--dev'; else echo '--no-dev'; fi)
 COPY . .
 RUN composer dump-autoload
-COPY --chown=$USER . .
 
 # Cleanup before run
-USER 'root'
 RUN if [ $DEBUG == 'false' ]; then rm /usr/bin/composer; fi
-USER $USER
 
 CMD /wait && php artisan egal:run
