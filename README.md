@@ -1,71 +1,66 @@
-<p align="center"><img src="https://raw.githubusercontent.com/egal/.art/main/logo.svg" height="150"></p>
-<h1 align="center">Egal | Egal/Egal PHP Project</h1>
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+
 <p align="center">
- <a href="https://packagist.org/packages/egal/egal"><img src="https://poser.pugx.org/egal/egal/v"></a>
- <a href="https://packagist.org/packages/egal/egal"><img src="https://poser.pugx.org/egal/egal/v/unstable"></a>
- <a href="https://packagist.org/packages/egal/egal"><img src="https://poser.pugx.org/egal/egal/downloads"></a>
- <a href="https://packagist.org/packages/egal/egal"><img src="https://poser.pugx.org/egal/egal/license"></a>
+<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Новости
+## About Laravel
 
-Следить за обновлениями можно в нашем телеграм канале:
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-[![](https://img.shields.io/badge/Channel%20on-Telegram-informational)](https://t.me/egalbox)
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Документация
+## Learning Laravel
 
-С подробной документацией по продукту можно ознакомиться
-[здесь](https://egal.github.io/egal-docs/#/).
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Поддержка
+## Laravel Sponsors
 
-Нам важно Ваше мнение и обратная связь.
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
 
-Задать вопрос:
+### Premium Partners
 
-[![](https://img.shields.io/badge/Chat%20on-Telegram-blue)](https://t.me/joinchat/n175xzBrCUswMWU6)
-[![](https://img.shields.io/badge/Mail%20to-egal%40sputnikfund.ru-red)](mailto:egal@sputnikfund.ru)
+- **[Vehikl](https://vehikl.com/)**
+- **[Tighten Co.](https://tighten.co)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Cubet Techno Labs](https://cubettech.com)**
+- **[Cyber-Duck](https://cyber-duck.co.uk)**
+- **[Many](https://www.many.co.uk)**
+- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+- **[DevSquad](https://devsquad.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+- **[OP.GG](https://op.gg)**
+- **[CMS Max](https://www.cmsmax.com/)**
+- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
+- **[Lendio](https://lendio.com)**
+- **[Romega Software](https://romegasoftware.com)**
 
+## Contributing
 
-## Экосистема
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-| Проект                       |                                    Статус                                     | Описание                                                                       |
-|:-----------------------------|:-----------------------------------------------------------------------------:|:-------------------------------------------------------------------------------|
-| [Docs]                       |                       [![Docs Status]][Docs Status URL]                       | Документация проекта Egal                                                      |
-| [Egal/Framework PHP Package] | [![Egal/Framework PHP Package Status]][Egal/Framework PHP Package Status URL] | Egal/Framework PHP библиотека                                                  |
-| [Egal/Framework NPM Package] | [![Egal/Framework NPM Package Status]][Egal/Framework NPM Package Status URL] | Egal/Framework NPM библиотека                                                  |
-| [Egal/Egal PHP Project]      |      [![Egal/Egal PHP Project Status]][Egal/Egal PHP Project Status URL]      | PHP проект (шаблон) сервиса для Egal экосистемы                                |
-| [Web Service]                |                [![Web Service Status]][Web Service Status URL]                | Сервис Egal экосистемы, реализующий адаптацию HTTP запросов к сервисам         |
-| [Auth Service]               |               [![Auth Service Status]][Auth Service Status URL]               | Сервис Egal экосистемы, реализующий базовые функции авторизации                |
-| [Interface Service]          |          [![Interface Service Status]][Interface Service Status URL]          | Сервис Egal экосистемы, предназначенный для управления метаданными интерфейсов |
-| [Postgres]                   |                   [![Postgres Status]][Postgres Status URL]                   | Надстроенная Система управления базами данных PostgreSQL для Egal экосистемы   |
+## Code of Conduct
 
-[Docs]: https://github.com/egal/egal-docs
-[Egal/Framework PHP Package]: https://github.com/egal/egal-framework-php-package
-[Egal/Framework NPM Package]:https://github.com/egal/egal-framework-npm-package
-[Egal/Egal PHP Project]:https://github.com/egal/egal-egal-php-project
-[Web Service]:https://github.com/egal/egal-web-service
-[Auth Service]:https://github.com/egal/egal-auth-service
-[Interface Service]: https://github.com/egal/egal-interface-service
-[Postgres]: https://github.com/egal/postgres
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-[Docs Status]: https://img.shields.io/website?url=https%3A%2F%2Fegal.github.io%2Fegal-docs%2F%23%2F
-[Egal/Framework PHP Package Status]: https://img.shields.io/packagist/v/egal/framework?include_prereleases
-[Egal/Framework NPM Package Status]: https://img.shields.io/npm/v/@egalteam/framework
-[Egal/Egal PHP Project Status]: https://img.shields.io/packagist/v/egal/egal?include_prereleases
-[Web Service Status]: https://img.shields.io/docker/v/egalbox/web-service?label=dockerhub
-[Auth Service Status]: https://img.shields.io/docker/v/egalbox/auth-service?label=dockerhub
-[Interface Service Status]: https://img.shields.io/docker/v/egalbox/interface-service?label=dockerhub
-[Postgres Status]: https://img.shields.io/docker/v/egalbox/postgres?label=dockerhub
+## Security Vulnerabilities
 
-[Docs Status URL]: https://egal.github.io/egal-docs/
-[Egal/Framework PHP Package Status URL]: https://packagist.org/packages/egal/framework
-[Egal/Framework NPM Package Status URL]: https://www.npmjs.com/package/@egalteam/framework
-[Egal/Egal PHP Project Status URL]: https://packagist.org/packages/egal/egal
-[Web Service Status URL]: https://hub.docker.com/r/egalbox/web-service
-[Auth Service Status URL]: https://hub.docker.com/r/egalbox/auth-service
-[Interface Service Status URL]: https://hub.docker.com/r/egalbox/interface-service
-[Postgres Status URL]: https://hub.docker.com/r/egalbox/postgres
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+
+## License
+
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

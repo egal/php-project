@@ -1,71 +1,55 @@
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
-(new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
-    dirname(__DIR__)
-))->bootstrap();
-
-date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
-
 /*
 |--------------------------------------------------------------------------
 | Create The Application
 |--------------------------------------------------------------------------
 |
-| Here we will load the environment and create the application instance
-| that serves as the central piece of this framework. We'll use this
-| application as an "IoC" container and router for this framework.
+| The first thing we will do is create a new Laravel application instance
+| which serves as the "glue" for all the components of Laravel, and is
+| the IoC container for the system binding all of the various parts.
 |
 */
 
-$app = new Egal\Core\Application(
-    dirname(__DIR__)
+$app = new Illuminate\Foundation\Application(
+    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
 
-// $app->withFacades();
-
-$app->withEloquent();
-
 /*
 |--------------------------------------------------------------------------
-| Register Container Bindings
+| Bind Important Interfaces
 |--------------------------------------------------------------------------
 |
-| Now we will register a few bindings in the service container. We will
-| register the exception handler and the console kernel. You may add
-| your own bindings here if you like or you can make another file.
+| Next, we need to bind some important interfaces into the container so
+| we will be able to resolve them when needed. The kernels serve the
+| incoming requests to this application from both the web and CLI.
 |
 */
 
-$app->singleton(Illuminate\Contracts\Debug\ExceptionHandler::class, App\Exceptions\Handler::class);
-$app->singleton(Illuminate\Contracts\Console\Kernel::class, App\Console\Kernel::class);
+$app->singleton(
+    Illuminate\Contracts\Http\Kernel::class,
+    App\Http\Kernel::class
+);
+
+$app->singleton(
+    Illuminate\Contracts\Console\Kernel::class,
+    App\Console\Kernel::class
+);
+
+$app->singleton(
+    Illuminate\Contracts\Debug\ExceptionHandler::class,
+    App\Exceptions\Handler::class
+);
 
 /*
 |--------------------------------------------------------------------------
-| Register Config Files
+| Return The Application
 |--------------------------------------------------------------------------
 |
-| Now we will register the "app" configuration file. If the file exists in
-| your configuration directory it will be loaded; otherwise, we'll load
-| the default version. You may register other files below as needed.
+| This script returns the application instance. The instance is given to
+| the calling script so we can separate the building of the instances
+| from the actual running of the application and sending responses.
 |
 */
-
-$app->configure('app');
-
-/*
-|--------------------------------------------------------------------------
-| Register Service Providers
-|--------------------------------------------------------------------------
-|
-| Here we will register all of the application's service providers which
-| are used to bind services into the container. Service providers are
-| totally optional, so you are not required to uncomment this line.
-|
-*/
-
-$app->register(Egal\Core\ServiceProvider::class);
-$app->register(Egal\Model\ServiceProvider::class);
 
 return $app;

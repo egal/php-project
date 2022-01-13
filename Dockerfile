@@ -1,26 +1,29 @@
-FROM alpine/git:v2.32.0 as wait
+FROM alpine/git as wait-src
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.8.0/wait /wait
 
-
-FROM php:8.0.13-alpine
+# TODO: Wait for https://github.com/swoole/swoole-src/issues/4545 and replase version on latest
+FROM phpswoole/swoole:4.8.5-php8.1-alpine
 
 ARG DEBUG='false'
 ARG RUN_DEPS='postgresql-libs'
 ARG BUILD_DEPS='postgresql-dev'
-ARG PHP_EXTENSIONS='sockets pcntl pdo_pgsql'
+ARG PHP_EXTENSIONS='pdo_pgsql pcntl'
 
 # Validate args
 RUN if [ $DEBUG != 'true' && $DEBUG != 'false' ]; then echo 'DEBUG argument must be `true` or `false`!'; exit 1; fi
 
 # Preparing system
 RUN echo 'UTC' > /etc/timezone
-COPY --from=wait /wait /.
+COPY --from=wait-src /wait /.
 RUN chmod +x /wait
-RUN apk add --no-cache --virtual .build-deps $BUILD_DEPS \
+RUN apk update \
+    && apk add --no-cache --virtual .build-deps $BUILD_DEPS \
     && docker-php-ext-install -j "$(nproc)" $PHP_EXTENSIONS \
-    && apk del .build-deps
+    && apk del .build-deps \
+    && rm -rf /var/cache/apk/*
 RUN apk add --no-cache --virtual .run-deps $RUN_DEPS
 COPY --from=composer /usr/bin/composer /usr/bin/composer
+
 WORKDIR /app
 
 # Preparing code base
@@ -31,7 +34,4 @@ RUN composer install --no-interaction --no-progress --no-autoloader --no-cache \
 COPY . .
 RUN composer dump-autoload
 
-# Cleanup before run
-RUN if [ $DEBUG == 'false' ]; then rm /usr/bin/composer; fi
-
-CMD /wait && php artisan migrate --force --seed && php artisan egal:run
+CMD /wait && php artisan octane:start --host=0.0.0.0
