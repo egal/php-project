@@ -1,0 +1,27 @@
+version: "3.7"
+services:
+  backend:
+    build:
+      args:
+        DEBUG: 'true'
+    user: ${UID}:${GID}
+    volumes:
+      - ./server/backend:/app:rw
+    ports:
+      - published: 80
+        target: 8080
+    command: sh -c "/wait && php -S 0.0.0.0:8080 -t public"
+    command: sh -c "/wait && php artisan octane:start --host=0.0.0.0 --port=8080 --watch"
+    command: sh -c "/wait && php artisan octane:start --host=0.0.0.0 --port=8080"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: 'true'
+      LOG_CHANNEL: syslog
+  swagger:
+    ports:
+      - published: 8080
+        target: 8080
+
+
+
+
