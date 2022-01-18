@@ -12,3 +12,5 @@
 */
 
 // формируется на основе метаданных моделей
+
+\Illuminate\Support\Facades\Route::post('/posts', [\App\Http\Controllers\PostController::class, 'custom']);

@@ -7,8 +7,8 @@ use App\Models\Post;
 
 class PostEndpoints extends EgalEndpoints
 {
-    function model()
+    public function custom()
     {
-        return new Post();
+        // кастомная логика
     }
 }

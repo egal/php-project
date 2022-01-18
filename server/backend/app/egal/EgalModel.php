@@ -18,4 +18,10 @@ abstract class EgalModel extends Model
     }
 
     abstract static function getModelMetadata();
+
+    public function getName(): string
+    {
+        $reflectionClass = new \ReflectionClass($this);
+        return $reflectionClass->getShortName();
+    }
 }

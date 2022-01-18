@@ -42,7 +42,7 @@ return [
         ],
         'api' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'egal_users',
         ],
     ],
 
@@ -68,7 +68,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-
+        'egal_users' => [
+            'driver' => 'eloquent',
+            'model' => \App\egal\auth\User::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

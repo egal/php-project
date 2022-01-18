@@ -30,7 +30,6 @@ class Post extends EgalModel
                     ->setCustomValidationRules([]) // массив названий кастомных правил
                     ->setVisable()
                     ->setFillable()
-                    ->setRoleAccess()
                     ->setName(),
                 FieldMetadata::make('content')
                     ->string()
@@ -40,15 +39,11 @@ class Post extends EgalModel
                     ->setCustomValidationRules([]) // массив названий кастомных правил
                     ->setVisable()
                     ->setFillable()
-                    ->setRoleAccess([]) // массив названий ролей
                     ->setName()
             )
             ->relations(
                 RelationMetadata::make(Channel::class)
                     ->belongsTo(Channel::class)
-            )
-            ->allowEndpoints([
-                'index', 'create', 'delete'
-            ]);
+            );
     }
 }

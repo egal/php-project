@@ -2,14 +2,12 @@
 
 namespace App\egal;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
+use App\egal\auth\Session;
 use Illuminate\Support\Facades\Log;
 
 class APIController
 {
-    public function index(Request $request)
+    public function index(EgalRequest $request)
     {
         $model = $request->getModelInstanse();
 
@@ -19,7 +17,7 @@ class APIController
         return $endpoints->index($request);
     }
 
-    public function show($id, Request $request)
+    public function show($id, EgalRequest $request)
     {
         $model = $request->getModelInstanse();
 
@@ -29,25 +27,32 @@ class APIController
         return $endpoints->show($id, $request);
     }
 
-    public function create(Request $request)
+    public function create(EgalRequest $request)
     {
+       \session()->put('UST', $request->header('authorization'));
+       $request->user();
         $model = $request->getModelInstanse();
         $validationRules = $model->getModelMetadata()->getValidationRules();
-
         $request->validate($validationRules);
 
-        /** @var EgalEndpoints $endpoints */
-        $endpoints =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
+        /** @var EgalEndpoints $endpointsClass */
+        $endpointsClass =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
+        $endpoint = new $endpointsClass();
 
-        return $endpoints->create($request->only('attributes'), $request);
+        return $endpoint->create($request->only('attributes'), $request);
     }
 
-    public function update($id, Request $request)
+    public function update($id, EgalRequest $request)
     {
         $model = $request->getModelInstanse();
         $validationRules = $model->getModelMetadata()->getValidationRules();
 
-        $request->validate($validationRules); //проверять все, кроме required
+        $inputAttributes = $request->request;
+        $oldAttributes = $model->newQuery()->find($inputAttributes['id'])->first;
+        $missingAttributes = array_diff_key($oldAttributes, (array)$inputAttributes);
+        $inputAttributes->add($missingAttributes);
+
+        $request->validate($validationRules);
 
         /** @var EgalEndpoints $endpoints */
         $endpoints =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
@@ -55,7 +60,7 @@ class APIController
         return $endpoints->update($id, $request->only('attributes'));
     }
 
-    public function delete($id, Request $request)
+    public function delete($id, EgalRequest $request)
     {
         return $this->service->delete($id);
     }
@@ -71,17 +76,17 @@ class APIController
         return $this->service->show($id);
     }
 
-    public function relationCreate(Request $request)
+    public function relationCreate(EgalRequest $request)
     {
         return $this->service->create($request->only('attributes'));
     }
 
-    public function relationUpdate($id, Request $request)
+    public function relationUpdate($id, EgalRequest $request)
     {
         return $this->service->update($id, $request->only('attributes'));
     }
 
-    public function relationDelete($id, Request $request)
+    public function relationDelete($id, EgalRequest $request)
     {
         return $this->service->delete($id);
     }

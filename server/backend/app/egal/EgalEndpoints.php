@@ -3,8 +3,10 @@
 namespace App\egal;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
-abstract class EgalEndpoints
+class EgalEndpoints
 {
     /**
      * @var \Illuminate\Database\Eloquent\Model
@@ -16,7 +18,10 @@ abstract class EgalEndpoints
         $this->model = $this->model();
     }
 
-    abstract function model();
+    public function model()
+    {
+        return '';
+    }
 
     public function index(Request $request)
     {
@@ -31,8 +36,12 @@ abstract class EgalEndpoints
         return $this->model->newQuery()->find($id);
     }
 
-    public function create($attributes)
+    public function create($attributes, $request)
     {
+        // посмотреть на реализацию Sanctum
+        if ($request->user()->cannot(__METHOD__)) {
+            throw new NoAccessException();
+        }
         return $this->model->newQuery()->create($attributes);
     }
 
