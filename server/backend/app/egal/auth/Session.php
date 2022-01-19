@@ -70,4 +70,9 @@ final class Session
         self::setUserServiceToken(UserServiceToken::fromArray($decodedToken));
     }
 
+    public static function user(): User
+    {
+
+    }
+
 }

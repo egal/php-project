@@ -10,4 +10,8 @@ class User extends \App\egal\EgalModel
     {
         // TODO: Implement getModelMetadata() method.
     }
+
+    public function cannot(string $__METHOD__):bool
+    {
+    }
 }

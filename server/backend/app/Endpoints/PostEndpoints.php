@@ -7,8 +7,11 @@ use App\Models\Post;
 
 class PostEndpoints extends EgalEndpoints
 {
-    public function custom()
+    protected $model = Post::class;
+
+    public function endpointUpdateCustom()
     {
-        // кастомная логика
+        // получение запроса и вызов контроллера по типу работы ActionCaller
+        // кастомная логика форматирования, преобр-я и получения данных, вызов БЛ из модели
     }
 }

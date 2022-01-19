@@ -13,4 +13,10 @@
 
 // формируется на основе метаданных моделей
 
-\Illuminate\Support\Facades\Route::post('/posts', [\App\Http\Controllers\PostController::class, 'custom']);
+\App\egal\Facades\EgalRoute::resource('/posts');
+//\Illuminate\Support\Facades\Route::post('/posts', [\App\Http\Controllers\PostController::class, 'custom']);
+//\Illuminate\Support\Facades\Route::post('/posts', [\App\egal\APIController::class, 'create']);
+//\Illuminate\Support\Facades\Route::put('/posts', [\App\egal\APIController::class, 'update']);
+use Illuminate\Support\Facades\Route;
+
+//Route::put('/posts/{post}/update', [\App\egal\APIController::class, 'update']);

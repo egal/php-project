@@ -8,11 +8,12 @@ use App\egal\ModelMetadata;
 use App\egal\RelationMetadata;
 use App\Events\PostRetrievedEvent;
 
+/**
+ * @property $title
+ * @property $content
+ */
 class Post extends EgalModel
 {
-
-    private string $title;
-    private string $content;
 
     protected $dispatchesListeners = [
         'retrieved' => PostRetrievedEvent::class
@@ -39,6 +40,8 @@ class Post extends EgalModel
                     ->setCustomValidationRules([]) // массив названий кастомных правил
                     ->setVisable()
                     ->setFillable()
+                    ->setSortable() // реализация laravel-orion
+                    ->setFilterable()
                     ->setName()
             )
             ->relations(

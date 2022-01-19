@@ -2,9 +2,7 @@
 
 namespace App\egal;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
+use App\egal\auth\Session;
 
 class EgalEndpoints
 {
@@ -23,9 +21,9 @@ class EgalEndpoints
         return '';
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        if ($request->user()->cannot(__METHOD__)) {
+        if (Session::user()->cannot(__METHOD__)) {
             throw new NoAccessException();
         }
         return $this->model->newQuery()->get();
@@ -36,10 +34,10 @@ class EgalEndpoints
         return $this->model->newQuery()->find($id);
     }
 
-    public function create($attributes, $request)
+    public function create($attributes)
     {
         // посмотреть на реализацию Sanctum
-        if ($request->user()->cannot(__METHOD__)) {
+        if (Session::user()->cannot(__METHOD__)) {
             throw new NoAccessException();
         }
         return $this->model->newQuery()->create($attributes);

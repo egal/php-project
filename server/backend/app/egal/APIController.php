@@ -2,7 +2,7 @@
 
 namespace App\egal;
 
-use App\egal\auth\Session;
+use App\Models\Post;
 use Illuminate\Support\Facades\Log;
 
 class APIController
@@ -14,7 +14,7 @@ class APIController
         /** @var EgalEndpoints $endpoints */
         $endpoints =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
 
-        return $endpoints->index($request);
+        return $endpoints->index();
     }
 
     public function show($id, EgalRequest $request)
@@ -24,10 +24,10 @@ class APIController
         /** @var EgalEndpoints $endpoints */
         $endpoints =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
 
-        return $endpoints->show($id, $request);
+        return $endpoints->show($id);
     }
 
-    public function create(EgalRequest $request)
+    public function store(EgalRequest $request, Post $model)
     {
        \session()->put('UST', $request->header('authorization'));
        $request->user();
@@ -39,16 +39,17 @@ class APIController
         $endpointsClass =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
         $endpoint = new $endpointsClass();
 
-        return $endpoint->create($request->only('attributes'), $request);
+        return $endpoint->create($request->only('attributes'));
     }
 
-    public function update($id, EgalRequest $request)
+    public function update($id, EgalRequest $request, Post $model)
     {
+        Log::debug($model->toArray());
         $model = $request->getModelInstanse();
         $validationRules = $model->getModelMetadata()->getValidationRules();
 
         $inputAttributes = $request->request;
-        $oldAttributes = $model->newQuery()->find($inputAttributes['id'])->first;
+        $oldAttributes = $model->newQuery()->find($id)->first;
         $missingAttributes = array_diff_key($oldAttributes, (array)$inputAttributes);
         $inputAttributes->add($missingAttributes);
 
@@ -90,4 +91,6 @@ class APIController
     {
         return $this->service->delete($id);
     }
+
+
 }

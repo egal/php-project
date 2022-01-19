@@ -22,7 +22,7 @@ class EgalRoute
         );
     }
 
-    public function resource(string $resource, array $access, array $options = []): PendingResourceRegistration
+    public function resource(string $resource, array $options = []): PendingResourceRegistration
     {
         $controller = Session::isStarted() ? RPCController::class : APIController::class;
         $registrar = $this->resolveRegistrar(ResourceRegistrar::class);

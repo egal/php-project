@@ -5,7 +5,7 @@ namespace App\InterfaceMetadata;
 use App\egal\InterfaceField;
 use App\egal\InterfaceFieldTypes;
 
-class ExampleInterfaceMetadata extends \App\egal\EgalInterfaceMetadata
+class ExampleInterfaceMetadata extends \App\egal\EgalIntfaceMetadata
 {
     public function setFields()
     {

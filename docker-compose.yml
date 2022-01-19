@@ -63,16 +63,16 @@ services:
       - "80:8000"
     volumes:
       - ./server/backend:/app
-  interface-service:
-#    тут должен открываться endpoint для получения метаданных в виде json
-    image: egalbox/interface-service:latest
-    volumes:
-      - ./server/interface-service/metadata:./path/to/container
-  auth-service:
-    image: egalbox/auth:latest
-    environment:
-      APP_NAME: auth
-    ports:
-      - "81:8000"
+#  interface-metadata-service:
+##    тут должен открываться endpoint для получения метаданных в виде json
+#    image: egalbox/interface-metadata-service:latest
+#    volumes:
+#      - ./server/interface-metadata-service/metadata:./path/to/container
+#  auth-service:
+#    image: egalbox/auth:latest
+#    environment:
+#      APP_NAME: auth
+#    ports:
+#      - "81:8000"
 
 
