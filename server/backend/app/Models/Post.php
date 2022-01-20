@@ -16,22 +16,23 @@ class Post extends Model
 
     public static function getModelMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(static::class)
-            ->fields(
-                FieldMetadata::make('title')
+        return ModelMetadata::make()
+            ->setFields(
+                FieldMetadata::make()
+                    ->setName('title')
                     ->string()
                     ->min()
                     ->max()
-                    ->required()
+                    ->setRequired()
                     ->setCustomValidationRules([]) // массив названий кастомных правил
                     ->setVisable()
-                    ->setFillable()
-                    ->setName(),
-                FieldMetadata::make('content')
+                    ->setFillable(),
+                FieldMetadata::make()
+                    ->setName('description')
                     ->string()
                     ->min()
                     ->max()
-                    ->required()
+                    ->setRequired()
                     ->setCustomValidationRules([]) // массив названий кастомных правил
                     ->setVisable()
                     ->setFillable()
@@ -39,7 +40,7 @@ class Post extends Model
                     ->setFilterable()
                     ->setName()
             )
-            ->relations(
+            ->setRelations(
                 RelationMetadata::make(Channel::class)
                     ->belongsTo(Channel::class)
             );
