@@ -6,7 +6,6 @@ use App\egal\EgalModel;
 use App\egal\FieldMetadata;
 use App\egal\ModelMetadata;
 use App\egal\RelationMetadata;
-use App\Events\PostRetrievedEvent;
 
 /**
  * @property $title
@@ -14,10 +13,6 @@ use App\Events\PostRetrievedEvent;
  */
 class Post extends EgalModel
 {
-
-    protected $dispatchesListeners = [
-        'retrieved' => PostRetrievedEvent::class
-    ];
 
     public static function getModelMetadata(): ModelMetadata
     {

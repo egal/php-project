@@ -7,7 +7,7 @@ use App\Models\Post;
 
 class PostEndpoints extends EgalEndpoints
 {
-    protected $model = Post::class;
+    protected string $modelClass = Post::class;
 
     public function endpointUpdateCustom()
     {

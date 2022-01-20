@@ -1,32 +1,24 @@
 <?php
 
-namespace App\InterfaceMetadata;
+use App\egal\TableField;
+use App\egal\TableMetadata;
 
-use App\egal\InterfaceField;
-use App\egal\InterfaceFieldTypes;
+$metadata = new TableMetadata();
 
-class ExampleInterfaceMetadata extends \App\egal\EgalIntfaceMetadata
-{
-    public function setFields()
-    {
-        $this->fields = [
-            'title' => (new InterfaceField('title', InterfaceFieldTypes::STRING))
-                ->setComputed([
-                    'case' => 'lower'
-                ]),
-            'channel.title' => (new InterfaceField('channel', InterfaceFieldTypes::STRING))
-        ];
-    }
+$metadata
+    ->addField(
+        TableField::make()
+            ->setLabel()
+            ->setType()
+            ->setComputed()
+    )
+    ->addField(
+        TableField::make()
+            ->setLabel()
+            ->setType()
+    )
+    ->addRelation()
+    ->addFilters()
+    ->addOrders();
 
-    public function setModel()
-    {
-        $this->model = 'Post';
-    }
-
-    public function setRelations()
-    {
-        $this->relations = [
-            'channel'
-        ];
-    }
-}
+return $metadata;

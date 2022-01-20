@@ -9,16 +9,13 @@ class EgalEndpoints
     /**
      * @var \Illuminate\Database\Eloquent\Model
      */
-    protected $model;
+    protected string $modelClass;
+
+    protected EgalModel $model;
 
     public function __construct()
     {
-        $this->model = $this->model();
-    }
-
-    public function model()
-    {
-        return '';
+        // по названию парсинг класса, либо getModelClass
     }
 
     public function index()
@@ -60,22 +57,22 @@ class EgalEndpoints
 
     public function relationShow($id)
     {
-        return $this->model->newQuery()->find($id);
+        return $this->modelClass->newQuery()->find($id);
     }
 
     public function relationCreate($attributes)
     {
-        return $this->model->newQuery()->create($attributes);
+        return $this->modelClass->newQuery()->create($attributes);
     }
 
     public function relationUpdate($id, $attributes)
     {
-        return $this->model->newQuery()->find($id)->update($attributes);
+        return $this->modelClass->newQuery()->find($id)->update($attributes);
     }
 
     public function relationDelete($id)
     {
-        return $this->model->newQuery()->find($id)->delete();
+        return $this->modelClass->newQuery()->find($id)->delete();
     }
 
 }
