@@ -3,6 +3,7 @@
 namespace App\egal\auth;
 
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 final class Session
 {
@@ -59,10 +60,10 @@ final class Session
         return app(self::class);
     }
 
-    private static function setToken(string $encodedToken): void
+    public static function setToken(string $encodedToken): void
     {
         try {
-            $decodedToken = Token::decode($encodedToken, config('app.service_key'));
+            $decodedToken = Token::decode($encodedToken, 'blabla');
         } catch (Exception $exception) {
             throw new UnableDecodeTokenException();
         }
@@ -72,7 +73,7 @@ final class Session
 
     public static function user(): User
     {
-
+        return new User();
     }
 
 }

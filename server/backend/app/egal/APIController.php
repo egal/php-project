@@ -2,13 +2,16 @@
 
 namespace App\egal;
 
+use App\egal\auth\Session;
 use App\Models\Post;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class APIController
 {
     public function index(EgalRequest $request)
     {
+        Session::user();
         $model = $request->getModelInstanse();
 
         /** @var EgalEndpoints $endpoints */
@@ -19,12 +22,20 @@ class APIController
 
     public function show($id, EgalRequest $request)
     {
+        if (($request->hasHeader('Authorization'))) {
+            Session::setToken($request->header('Authorization'));
+        }
+        if (Session::user()->cannot(__METHOD__)) {
+            throw new NoAccessException();
+        }
+
         $model = $request->getModelInstanse();
 
         /** @var EgalEndpoints $endpoints */
-        $endpoints =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
+        $endpointsClass =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
+        $endpoint = new $endpointsClass();
 
-        return $endpoints->show($id);
+        return $endpoint->show($id);
     }
 
     public function store(EgalRequest $request, Post $model)

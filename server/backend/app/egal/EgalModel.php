@@ -17,7 +17,7 @@ abstract class EgalModel extends Model
         $this->dispatchesListeners = config(); // получение return app/config/model_name_listeners.php
     }
 
-    abstract static function getModelMetadata();
+    abstract static function getModelMetadata():ModelMetadata;
 
     public function getName(): string
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\egal;
+namespace App\egal\Commands;
 
 use Illuminate\Console\Command;
 

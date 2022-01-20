@@ -3,6 +3,8 @@
 namespace App\egal;
 
 use App\egal\auth\Session;
+use App\Models\Post;
+use Illuminate\Support\Facades\Log;
 
 class EgalEndpoints
 {
@@ -15,20 +17,20 @@ class EgalEndpoints
 
     public function __construct()
     {
+        $this->modelClass = Post::class;
+        $this->model = new ($this->modelClass);
         // по названию парсинг класса, либо getModelClass
     }
 
     public function index()
     {
-        if (Session::user()->cannot(__METHOD__)) {
-            throw new NoAccessException();
-        }
         return $this->model->newQuery()->get();
     }
 
     public function show($id)
     {
-        return $this->model->newQuery()->find($id);
+        $entity = $this->model->newQuery()->find($id);
+        return $entity->toArray();
     }
 
     public function create($attributes)
@@ -57,22 +59,22 @@ class EgalEndpoints
 
     public function relationShow($id)
     {
-        return $this->modelClass->newQuery()->find($id);
+        return $this->model->newQuery()->find($id);
     }
 
     public function relationCreate($attributes)
     {
-        return $this->modelClass->newQuery()->create($attributes);
+        return $this->model->newQuery()->create($attributes);
     }
 
     public function relationUpdate($id, $attributes)
     {
-        return $this->modelClass->newQuery()->find($id)->update($attributes);
+        return $this->model->newQuery()->find($id)->update($attributes);
     }
 
     public function relationDelete($id)
     {
-        return $this->modelClass->newQuery()->find($id)->delete();
+        return $this->model->newQuery()->find($id)->delete();
     }
 
 }

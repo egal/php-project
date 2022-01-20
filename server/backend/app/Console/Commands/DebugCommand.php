@@ -14,22 +14,5 @@ class DebugCommand extends Command
 
     public function handle(): void
     {
-        $inputAttributes = [
-            'title' => 'vdsfv',
-            'description' => 'xc f'
-        ];
-        $oldAttributes = [
-            'title' => 'sfv',
-            'content' => 'sdv',
-            'description' => 'sfdv'
-        ];
-        $missingAttributes = array_diff_key($oldAttributes,$inputAttributes);
-        dump($missingAttributes);
     }
-
-    private function getModelName()
-    {
-        return 'Post';
-    }
-
 }

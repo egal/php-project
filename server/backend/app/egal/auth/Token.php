@@ -3,6 +3,7 @@
 namespace App\egal\auth;
 
 use Carbon\Carbon;
+use Firebase\JWT\JWT;
 use Illuminate\Support\Str;
 
 abstract class Token
@@ -86,7 +87,24 @@ abstract class Token
      */
     public static function decode(string $encodedJWT, string $key): array
     {
-        return (array) JWT::decode($encodedJWT, $key, ['HS256']);
+//        return (array) JWT::decode($encodedJWT, $key, ['HS256']);
+        return  [
+            "type" => "ust",
+            "auth_information" => [
+                "id" => "589ca37a-7e7f-417f-903f-f7f1f1e00274",
+                "email" => "test@mail.ru",
+                "created_at" => "2021-12-21T05:28:22.000000Z",
+                "updated_at" => "2021-12-21T05:28:22.000000Z",
+                "auth_identification" => "589ca37a-7e7f-417f-903f-f7f1f1e00274",
+                "roles" => [
+                    "user"
+                ],
+                "permissions" => [
+                    "authenticate"
+                ]
+            ],
+            "alive_until" => "2022-12-24T06:53:07.066968Z"
+        ];
     }
 
 }

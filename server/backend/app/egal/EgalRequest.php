@@ -5,6 +5,7 @@ namespace App\egal;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
+
 class EgalRequest extends Request
 {
 
