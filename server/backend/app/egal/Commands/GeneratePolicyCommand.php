@@ -3,8 +3,6 @@
 namespace App\egal\Commands;
 
 use App\egal\EgalModel;
-use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 
 class GeneratePolicyCommand extends MakeCommand
 {
@@ -30,12 +28,17 @@ class GeneratePolicyCommand extends MakeCommand
 
     public function writeAttributesPolicyMethods()
     {
+        $stubFilesDir = realpath(__DIR__ . '/stubs');
         // получить все атрибуты модели
         $modelClassName = base_path('app/Models') . '/' . $this->argument('modelName');
         /** @var EgalModel $modelInstance */
         $modelInstance = new $modelClassName();
-        $attributes = $modelInstance->getModelMetadata()->getFields();
+        $fields = $modelInstance->getModelMetadata()->getFields();
         // для каждого по шаблону сгенерировать методы проверки и записать в fileContents
+        foreach ($fields as $field) {
+            $this->fileContents .= file_get_contents(realpath($stubFilesDir . '/attributePolicy.stub'));
+            $this->fileContents = str_replace('{{ field }}', $field, $this->fileContents);
+        }
 
     }
 }
