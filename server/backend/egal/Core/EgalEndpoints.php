@@ -15,10 +15,10 @@ class EgalEndpoints
 
     protected EgalModel $model;
 
-    public function __construct()
+    public function __construct(EgalModel $model)
     {
-        $this->modelClass = Post::class;
-        $this->model = new ($this->modelClass);
+        $this->model = $model;
+        $this->modelClass = get_class($model);
         // по названию парсинг класса, либо getModelClass
     }
 

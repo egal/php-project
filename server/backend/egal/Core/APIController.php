@@ -22,7 +22,6 @@ class APIController
 
     public function show($id, EgalRequest $request)
     {
-        Log::debug('show');
         if (($request->hasHeader('Authorization'))) {
             Session::setToken($request->header('Authorization'));
         }
@@ -34,7 +33,10 @@ class APIController
 
         /** @var EgalEndpoints $endpoints */
         $endpointsClass =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
-        $endpoint = new $endpointsClass();
+        if (!class_exists($endpointsClass)) {
+            $endpointsClass = EgalEndpoints::class;
+        }
+        $endpoint = new $endpointsClass($model);
 
         return $endpoint->show($id);
     }

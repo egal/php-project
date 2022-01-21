@@ -3,6 +3,11 @@
 namespace Egal\Core;
 
 use Egal\Auth\Session;
+use Egal\Core\Commands\GenerateCustomEndpointCommand;
+use Egal\Core\Commands\GenerateInterfaceMetadataCommand;
+use Egal\Core\Commands\GenerateMigrationCommand;
+use Egal\Core\Commands\GenerateModelCommand;
+use Egal\Core\Commands\GeneratePolicyCommand;
 use \Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 
 class ServiceProvider extends LaravelServiceProvider
@@ -23,10 +28,18 @@ class ServiceProvider extends LaravelServiceProvider
 
 
         if ($this->app->runningInConsole()) {
-            if (class_exists('Egal\Core\RouteServiceProvider')) {
-                $this->app->register('Egal\Core\RouteServiceProvider');
+            if (class_exists('Egal\Core\RouteGeneratorServiceProvider')) {
+                $this->app->register('Egal\Core\RouteGeneratorServiceProvider');
             }
         }
+
+        $this->commands([
+            GenerateModelCommand::class,
+            GenerateCustomEndpointCommand::class,
+            GenerateInterfaceMetadataCommand::class,
+            GeneratePolicyCommand::class,
+            GenerateMigrationCommand::class,
+        ]);
     }
 
 }

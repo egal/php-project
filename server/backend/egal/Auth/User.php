@@ -39,9 +39,6 @@ class User extends EgalModel
 
     public function cannot(string $__METHOD__):bool
     {
-        Log::debug('into cannot()');
-        Log::debug('Session::isUserServiceTokenExists()');
-        Log::debug(Session::isUserServiceTokenExists());
         return !Session::isUserServiceTokenExists();
     }
 }
