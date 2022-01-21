@@ -3,12 +3,20 @@
 namespace App\Models;
 
 use App\egal\EgalModel;
+use App\egal\FieldMetadata;
+use App\egal\ModelMetadata;
 
 class Test extends EgalModel
 {
 
-    static function getModelMetadata()
+    static function getModelMetadata(): ModelMetadata
     {
-        // TODO: Implement getModelMetadata() method.
+        return ModelMetadata::make()
+            ->setFields(
+                FieldMetadata::make()
+                    ->setName('title'),
+                FieldMetadata::make()
+                    ->setName('description')
+            );
     }
 }
