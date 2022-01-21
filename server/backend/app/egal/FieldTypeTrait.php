@@ -4,6 +4,8 @@ namespace App\egal;
 
 trait FieldTypeTrait
 {
+    use FieldDateTrait, FieldStringFormatTrait, FieldStringValueTrait;
+
     protected string $type;
 
     /**
@@ -11,7 +13,7 @@ trait FieldTypeTrait
      *
      * @return FieldMetadata|FieldTypeTrait
      */
-    public function string():self
+    public function isString():self
     {
         $this->type = FieldTypeConsts::STRING;
 
@@ -23,7 +25,7 @@ trait FieldTypeTrait
      *
      * @return FieldMetadata|FieldTypeTrait
      */
-    public function int():self
+    public function isInt():self
     {
         $this->type = FieldTypeConsts::INT;
 
@@ -35,7 +37,7 @@ trait FieldTypeTrait
      *
      * @return FieldMetadata|FieldTypeTrait
      */
-    public function float():self
+    public function isFloat():self
     {
         $this->type = FieldTypeConsts::FLOAT;
 
@@ -47,9 +49,69 @@ trait FieldTypeTrait
      *
      * @return FieldMetadata|FieldTypeTrait
      */
-    public function bool():self
+    public function isBool():self
     {
         $this->type = FieldTypeConsts::BOOL;
+
+        return $this;
+    }
+
+    /**
+     * Set attribute to numeric type.
+     *
+     * @return FieldMetadata|FieldTypeTrait
+     */
+    public function isNumeric():self
+    {
+        $this->type = FieldTypeConsts::NUMERIC;
+
+        return $this;
+    }
+
+    /**
+     * Set attribute to array type.
+     *
+     * @return FieldMetadata|FieldTypeTrait
+     */
+    public function isArray():self
+    {
+        $this->type = FieldTypeConsts::ARRAY;
+
+        return $this;
+    }
+
+    /**
+     * Set attribute to file type.
+     *
+     * @return FieldMetadata|FieldTypeTrait
+     */
+    public function isFile():self
+    {
+        $this->type = FieldTypeConsts::FILE;
+
+        return $this;
+    }
+
+    /**
+     * Set attribute to date type.
+     *
+     * @return FieldMetadata|FieldTypeTrait
+     */
+    public function isDate():self
+    {
+        $this->type = FieldTypeConsts::DATE;
+
+        return $this;
+    }
+
+    /**
+     * Set attribute to image type.
+     *
+     * @return FieldMetadata|FieldTypeTrait
+     */
+    public function isImage():self
+    {
+        $this->type = FieldTypeConsts::IMAGE;
 
         return $this;
     }

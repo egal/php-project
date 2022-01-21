@@ -4,7 +4,7 @@ namespace App\egal;
 
 class FieldMetadata
 {
-    use FieldTypeTrait, FieldRequiredTrait, FieldProhibitedTrait, FieldExcludeTrait, FieldAcceptedTrait;
+    use FieldTypeTrait, FieldRequiredTrait, FieldProhibitedTrait, FieldExcludeTrait, FieldSwitchOptionTrait;
 
     protected string $fieldName;
     protected ?array $customValidationRules;
@@ -79,7 +79,8 @@ class FieldMetadata
             $this->getType(),
             $this->getProhibitedRules(),
             $this->getExcludeRules(),
-            $this->getAcceptedRules()
+            $this->getAcceptedRules(),
+            $this->getDateRules()
         ]);
 
         if ($customRules = $this->customValidationRules) {
