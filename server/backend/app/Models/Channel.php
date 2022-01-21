@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
-class Channel extends \Illuminate\Database\Eloquent\Model
+use Egal\Core\EgalModel;
+use Egal\Core\ModelMetadata;
+
+class Channel extends EgalModel
 {
     protected $fillable = [
         'title',
@@ -25,5 +28,10 @@ class Channel extends \Illuminate\Database\Eloquent\Model
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    static function getModelMetadata(): ModelMetadata
+    {
+        // TODO: Implement getModelMetadata() method.
     }
 }

@@ -12,12 +12,21 @@
 */
 
 // формируется на основе метаданных моделей
-
-\App\egal\Facades\EgalRoute::resource('/posts');
-
-//\Illuminate\Support\Facades\Route::post('/posts', [\App\Http\Controllers\PostController::class, 'custom']);
-//\Illuminate\Support\Facades\Route::post('/posts', [\App\egal\APIController::class, 'create']);
-//\Illuminate\Support\Facades\Route::put('/posts', [\App\egal\APIController::class, 'update']);
-use Illuminate\Support\Facades\Route;
-
-//Route::put('/posts/{post}/update', [\App\egal\APIController::class, 'update']);
+\Egal\Core\Facades\EgalRoute::resource('/posts');
+\Egal\Core\Facades\EgalRoute::resource('/tests');
+\Egal\Core\Facades\EgalRoute::resource('/post');
+\Illuminate\Support\Facades\Route::put('/post/{id}');
+\Egal\Core\Facades\EgalRoute::resource('/channel');
+\Egal\Core\Facades\EgalRoute::resource('/test');
+\Egal\Core\Facades\EgalRoute::resource('/post');
+\Illuminate\Support\Facades\Route::put('/post/{id}');
+\Egal\Core\Facades\EgalRoute::resource('/channel');
+\Egal\Core\Facades\EgalRoute::resource('/test');
+\Egal\Core\Facades\EgalRoute::resource('/post');
+\Illuminate\Support\Facades\Route::put('/post/{id}');
+\Egal\Core\Facades\EgalRoute::resource('/channel');
+\Egal\Core\Facades\EgalRoute::resource('/test');
+\Egal\Core\Facades\EgalRoute::resource('/post');
+\Illuminate\Support\Facades\Route::put('/post/{id}');
+\Egal\Core\Facades\EgalRoute::resource('/channel');
+\Egal\Core\Facades\EgalRoute::resource('/test');

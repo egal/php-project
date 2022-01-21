@@ -70,7 +70,7 @@ return [
         ],
         'egal_users' => [
             'driver' => 'eloquent',
-            'model' => \App\egal\auth\User::class,
+            'model' => \Egal\Auth\User::class,
         ],
         // 'users' => [
         //     'driver' => 'database',

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\egal\EgalModel;
-use App\egal\FieldMetadata;
-use App\egal\ModelMetadata;
-use App\egal\RelationMetadata;
+use Egal\Core\EgalModel;
+use Egal\Core\FieldMetadata;
+use Egal\Core\ModelMetadata;
+use Egal\Core\RelationMetadata;
 
 /**
  * @property $title

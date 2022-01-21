@@ -2,7 +2,7 @@
 
 namespace App\Http;
 
-use App\egal\EgalRequest;
+use Egal\Core\EgalRequest;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel

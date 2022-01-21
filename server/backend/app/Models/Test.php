@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\egal\EgalModel;
-use App\egal\FieldMetadata;
-use App\egal\ModelMetadata;
+use Egal\Core\EgalModel;
+use Egal\Core\FieldMetadata;
+use Egal\Core\ModelMetadata;
 
 class Test extends EgalModel
 {

@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use App\egal\auth\Session;
-use App\egal\EgalRequest;
-use App\egal\EgalRoute;
-use App\egal\ResourcesCacheStore;
+use Egal\Auth\Session;
+use Egal\Core\EgalRequest;
+use Egal\Core\EgalRoute;
+use Egal\Core\ResourcesCacheStore;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,9 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(ResourcesCacheStore::class);
-        $this->app->alias('request', EgalRequest::class);
-        $this->app->singleton(Session::class, static fn () => new Session());
+
 
 
     }
@@ -31,7 +29,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->bind('EgalRoute', EgalRoute::class);
 
     }
 }
