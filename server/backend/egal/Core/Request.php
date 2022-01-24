@@ -15,4 +15,17 @@ class Request extends LaravelRequest
         // парсинг запроса
         return new $modelName();
     }
+
+    public function getEndpointClass(): Endpoints
+    {
+        // нужен класс хелпер для установки верных namespace, если внутри все по папкам, например
+        $endpointName = 'App\Endpoints\\' . ucwords($this->segments()[1]);
+        // парсинг запроса
+        return new $endpointName();
+    }
+
+    public function getMethodName(): string
+    {
+
+    }
 }

@@ -86,7 +86,7 @@ class Application extends LaravelApplication
      */
     public function bootstrapRouter()
     {
-        $this->router = new Router($this['events'], $this);
+        $this->router = new \Egal\Core\Router($this['events'], $this);
     }
 
     /**

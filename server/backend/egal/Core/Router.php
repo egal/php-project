@@ -2,6 +2,7 @@
 
 namespace Egal\Core;
 
+use Illuminate\Routing\PendingResourceRegistration;
 use Illuminate\Support\Str;
 
 class Router extends \Illuminate\Routing\Router
@@ -68,6 +69,7 @@ class Router extends \Illuminate\Routing\Router
 
         foreach ($endpoints as $model => $endpoint) {
             $model = strtolower($model);
+            //TODO: app('router') действительно вызывает Egal роутер?
             app('router')->resource('/' . Str::plural($model), APIController::class, ['as' => 'api']);
 
             if ($endpoint !== 'Endpoints') {
@@ -96,4 +98,31 @@ class Router extends \Illuminate\Routing\Router
         }
 
     }
+
+    /**
+     * Route a resource to a controller.
+     *
+     * @param  string  $name
+     * @param  string  $controller
+     * @param  array  $options
+     * @return \Illuminate\Routing\PendingResourceRegistration
+     */
+    public function resource($name, $controller, array $options = [])
+    {
+        if ($this->container && $this->container->bound(\Egal\Core\ResourceRegistrar::class)) {
+            $registrar = $this->container->make(ResourceRegistrar::class);
+        } else {
+//            if (app()->bound(ResourcesCacheStore::class)) {
+//                return app()->make(ResourcesCacheStore::class);
+//            }
+            $registrar = new ResourceRegistrar($this, app()->make(ResourcesCacheStore::class));
+        }
+
+        dd([$registrar, $name, $controller, $options]);
+        return new \Egal\Core\PendingResourceRegistration(
+            $registrar, $name, $controller, $options
+        );
+    }
+
+
 }
