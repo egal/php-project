@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Egal\Core\EgalModel;
+use Egal\Core\Model;
 use Egal\Core\FieldMetadata;
 use Egal\Core\ModelMetadata;
 
-class Test extends EgalModel
+class Test extends Model
 {
 
     static function getModelMetadata(): ModelMetadata

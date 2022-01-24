@@ -2,10 +2,10 @@
 
 namespace Egal\Core;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model as LaravelModel;
 use Illuminate\Foundation\Events\Dispatchable;
 
-abstract class EgalModel extends Model
+abstract class Model extends LaravelModel
 {
     use Dispatchable;
     protected $dispatchesListeners; // получение листенеров из конфига ModelNameListener

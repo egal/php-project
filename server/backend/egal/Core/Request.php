@@ -2,15 +2,13 @@
 
 namespace Egal\Core;
 
-use App\Models\Post;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request as LaravelRequest;
 
 
-class EgalRequest extends Request
+class Request extends LaravelRequest
 {
 
-    public function getModelInstanse(): EgalModel
+    public function getModelInstanse(): Model
     {
         // нужен класс хелпер для установки верных namespace, если внутри все по папкам, например
         $modelName = 'App\Models\\' . ucwords($this->segments()[0]);

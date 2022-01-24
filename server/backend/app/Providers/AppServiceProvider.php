@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use Egal\Auth\Session;
-use Egal\Core\EgalRequest;
-use Egal\Core\EgalRoute;
+use Egal\Core\Request;
+use Egal\Core\Route;
 use Egal\Core\ResourcesCacheStore;
 use Illuminate\Support\ServiceProvider;
 

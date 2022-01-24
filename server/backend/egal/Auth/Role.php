@@ -2,10 +2,10 @@
 
 namespace Egal\Auth;
 
-use Egal\Core\EgalModel;
+use Egal\Core\Model;
 use Egal\Core\ModelMetadata;
 
-class Role extends EgalModel
+class Role extends Model
 {
 
     static function getModelMetadata(): ModelMetadata

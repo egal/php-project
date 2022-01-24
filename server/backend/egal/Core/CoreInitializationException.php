@@ -4,7 +4,7 @@ namespace Egal\Core;
 
 use Exception;
 
-class EgalCoreInitializationException extends Exception
+class CoreInitializationException extends Exception
 {
 
     /**

@@ -3,6 +3,7 @@
 namespace Egal\Core;
 
 use Carbon\Laravel\ServiceProvider as LaravelServiceProvider;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 class RouteGeneratorServiceProvider extends LaravelServiceProvider
@@ -44,7 +45,7 @@ class RouteGeneratorServiceProvider extends LaravelServiceProvider
             if (is_dir($model)) {
                 continue;
             } else {
-                if (get_parent_class('App\Models' . '\\' . $model) === 'Egal\Core\EgalModel') {
+                if (get_parent_class('App\Models' . '\\' . $model) === 'Egal\Core\Model') {
                     $models[] = $model;
                 }
             }
@@ -60,7 +61,7 @@ class RouteGeneratorServiceProvider extends LaravelServiceProvider
             if (is_dir($endpoint)) {
                 continue;
             } else {
-                if (get_parent_class('App\Endpoints' . '\\' . $endpoint) === 'Egal\Core\EgalEndpoints') {
+                if (get_parent_class('App\Endpoints' . '\\' . $endpoint) === 'Egal\Core\Endpoints') {
                     $modelName = str_replace('Endpoints', '', $endpoint);
                     if (in_array($modelName, $models)) {
                         $modelEndpoints[$modelName] = $endpoint;
@@ -69,7 +70,7 @@ class RouteGeneratorServiceProvider extends LaravelServiceProvider
             }
         }
         foreach (array_diff($models, array_keys($modelEndpoints)) as $modelName) {
-            $modelEndpoints[$modelName] = 'EgalEndpoints';
+            $modelEndpoints[$modelName] = 'Endpoints';
         }
         return $modelEndpoints;
     }
@@ -77,13 +78,13 @@ class RouteGeneratorServiceProvider extends LaravelServiceProvider
     public function getModelRoutes($endpoints): array
     {
         $routes = [];
-        $resourceRoutePattern = "\Egal\Core\Facades\EgalRoute::resource('/resourceName');";
+        $resourceRoutePattern = "\Egal\Core\Facades\Route::resource('/resourceName');";
 
         foreach ($endpoints as $model => $endpoint) {
             $model = strtolower($model);
             $routes[] = str_replace('resourceName', $model, $resourceRoutePattern) . PHP_EOL;
 
-            if ($endpoint !== 'EgalEndpoints') {
+            if ($endpoint !== 'Endpoints') {
                 $customEndpoints = get_class_methods('App\Endpoints' . '\\' . $endpoint);
                 foreach ($customEndpoints as $customEndpoint) {
                     $endpointParts = [];

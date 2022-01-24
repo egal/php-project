@@ -2,10 +2,10 @@
 
 namespace App\Endpoints;
 
-use Egal\Core\EgalEndpoints;
+use Egal\Core\Endpoints;
 use App\Models\Post;
 
-class PostEndpoints extends EgalEndpoints
+class PostEndpoints extends Endpoints
 {
     protected string $modelClass = Post::class;
 

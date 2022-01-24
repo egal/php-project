@@ -15,16 +15,16 @@ class ServiceProvider extends LaravelServiceProvider
     public function register()
     {
         if (!($this->app instanceof Application)) {
-            throw new EgalCoreInitializationException(
+            throw new CoreInitializationException(
                 'Application needs instants of ' . Application::class . ' detected ' . get_class($this->app) . '!'
             );
         }
 
         $this->app->singleton(ResourcesCacheStore::class);
-        $this->app->alias('request', EgalRequest::class);
+        $this->app->alias('request', Request::class);
         $this->app->singleton(Session::class, static fn () => new Session());
 
-        $this->app->bind('EgalRoute', EgalRoute::class);
+        $this->app->bind('EgalRoute', Route::class);
 
 
         if ($this->app->runningInConsole()) {

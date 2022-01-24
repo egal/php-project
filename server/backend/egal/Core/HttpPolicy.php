@@ -2,7 +2,7 @@
 
 namespace Egal\Core;
 
-abstract class EgalHttpPolicy
+abstract class HttpPolicy
 {
 
 }

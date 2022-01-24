@@ -4,11 +4,15 @@ namespace Egal\Core;
 
 class ModelMetadata
 {
+    protected string $modelName;
     protected array $fields;
 
-    public static function make():self
+    public static function make(string $modelName):self
     {
-        return new self();
+        $modelMetadata = new self();
+        $modelMetadata->modelName = $modelName;
+
+        return $modelMetadata;
     }
 
     /**
@@ -45,5 +49,14 @@ class ModelMetadata
            $fieldNames[] = $field->getName();
        }
        return $fieldNames;
+    }
+
+    public function getFieldsData(): array
+    {
+        $fieldsData = [];
+        foreach ($this->fields as $field) {
+            $fieldsData[$field->getName()] = $field->getType();
+        }
+        return $fieldsData;
     }
 }

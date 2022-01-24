@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 
 class GenerateInterfaceMetadataCommand extends Command
 {
-    protected $signature = 'egal:interface-metadata:generate {modelName}';
+    protected $signature = 'egal:make:interface-metadata {modelName}';
 
     /**
      * Execute the console command.

@@ -6,16 +6,16 @@ use Egal\Auth\Session;
 use App\Models\Post;
 use Illuminate\Support\Facades\Log;
 
-class EgalEndpoints
+class Endpoints
 {
     /**
      * @var \Illuminate\Database\Eloquent\Model
      */
     protected string $modelClass;
 
-    protected EgalModel $model;
+    protected Model $model;
 
-    public function __construct(EgalModel $model)
+    public function __construct(Model $model)
     {
         $this->model = $model;
         $this->modelClass = get_class($model);
@@ -33,7 +33,7 @@ class EgalEndpoints
         return $entity->toArray();
     }
 
-    public function create($attributes)
+    public function endpointCreate($attributes)
     {
         // посмотреть на реализацию Sanctum
         if (Session::user()->cannot(__METHOD__)) {

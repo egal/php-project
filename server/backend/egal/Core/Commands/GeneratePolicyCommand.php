@@ -2,13 +2,13 @@
 
 namespace Egal\Core\Commands;
 
-use Egal\Core\EgalModel;
+use Egal\Core\Model;
 use Illuminate\Support\Str;
 
 class GeneratePolicyCommand extends MakeCommand
 {
     // для политики вызывается отдельная команда генерации
-    protected $signature = 'egal:policy:generate {modelName}';
+    protected $signature = 'egal:make:policy {modelName}';
 
     protected string $stubFileBaseName = 'policy';
 
@@ -34,7 +34,7 @@ class GeneratePolicyCommand extends MakeCommand
         $stubFilesDir = realpath(__DIR__ . '/stubs');
         // получить все атрибуты модели
         $modelClassName = 'App\Models' . '\\' . $this->argument('modelName');
-        /** @var EgalModel $modelInstance */
+        /** @var Model $modelInstance */
         $modelInstance = new $modelClassName();
         $fields = $modelInstance->getModelMetadata()->getFieldNames();
         // для каждого по шаблону сгенерировать методы проверки и записать в fileContents

@@ -4,8 +4,24 @@ namespace Egal\Core;
 
 trait FieldTypeTrait
 {
-    public function string():self
-    {
+    protected string $type;
 
-}
+    public function string(): self
+    {
+        $this->type = 'string';
+
+        return $this;
+    }
+
+    public function text(): self
+    {
+        $this->type = 'text';
+
+        return $this;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
 }

@@ -2,13 +2,30 @@
 
 namespace App\Models;
 
-use App\egal\EgalModel;
+use Egal\Core\EgalModel;
+use Egal\Core\ModelMetadata;
 
 class {{ class }} extends EgalModel
 {
 
-    static function getModelMetadata()
+    public static function getModelMetadata(): ModelMetadata
     {
-        // TODO: Implement getModelMetadata() method.
+        return ModelMetadata::make(static::class)
+            ->fields(
+                FieldMetadata::make('your_attribute')
+                    ->string()
+                    ->min()
+                    ->max()
+                    ->required()
+                    ->setCustomValidationRules([])
+                    ->setVisable()
+                    ->setFillable()
+                    ->setSortable()
+                    ->setFilterable()
+            )
+            ->relations(
+                RelationMetadata::make('yourRelationName')
+                    ->belongsTo(YourRelation::class)
+            );
     }
 }

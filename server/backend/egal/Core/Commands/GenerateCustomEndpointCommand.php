@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 
 class GenerateCustomEndpointCommand extends Command
 {
-    protected $signature = 'egal:custom-endpoint:generate {modelName}';
+    protected $signature = 'egal:make:custom-endpoint {modelName}';
 
     /**
      * Execute the console command.

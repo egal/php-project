@@ -7,7 +7,7 @@ use Illuminate\Routing\PendingResourceRegistration;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
-class EgalRoute
+class Route
 {
     /**
      * @param ResourceRegistrar $registrar
@@ -36,6 +36,7 @@ class EgalRoute
     {
         // работает с relationIndex, relationCreate, relationShow ....
     }
+
     protected function resolveRegistrar(string $registrarClass): ResourceRegistrar
     {
         if (app()->bound($registrarClass)) {
@@ -53,4 +54,15 @@ class EgalRoute
 
         throw new BindingResolutionException('ResourcesCacheStore is not bound to the container');
     }
+
+    public function parse($modelsFolderPath, $modelsFolderNamespace): void
+    {
+//        foreach () {
+//            \Illuminate\Support\Facades\Route::index('/entity')
+//                ->defaults('model', \App\Models\Entity::class)
+//                ->defaults('endpoints', \Egal\Core\Endpoints::class)
+//                ->defaults('polisy', \Egal\Core\HttpPolicy::class);
+//        }
+    }
+
 }

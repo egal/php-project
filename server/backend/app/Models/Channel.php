@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Egal\Core\EgalModel;
+use Egal\Core\Model;
 use Egal\Core\ModelMetadata;
 
-class Channel extends EgalModel
+class Channel extends Model
 {
     protected $fillable = [
         'title',

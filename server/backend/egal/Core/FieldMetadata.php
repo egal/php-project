@@ -8,23 +8,12 @@ class FieldMetadata
 
     protected string $fieldName;
 
-    public static function make():self
+    public static function make(string $fieldName):self
     {
-        return new self();
-    }
+        $fieldMetadata = new self();
+        $fieldMetadata->fieldName = $fieldName;
 
-    /**
-     * Set name of attribute.
-     *
-     * @param string $fieldName Name of attribute.
-     *
-     * @return self
-     */
-    public function setName(string $fieldName): self
-    {
-        $this->fieldName = $fieldName;
-
-        return $this;
+        return $fieldMetadata;
     }
 
     public function getName(): string

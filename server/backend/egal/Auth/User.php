@@ -2,11 +2,11 @@
 
 namespace Egal\Auth;
 
-use Egal\Core\EgalModel;
+use Egal\Core\Model;
 use Egal\Core\ModelMetadata;
 use Illuminate\Support\Facades\Log;
 
-class User extends EgalModel
+class User extends Model
 {
     use HasRoles, HasPermissions, HasAuthorized;
 
@@ -37,8 +37,13 @@ class User extends EgalModel
         // TODO: Implement getModelMetadata() method.
     }
 
-    public function cannot(string $__METHOD__):bool
+    public function cannot(string $method, Model $entity):bool
     {
-        return !Session::isUserServiceTokenExists();
+        $policyClass = "App\\Policies\\" . $entity->getName() . "Policy";
+        if (!class_exists($policyClass)) {
+            return false;
+        }
+        $policy = new $policyClass();
+        return !$policy->$method($this, $entity);
     }
 }

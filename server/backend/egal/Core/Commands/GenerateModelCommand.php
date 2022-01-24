@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 class GenerateModelCommand extends MakeCommand
 {
     // для политики вызывается отдельная команда генерации
-    protected $signature = 'egal:model:generate {modelName} {--with-policy}';
+    protected $signature = 'egal:make:model {modelName} {--with-policy}';
 
     protected string $stubFileBaseName = 'model';
 

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Core\EgalModel;
+use Egal\Core\Model;
 use Egal\Core\FieldMetadata;
 use Egal\Core\ModelMetadata;
 use Egal\Core\RelationMetadata;
@@ -11,7 +11,7 @@ use Egal\Core\RelationMetadata;
  * @property $title
  * @property $content
  */
-class Post extends EgalModel
+class Post extends Model
 {
 
     public static function getModelMetadata(): ModelMetadata

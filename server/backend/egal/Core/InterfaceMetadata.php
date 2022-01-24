@@ -2,7 +2,7 @@
 
 namespace Egal\Core;
 
-abstract class EgalInterfaceMetadata
+abstract class InterfaceMetadata
 {
     protected string $model;
     protected array $fields;

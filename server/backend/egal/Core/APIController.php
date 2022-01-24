@@ -9,39 +9,40 @@ use Illuminate\Support\Facades\Log;
 
 class APIController
 {
-    public function index(EgalRequest $request)
+    public function index(Request $request)
     {
         Session::user();
         $model = $request->getModelInstanse();
 
-        /** @var EgalEndpoints $endpoints */
+        /** @var Endpoints $endpoints */
         $endpoints =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
 
         return $endpoints->index();
     }
 
-    public function show($id, EgalRequest $request)
+    public function show($id, Request $request)
     {
         if (($request->hasHeader('Authorization'))) {
             Session::setToken($request->header('Authorization'));
         }
-        if (Session::user()->cannot(__METHOD__)) {
-            throw new NoAccessException();
-        }
 
         $model = $request->getModelInstanse();
 
-        /** @var EgalEndpoints $endpoints */
+        if (Session::user()->cannot('endpointShow', $model)) {
+            abort(403);
+        }
+
+        /** @var Endpoints $endpoints */
         $endpointsClass =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
         if (!class_exists($endpointsClass)) {
-            $endpointsClass = EgalEndpoints::class;
+            $endpointsClass = Endpoints::class;
         }
         $endpoint = new $endpointsClass($model);
 
         return $endpoint->show($id);
     }
 
-    public function store(EgalRequest $request, Post $model)
+    public function store(Request $request, Post $model)
     {
        \session()->put('UST', $request->header('authorization'));
        $request->user();
@@ -49,14 +50,14 @@ class APIController
         $validationRules = $model->getModelMetadata()->getValidationRules();
         $request->validate($validationRules);
 
-        /** @var EgalEndpoints $endpointsClass */
+        /** @var Endpoints $endpointsClass */
         $endpointsClass =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
         $endpoint = new $endpointsClass();
 
         return $endpoint->create($request->only('attributes'));
     }
 
-    public function update($id, EgalRequest $request, Post $model)
+    public function update($id, Request $request, Post $model)
     {
         Log::debug($model->toArray());
         $model = $request->getModelInstanse();
@@ -69,13 +70,13 @@ class APIController
 
         $request->validate($validationRules);
 
-        /** @var EgalEndpoints $endpoints */
+        /** @var Endpoints $endpoints */
         $endpoints =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
 
         return $endpoints->update($id, $request->only('attributes'));
     }
 
-    public function delete($id, EgalRequest $request)
+    public function delete($id, Request $request)
     {
         return $this->service->delete($id);
     }
@@ -91,17 +92,17 @@ class APIController
         return $this->service->show($id);
     }
 
-    public function relationCreate(EgalRequest $request)
+    public function relationCreate(Request $request)
     {
         return $this->service->create($request->only('attributes'));
     }
 
-    public function relationUpdate($id, EgalRequest $request)
+    public function relationUpdate($id, Request $request)
     {
         return $this->service->update($id, $request->only('attributes'));
     }
 
-    public function relationDelete($id, EgalRequest $request)
+    public function relationDelete($id, Request $request)
     {
         return $this->service->delete($id);
     }

@@ -6,5 +6,6 @@ use Exception;
 
 class NoAccessException extends Exception
 {
+    protected $code = 403;
 
 }
