@@ -1,6 +1,6 @@
 <?php
 
-namespace Egal\Auth;
+namespace Egal\Core\Auth;
 
 trait HasRoles
 {

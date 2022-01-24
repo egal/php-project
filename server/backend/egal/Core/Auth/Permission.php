@@ -1,6 +1,6 @@
 <?php
 
-namespace Egal\Auth;
+namespace Egal\Core\Auth;
 
 use Egal\Core\Model;
 use Egal\Core\ModelMetadata;

@@ -2,7 +2,7 @@
 
 namespace Egal\Core;
 
-use Egal\Auth\Session;
+use Egal\Core\Auth\Session;
 use Egal\Core\Commands\GenerateCustomEndpointCommand;
 use Egal\Core\Commands\GenerateInterfaceMetadataCommand;
 use Egal\Core\Commands\GenerateMigrationCommand;

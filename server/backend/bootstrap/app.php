@@ -44,8 +44,11 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+//$app->withFacades();
+
 $app->register(Egal\Core\ServiceProvider::class);
 
+\Egal\Core\Router::parse();
 
 /*
 |--------------------------------------------------------------------------

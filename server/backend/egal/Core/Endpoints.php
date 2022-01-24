@@ -2,7 +2,7 @@
 
 namespace Egal\Core;
 
-use Egal\Auth\Session;
+use Egal\Core\Auth\Session;
 use App\Models\Post;
 use Illuminate\Support\Facades\Log;
 
@@ -22,12 +22,12 @@ class Endpoints
         // по названию парсинг класса, либо getModelClass
     }
 
-    public function index()
+    public function endpointIndex()
     {
         return $this->model->newQuery()->get();
     }
 
-    public function show($id)
+    public function endpointShow($id)
     {
         $entity = $this->model->newQuery()->find($id);
         return $entity->toArray();
@@ -42,37 +42,37 @@ class Endpoints
         return $this->model->newQuery()->create($attributes);
     }
 
-    public function update($id, $attributes)
+    public function endpointUpdate($id, $attributes)
     {
         return $this->model->newQuery()->find($id)->update($attributes);
     }
 
-    public function delete($id)
+    public function endpointDelete($id)
     {
         return $this->model->newQuery()->find($id)->delete();
     }
 
-    public function relationIndex()
+    public function endpointRelationIndex()
     {
         return $this->model->newQuery()->get();
     }
 
-    public function relationShow($id)
+    public function endpointRelationShow($id)
     {
         return $this->model->newQuery()->find($id);
     }
 
-    public function relationCreate($attributes)
+    public function endpointRelationCreate($attributes)
     {
         return $this->model->newQuery()->create($attributes);
     }
 
-    public function relationUpdate($id, $attributes)
+    public function endpointRelationUpdate($id, $attributes)
     {
         return $this->model->newQuery()->find($id)->update($attributes);
     }
 
-    public function relationDelete($id)
+    public function endpointRelationDelete($id)
     {
         return $this->model->newQuery()->find($id)->delete();
     }

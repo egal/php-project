@@ -2,7 +2,7 @@
 
 namespace Egal\Core;
 
-use Egal\Auth\Session;
+use Egal\Core\Auth\Session;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;

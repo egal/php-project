@@ -1,6 +1,6 @@
 <?php
 
-namespace Egal\Auth;
+namespace Egal\Core\Auth;
 
 use Exception;
 use Illuminate\Support\Facades\Log;

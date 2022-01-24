@@ -1,6 +1,6 @@
 <?php
 
-namespace Egal\Auth;
+namespace Egal\Core\Auth;
 
 use Carbon\Carbon;
 use Firebase\JWT\JWT;

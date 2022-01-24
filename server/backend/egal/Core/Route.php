@@ -4,6 +4,7 @@ namespace Egal\Core;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Routing\PendingResourceRegistration;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
@@ -53,16 +54,6 @@ class Route
         }
 
         throw new BindingResolutionException('ResourcesCacheStore is not bound to the container');
-    }
-
-    public function parse($modelsFolderPath, $modelsFolderNamespace): void
-    {
-//        foreach () {
-//            \Illuminate\Support\Facades\Route::index('/entity')
-//                ->defaults('model', \App\Models\Entity::class)
-//                ->defaults('endpoints', \Egal\Core\Endpoints::class)
-//                ->defaults('polisy', \Egal\Core\HttpPolicy::class);
-//        }
     }
 
 }

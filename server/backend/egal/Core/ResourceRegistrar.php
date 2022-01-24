@@ -4,6 +4,7 @@ namespace Egal\Core;
 
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Log;
 
 class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
 {

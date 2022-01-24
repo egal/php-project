@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use Egal\Auth\Session;
+use Egal\Core\Auth\Session;
 use Egal\Core\Request;
 use Egal\Core\Route;
 use Egal\Core\ResourcesCacheStore;
