@@ -6,6 +6,7 @@ class ModelMetadata
 {
     protected string $modelName;
     protected array $fields;
+    protected array $relations;
 
     public static function make(string $modelName):self
     {
@@ -58,5 +59,23 @@ class ModelMetadata
             $fieldsData[$field->getName()] = $field->getType();
         }
         return $fieldsData;
+    }
+
+    public function getRelationNames(): array
+    {
+        $relationNames = [];
+        foreach ($this->relations as $relation) {
+            $relationNames[] = $relation->getName();
+        }
+        return $relationNames;
+    }
+
+    public function getRelationsData(): array
+    {
+        $relationData = [];
+        foreach ($this->relations as $relation) {
+            $relationData[$relation->getName()] = $relation->getClass();
+        }
+        return $relationData;
     }
 }

@@ -135,6 +135,72 @@ class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
         return $this->router->post($uri, $action);
     }
 
+    protected function addResourceDestroy($name, $base, $controller, $options)
+    {
+        $name = $this->getShallowName($name, $options);
+
+        $uri = $this->getResourceUri($name).'/{'.$base.'}';
+
+        $action = $this->getResourceAction($name, $controller, 'main', $options);
+
+        return $this->router->delete($uri, $action);
+    }
+
+    protected function addResourceEdit($name, $base, $controller, $options)
+    {
+        $name = $this->getShallowName($name, $options);
+
+        $uri = $this->getResourceUri($name).'/{'.$base.'}/'.static::$verbs['edit'];
+
+        $action = $this->getResourceAction($name, $controller, 'main', $options);
+
+        return $this->router->get($uri, $action);
+    }
+
+    protected function addResourceIndex($name, $base, $controller, $options)
+    {
+        $uri = $this->getResourceUri($name);
+
+        unset($options['missing']);
+
+        $action = $this->getResourceAction($name, $controller, 'main', $options);
+
+        return $this->router->get($uri, $action);
+    }
+
+    protected function addResourceShow($name, $base, $controller, $options)
+    {
+        $name = $this->getShallowName($name, $options);
+
+        $uri = $this->getResourceUri($name).'/{id:'.$base.'}';
+
+        $action = $this->getResourceAction($name, $controller, 'main', $options);
+
+        return $this->router->get($uri, $action);
+    }
+
+    protected function addResourceStore($name, $base, $controller, $options)
+    {
+        $uri = $this->getResourceUri($name);
+
+        unset($options['missing']);
+
+        $action = $this->getResourceAction($name, $controller, 'main', $options);
+
+        return $this->router->post($uri, $action);
+    }
+
+    protected function addResourceUpdate($name, $base, $controller, $options)
+    {
+        $name = $this->getShallowName($name, $options);
+
+        $uri = $this->getResourceUri($name).'/{'.$base.'}';
+
+        $action = $this->getResourceAction($name, $controller, 'main', $options);
+
+        return $this->router->match(['PUT', 'PATCH'], $uri, $action);
+    }
+
     public function register($name, $controller, array $options = [])
     {
         $this->resourcesCacheStore->addResource(

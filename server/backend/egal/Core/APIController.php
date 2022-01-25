@@ -5,32 +5,17 @@ namespace Egal\Core;
 use Egal\Core\Auth\Session;
 use App\Models\Post;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class APIController
 {
-    public function main(Request $request, ...$params)
+    public function main(\Illuminate\Http\Request $request, ...$params)
     {
-        // получать наименование метода
+        // поиск соответствующей регулярки для запроса
         //
-        if (($request->hasHeader('Authorization'))) {
-            Session::setToken($request->header('Authorization'));
-        }
-
-        $model = $request->getModelInstanse();
-
-//        /** @var Endpoints $endpoints */
-//        $endpointsClass =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
-//        if (!class_exists($endpointsClass)) {
-//            $endpointsClass = Endpoints::class;
-//        }
-        $endpoint = $request->getEndpointClass();
-        $methodName = $request->getMethodName();
-
-        if (Session::user()->cannot('endpoint' . ucfirst($methodName), $model)) {
-            abort(403);
-        }
-
-        return $endpoint->show($request->request['id']);
+        // нужен класс хелпер для установки верных namespace, если внутри все по папкам, например
+        $request = self::createEndpointRequest($request);
+        return $request->call();
     }
 
     public function index(Request $request)
@@ -131,5 +116,64 @@ class APIController
         return $this->service->delete($id);
     }
 
+    /**
+     * @param Request $request
+     * @return void
+     */
+    private static function createEndpointRequest(\Illuminate\Http\Request $request): Request
+    {
+        $endpointRequest = new Request();
+
+        if (($request->hasHeader('Authorization'))) {
+            Session::setToken($request->header('Authorization'));
+        }
+        $endpointRequest->setHttpMethod($request->getMethod());
+
+        foreach ($request->segments() as $key => $segment) {
+            switch ($key) {
+                case 0:
+                    $modelName = 'App\Models\\' . ucwords(Str::singular($request->segments()[0]));
+                    $model = new $modegitlName();
+                    $endpointRequest->setModel($model);
+                    break;
+                case 1:
+                    $model = $endpointRequest->getModel();
+                    // нужен класс хелпер для установки верных namespace, если внутри все по папкам, например
+                    $endpointsClass = 'App\Endpoints\\' . ucwords(Str::singular($endpointRequest->getModel())) . 'Endpoints';
+                    if (!class_exists($endpointsClass) || !method_exists($endpointsClass, $segment)) {
+                        $endpointsClass = Endpoints::class;
+                        $endpointRequest->setId($segment);
+                    } else {
+                        $endpointRequest->setEndpointMethod($segment);
+                    }
+                    $endpointRequest->setEndpoint(new $endpointsClass($model));
+                    break;
+                case 2:
+                    $model = $endpointRequest->getModel();
+                    if (!in_array($segment, $model::getModelMetadata()->getRelationNames())) {
+                        $endpointRequest->setId($segment);
+                    } else {
+                        $modelMetadata = $model::getModelMetadata();
+                        $relationClass = $modelMetadata->getRelationsData()[$segment];
+                        $endpointRequest->setRelation($relationClass);
+                    }
+                    break;
+                case 3:
+                    $endpointsClass = 'App\Endpoints\\' . ucwords(Str::singular($endpointRequest->getRelation())) . 'Endpoints';
+                    if (!class_exists($endpointsClass) || !method_exists($endpointsClass, $segment)) {
+                        $endpointsClass = Endpoints::class;
+                        $endpointRequest->setId($segment);
+                    } else {
+                        $endpointRequest->setEndpointMethod($segment);
+                    }
+                    $endpointRequest->setEndpoint(new $endpointsClass());
+                    break;
+                case 4:
+                    $endpointRequest->setId($segment);
+                    break;
+            }
+        }
+        return $endpointRequest;
+    }
 
 }

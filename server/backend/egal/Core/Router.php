@@ -3,6 +3,7 @@
 namespace Egal\Core;
 
 use Illuminate\Events\Dispatcher;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class Router extends \Illuminate\Routing\Router
@@ -24,7 +25,7 @@ class Router extends \Illuminate\Routing\Router
     {
         $models = self::getModels();
         $endpoints = self::getModelEndpoints($models);
-        $routes = self::parseModelRoutes($endpoints);
+        self::parseModelRoutes($endpoints);
     }
 
     public static function getModels(): array
@@ -94,9 +95,10 @@ class Router extends \Illuminate\Routing\Router
             $httpEndpoint = $endpointParts[2];
             $httpMethod = self::ENDPOINT_METHOD[$httpEndpoint];
 
+            $endpointName = $endpointParts[3];
             in_array($httpEndpoint, ['Show', 'Update', 'Delete'])
-                ? app('router')->$httpMethod('/' . Str::plural($model) . '/{id}', ['as' => 'api', 'uses' => 'Egal\Core\APIController@' . $endpoint])
-                : app('router')->$httpMethod('/' . Str::plural($model), ['as' => 'api', 'uses' => 'Egal\Core\APIController@' . $endpoint]);
+                ? app('router')->$httpMethod('/' . Str::plural($model) . '/' . strtolower($endpointName) . '/{id}', ['as' => 'api', 'uses' => 'Egal\Core\APIController@main' . $endpoint])
+                : app('router')->$httpMethod('/' . Str::plural($model) . '/' . strtolower($endpointName), ['as' => 'api', 'uses' => 'Egal\Core\APIController@' . $endpoint]);
 
         }
 
