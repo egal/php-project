@@ -2,7 +2,7 @@
 
 namespace Egal\Core;
 
-use Illuminate\Routing\PendingResourceRegistration;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Str;
 
 class Router extends \Illuminate\Routing\Router
@@ -14,6 +14,11 @@ class Router extends \Illuminate\Routing\Router
         'Update' => 'put',
         'Delete' => 'delete'
     ];
+
+    public function __construct(Dispatcher $events)
+    {
+        parent::__construct($events);
+    }
 
     public static function parse(): void
     {
@@ -65,11 +70,9 @@ class Router extends \Illuminate\Routing\Router
     public static function parseModelRoutes($endpoints): array
     {
         $routes = [];
-        $resourceRoutePattern = "\Egal\Core\Facades\Route::resource('/resourceName');";
 
         foreach ($endpoints as $model => $endpoint) {
             $model = strtolower($model);
-            //TODO: app('router') действительно вызывает Egal роутер?
             app('router')->resource('/' . Str::plural($model), APIController::class, ['as' => 'api']);
 
             if ($endpoint !== 'Endpoints') {
@@ -118,7 +121,6 @@ class Router extends \Illuminate\Routing\Router
             $registrar = new ResourceRegistrar($this, app()->make(ResourcesCacheStore::class));
         }
 
-        dd([$registrar, $name, $controller, $options]);
         return new \Egal\Core\PendingResourceRegistration(
             $registrar, $name, $controller, $options
         );

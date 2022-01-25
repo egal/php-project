@@ -25,13 +25,7 @@ class ServiceProvider extends LaravelServiceProvider
         $this->app->singleton(Session::class, static fn () => new Session());
 
         $this->app->bind('EgalRoute', Route::class);
-
-
-        if ($this->app->runningInConsole()) {
-            if (class_exists('Egal\Core\RouteGeneratorServiceProvider')) {
-                $this->app->register('Egal\Core\RouteGeneratorServiceProvider');
-            }
-        }
+        $this->app->singleton('router', Router::class);
 
         $this->commands([
             GenerateModelCommand::class,

@@ -3,8 +3,8 @@
 namespace Egal\Core;
 
 use Illuminate\Foundation\Application as LaravelApplication;
-use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Facade;
+use Egal\Core\Router;
 
 class Application extends LaravelApplication
 {
@@ -86,7 +86,7 @@ class Application extends LaravelApplication
      */
     public function bootstrapRouter()
     {
-        $this->router = new \Egal\Core\Router($this['events'], $this);
+        $this->router = new Router($this['events'], $this);
     }
 
     /**
