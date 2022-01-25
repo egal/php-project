@@ -133,7 +133,7 @@ class APIController
             switch ($key) {
                 case 0:
                     $modelName = 'App\Models\\' . ucwords(Str::singular($request->segments()[0]));
-                    $model = new $modegitlName();
+                    $model = new $modelName();
                     $endpointRequest->setModel($model);
                     break;
                 case 1:
