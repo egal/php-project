@@ -3,177 +3,98 @@
 namespace Egal\Core;
 
 use Egal\Core\Auth\Session;
-use App\Models\Post;
-use Illuminate\Support\Facades\Log;
+use Exception;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request as LaravelRequest;
 
 class APIController
 {
-    public function main(\Illuminate\Http\Request $request, ...$params)
+
+    public $endpointsNamespace;
+    public $model;
+
+    /**
+     * @throws Exception
+     */
+    public function main(LaravelRequest $request): array
     {
-        // поиск соответствующей регулярки для запроса
-        //
-        // нужен класс хелпер для установки верных namespace, если внутри все по папкам, например
-        $request = self::createEndpointRequest($request);
+        if (($request->hasHeader('Authorization'))) {
+            Session::setToken($request->header('Authorization'));
+        }
+
+        $request = $this->createEndpointRequest($request);
+
         return $request->call();
     }
 
-    public function index(Request $request)
-    {
-        Session::user();
-        $model = $request->getModelInstanse();
-
-        /** @var Endpoints $endpoints */
-        $endpoints =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
-
-        return $endpoints->index();
-    }
-
-    public function show($id, Request $request)
-    {
-        if (($request->hasHeader('Authorization'))) {
-            Session::setToken($request->header('Authorization'));
-        }
-
-        $model = $request->getModelInstanse();
-
-        if (Session::user()->cannot('endpointShow', $model)) {
-            abort(403);
-        }
-
-        /** @var Endpoints $endpoints */
-        $endpointsClass =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
-        if (!class_exists($endpointsClass)) {
-            $endpointsClass = Endpoints::class;
-        }
-        $endpoint = new $endpointsClass($model);
-
-        return $endpoint->show($id);
-    }
-
-    public function store(Request $request, Post $model)
-    {
-       \session()->put('UST', $request->header('authorization'));
-       $request->user();
-        $model = $request->getModelInstanse();
-        $validationRules = $model->getModelMetadata()->getValidationRules();
-        $request->validate($validationRules);
-
-        /** @var Endpoints $endpointsClass */
-        $endpointsClass =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
-        $endpoint = new $endpointsClass();
-
-        return $endpoint->create($request->only('attributes'));
-    }
-
-    public function update($id, Request $request, Post $model)
-    {
-        Log::debug($model->toArray());
-        $model = $request->getModelInstanse();
-        $validationRules = $model->getModelMetadata()->getValidationRules();
-
-        $inputAttributes = $request->request;
-        $oldAttributes = $model->newQuery()->find($id)->first;
-        $missingAttributes = array_diff_key($oldAttributes, (array)$inputAttributes);
-        $inputAttributes->add($missingAttributes);
-
-        $request->validate($validationRules);
-
-        /** @var Endpoints $endpoints */
-        $endpoints =  "App\\Endpoints\\" . $model->getName() . "Endpoints";
-
-        return $endpoints->update($id, $request->only('attributes'));
-    }
-
-    public function delete($id, Request $request)
-    {
-        return $this->service->delete($id);
-    }
-
-    public function relationIndex()
-    {
-        //validation
-        return $this->service->index();
-    }
-
-    public function relationShow($id)
-    {
-        return $this->service->show($id);
-    }
-
-    public function relationCreate(Request $request)
-    {
-        return $this->service->create($request->only('attributes'));
-    }
-
-    public function relationUpdate($id, Request $request)
-    {
-        return $this->service->update($id, $request->only('attributes'));
-    }
-
-    public function relationDelete($id, Request $request)
-    {
-        return $this->service->delete($id);
-    }
-
     /**
-     * @param Request $request
-     * @return void
+     * @param LaravelRequest $request
+     *
+     * @return Request
+     *
+     * @throws Auth\UnableDecodeTokenException
      */
-    private static function createEndpointRequest(\Illuminate\Http\Request $request): Request
+    private function createEndpointRequest(LaravelRequest $request): Request
     {
         $endpointRequest = new Request();
 
-        if (($request->hasHeader('Authorization'))) {
-            Session::setToken($request->header('Authorization'));
-        }
         $endpointRequest->setHttpMethod($request->getMethod());
 
+        $this->setRequestParams($request, $endpointRequest);
+
+        return $endpointRequest;
+    }
+
+    private function setRequestParams(LaravelRequest $request, Request $endpointRequest): void
+    {
+        $this->endpointsNamespace = config('namespaces.endpoints');
         foreach ($request->segments() as $key => $segment) {
             switch ($key) {
                 case 0:
-                    $modelName = 'App\Models\\' . ucwords(Str::singular($request->segments()[0]));
-                    $model = new $modelName();
-                    $endpointRequest->setModel($model);
+                    $this->setModel($endpointRequest, $segment);
                     break;
                 case 1:
-                    $model = $endpointRequest->getModel();
-                    // нужен класс хелпер для установки верных namespace, если внутри все по папкам, например
-                    $endpointsClass = 'App\Endpoints\\' . ucwords(Str::singular($endpointRequest->getModel())) . 'Endpoints';
-                    if (!class_exists($endpointsClass) || !method_exists($endpointsClass, $segment)) {
-                        $endpointsClass = Endpoints::class;
-                        $endpointRequest->setId($segment);
-                    } else {
-                        $endpointRequest->setEndpointMethod($segment);
-                    }
-                    $endpointRequest->setEndpoint(new $endpointsClass($model));
+                case 3:
+                    $this->setCustomMethod($endpointRequest, $segment);
                     break;
                 case 2:
-                    $model = $endpointRequest->getModel();
-                    if (!in_array($segment, $model::getModelMetadata()->getRelationNames())) {
-                        $endpointRequest->setId($segment);
-                    } else {
-                        $modelMetadata = $model::getModelMetadata();
-                        $relationClass = $modelMetadata->getRelationsData()[$segment];
-                        $endpointRequest->setRelation($relationClass);
-                    }
-                    break;
-                case 3:
-                    $endpointsClass = 'App\Endpoints\\' . ucwords(Str::singular($endpointRequest->getRelation())) . 'Endpoints';
-                    if (!class_exists($endpointsClass) || !method_exists($endpointsClass, $segment)) {
-                        $endpointsClass = Endpoints::class;
-                        $endpointRequest->setId($segment);
-                    } else {
-                        $endpointRequest->setEndpointMethod($segment);
-                    }
-                    $endpointRequest->setEndpoint(new $endpointsClass());
+                    $this->setRelationModel($endpointRequest, $segment);
                     break;
                 case 4:
                     $endpointRequest->setId($segment);
-                    break;
             }
         }
-        return $endpointRequest;
+    }
+
+    private function setCustomMethod(Request $endpointRequest, ?string $segment): void
+    {
+        $endpointsClass = $this->endpointsNamespace . '\\' . ucwords(Str::singular($endpointRequest->getRelation())) . 'Endpoints';
+        if (!class_exists($endpointsClass) || !method_exists($endpointsClass, $segment)) {
+            $endpointsClass = Endpoints::class;
+            $endpointRequest->setId($segment);
+        } else {
+            $endpointRequest->setCustomMethod($segment);
+        }
+
+        $endpointRequest->setEndpoint(new $endpointsClass($this->model));
+    }
+
+    private function setRelationModel(Request $endpointRequest, ?string $segment): void
+    {
+        if (!in_array($segment, $this->model::getModelMetadata()->getRelationNames())) {
+            $endpointRequest->setId($segment);
+        } else {
+            $modelMetadata = $this->model::getModelMetadata();
+            $relationClass = $modelMetadata->getRelationsData()[$segment];
+            $endpointRequest->setRelation($relationClass);
+        }
+    }
+
+    private function setModel(Request $endpointRequest, ?string $segment): void
+    {
+        $modelName = config('namespaces.models') .'\\' . ucwords(Str::singular($segment));
+        $this->model = new $modelName();
+        $endpointRequest->setModel($this->model);
     }
 
 }

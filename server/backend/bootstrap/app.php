@@ -48,8 +48,6 @@ $app->singleton(
 
 $app->register(Egal\Core\ServiceProvider::class);
 
-\Egal\Core\Router::parse();
-
 /*
 |--------------------------------------------------------------------------
 | Return The Application

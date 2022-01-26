@@ -2,38 +2,30 @@
 
 namespace Egal\Core;
 
-use Illuminate\Http\Request as LaravelRequest;
-
+use Egal\Core\Routes\EndpointMethod;
+use Exception;
 
 class Request
 {
 
+    use Arrayable;
+
     protected Model $model;
     protected string $httpMethod;
-    protected $id;
+    protected int|string $id;
     protected Endpoints $endpoint;
-    protected string $endpointMethod;
+    protected string $customMethod;
     protected Model $relation;
 
-    const ENDPOINT_METHODS = [
-      'with_id' => [
-          'GET' => 'show',
-          'PUT' => 'update',
-          'DELETE' => 'delete'
-      ],
-      'without_id' => [
-          'GET' => 'index',
-          'POST' => 'create'
-      ]
-    ];
-
+    /**
+     * @throws Exception
+     */
     public function call(): array
     {
         // обработка ошибок
-        $endpointMethod = 'endpoint' . ucwords(isset($this->id)
-            ? self::ENDPOINT_METHODS['with_id'][$this->httpMethod]
-            : self::ENDPOINT_METHODS['without_id'][$this->httpMethod]);
-        $endpointMethod .= ucwords($this->endpointMethod) ?? '';
+        $endpointMethod = 'endpoint' . ucfirst(EndpointMethod::getEndpointMethod($this->httpMethod, isset($this->id)));
+        $endpointMethod .= ucwords($this->customMethod) ?? '';
+
         return $this->endpoint->$endpointMethod();
     }
 
@@ -53,7 +45,7 @@ class Request
         return $this->relation;
     }
 
-    public function getId()
+    public function getId(): int|string
     {
         return $this->id;
     }
@@ -69,54 +61,39 @@ class Request
     /**
      * @return string
      */
-    public function getEndpointMethod(): string
+    public function getCustomMethod(): string
     {
-        return $this->endpointMethod;
+        return $this->customMethod;
     }
 
-    public function setHttpMethod(string $methodName)
+    public function setHttpMethod(string $methodName): void
     {
         $this->httpMethod = $methodName;
     }
 
-    public function setModel(Model $model)
+    public function setModel(Model $model): void
     {
         $this->model = $model;
     }
 
-    public function setId($id)
+    public function setId($id): void
     {
         $this->id = $id;
     }
 
-    public function setEndpointMethod($endpointMethod)
+    public function setCustomMethod($customMethod): void
     {
-        $this->endpointMethod = $endpointMethod;
+        $this->customMethod = $customMethod;
     }
 
-    public function setEndpoint(Endpoints $endpointsClass)
+    public function setEndpoint(Endpoints $endpointsClass): void
     {
         $this->endpoint = $endpointsClass;
     }
 
-    public function setRelation(Model $relation)
+    public function setRelation(Model $relation): void
     {
         $this->relation = $relation;
-    }
-
-    public function toArray() : array
-    {
-        $result = [];
-        foreach (array_keys(get_object_vars($this)) as $field) {
-            $value = $this->{'get' . ucfirst($field)}();
-            if (is_null($value)) {
-                continue;
-            }
-
-            $result[$field] = $value;
-        }
-
-        return $result;
     }
 
 }

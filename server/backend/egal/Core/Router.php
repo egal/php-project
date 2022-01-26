@@ -2,131 +2,110 @@
 
 namespace Egal\Core;
 
+use Egal\Core\Routes\EndpointMethod;
+use Egal\Core\Support\ClassFinder;
+use Exception;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Events\Dispatcher;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Routing\PendingResourceRegistration as LaravelPendingResourceRegistration;
 
 class Router extends \Illuminate\Routing\Router
 {
-    protected const ENDPOINT_METHOD = [
-        'Index' => 'get',
-        'Show' => 'get',
-        'Create' => 'post',
-        'Update' => 'put',
-        'Delete' => 'delete'
-    ];
 
     public function __construct(Dispatcher $events)
     {
         parent::__construct($events);
     }
 
-    public static function parse(): void
+    /**
+     * @throws Exception
+     */
+    public function parse(string $namespaceModels, string $namespaceEndpoints): void
     {
-        $models = self::getModels();
-        $endpoints = self::getModelEndpoints($models);
-        self::parseModelRoutes($endpoints);
-    }
+        $models = ClassFinder::getClasses($namespaceModels, 'Egal\Core\Model');
+        $endpoints = ClassFinder::getClasses($namespaceEndpoints, 'Egal\Core\Endpoints');
 
-    public static function getModels(): array
-    {
-        // нужно вынести в класс хелпер
-        $models = [];
-
-        foreach (scandir(base_path('app/Models')) as $model) {
-            $model = str_replace('.php', '', $model);
-            if (is_dir($model)) {
-                continue;
-            } else {
-                if (get_parent_class('App\Models' . '\\' . $model) === 'Egal\Core\Model') {
-                    $models[] = $model;
-                }
-            }
-        }
-        return $models;
-    }
-
-    private static function getModelEndpoints(array $models)
-    {
-        $modelEndpoints = [];
-        foreach (scandir(base_path('app/Endpoints')) as $endpoint) {
-            $endpoint = str_replace('.php', '', $endpoint);
-            if (is_dir($endpoint)) {
-                continue;
-            } else {
-                if (get_parent_class('App\Endpoints' . '\\' . $endpoint) === 'Egal\Core\Endpoints') {
-                    $modelName = str_replace('Endpoints', '', $endpoint);
-                    if (in_array($modelName, $models)) {
-                        $modelEndpoints[$modelName] = $endpoint;
-                    }
-                }
-            }
-        }
-        foreach (array_diff($models, array_keys($modelEndpoints)) as $modelName) {
-            $modelEndpoints[$modelName] = 'Endpoints';
-        }
-        return $modelEndpoints;
-    }
-
-    public static function parseModelRoutes($endpoints): array
-    {
-        $routes = [];
-
-        foreach ($endpoints as $model => $endpoint) {
-            $model = strtolower($model);
-            app('router')->resource('/' . Str::plural($model), APIController::class, ['as' => 'api']);
-
-            if ($endpoint !== 'Endpoints') {
-                $customEndpoints = get_class_methods('App\Endpoints' . '\\' . $endpoint);
-                foreach ($customEndpoints as $customEndpoint) {
-                    self::generateCustomRoute($customEndpoint, $model) . PHP_EOL;
-                }
-            }
-        }
-        return $routes;
-    }
-
-    private static function generateCustomRoute(string $endpoint, $model)
-    {
-        $endpointParts = [];
-        $defaultEndpoints = 'Index|Show|Update|Create|Delete';
-        $endpointPattern = '/(endpoint)(' . $defaultEndpoints . ')([a-zA-Z]+)/i';
-        if (preg_match($endpointPattern, $endpoint, $endpointParts)) {
-            $httpEndpoint = $endpointParts[2];
-            $httpMethod = self::ENDPOINT_METHOD[$httpEndpoint];
-
-            $endpointName = $endpointParts[3];
-            in_array($httpEndpoint, ['Show', 'Update', 'Delete'])
-                ? app('router')->$httpMethod('/' . Str::plural($model) . '/' . strtolower($endpointName) . '/{id}', ['as' => 'api', 'uses' => 'Egal\Core\APIController@main' . $endpoint])
-                : app('router')->$httpMethod('/' . Str::plural($model) . '/' . strtolower($endpointName), ['as' => 'api', 'uses' => 'Egal\Core\APIController@' . $endpoint]);
-
-        }
-
+        $this->parseModelRoutes($this->getModelEndpoints($models, $endpoints), $namespaceEndpoints);
     }
 
     /**
      * Route a resource to a controller.
      *
-     * @param  string  $name
-     * @param  string  $controller
-     * @param  array  $options
-     * @return \Illuminate\Routing\PendingResourceRegistration
+     * @param string $name
+     * @param string $controller
+     * @param array $options
+     *
+     * @return LaravelPendingResourceRegistration
+     *
+     * @throws BindingResolutionException
      */
-    public function resource($name, $controller, array $options = [])
+    public function resource($name, $controller, array $options = []): LaravelPendingResourceRegistration
     {
-        if ($this->container && $this->container->bound(\Egal\Core\ResourceRegistrar::class)) {
+        if ($this->container && $this->container->bound(ResourceRegistrar::class)) {
             $registrar = $this->container->make(ResourceRegistrar::class);
         } else {
-//            if (app()->bound(ResourcesCacheStore::class)) {
-//                return app()->make(ResourcesCacheStore::class);
-//            }
             $registrar = new ResourceRegistrar($this, app()->make(ResourcesCacheStore::class));
         }
 
-        return new \Egal\Core\PendingResourceRegistration(
+        return new PendingResourceRegistration(
             $registrar, $name, $controller, $options
         );
     }
 
+    private function getModelEndpoints(array $models, array $endpoints): array
+    {
+        $modelEndpoints = [];
+        foreach ($endpoints as $endpoint) {
+            $modelName = str_replace('Endpoints', '', $endpoint);
+            if (in_array($modelName, $models)) {
+                $modelEndpoints[$modelName] = $endpoint;
+            }
+        }
+
+        foreach (array_diff($models, array_keys($modelEndpoints)) as $modelName) {
+            $modelEndpoints[$modelName] = 'Endpoints';
+        }
+
+        return $modelEndpoints;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function parseModelRoutes($modelEndpoints, string $namespaceEndpoints): void
+    {
+        foreach ($modelEndpoints as $model => $endpoint) {
+            $model = strtolower($model);
+            app('router')->resource('/' . Str::plural($model), APIController::class, ['as' => 'api']);
+
+            if ($endpoint !== 'Endpoints') {
+                $customEndpoints = get_class_methods($namespaceEndpoints . '\\' . $endpoint);
+                foreach ($customEndpoints as $customEndpoint) {
+                    $this->generateCustomRoute($customEndpoint, $model);
+                }
+            }
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function generateCustomRoute(string $endpoint, $model): void
+    {
+        $endpointParts = [];
+        $defaultEndpoints = implode('|', EndpointMethod::getAllEndpointMethods());
+        $endpointPattern = '/(endpoint)(' . $defaultEndpoints . ')([a-zA-Z]+)/i';
+        if (preg_match($endpointPattern, $endpoint, $endpointParts)) {
+            $endpointMethod = $endpointParts[2];
+            $httpMethod = EndpointMethod::getHttpMethod($endpointMethod);
+
+            $paramUrl = EndpointMethod::isWithId($endpointMethod) ? '/{id}' : '';
+            $uri = '/' . Str::plural($model) . '/' . strtolower($endpointParts[3]) . $paramUrl;
+
+            app('router')
+                ->$httpMethod($uri, ['as' => 'api', 'uses' => 'Egal\Core\APIController@main' . $endpoint]);
+        }
+    }
 
 }
