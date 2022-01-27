@@ -15,6 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
+        // TODO регистрация все политик моделей
         // формируется на все модели, можно отключить/включить в env, либо использовать др. класс провайдера
         Post::class => PostPolicy::class
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',

@@ -15,8 +15,8 @@ class GenerateCustomEndpointCommand extends Command
      */
     public function handle()
     {
-        // валидация и поиск класса модели
-        // генерирует пустой класс с endpoints, наследованный от дефолтного
+        // TODO валидация и поиск класса модели
+        // TODO генерирует пустой класс с endpoints, наследованный от дефолтного
         $this->line("<info>Created Custom Endpoint</info>");
     }
 

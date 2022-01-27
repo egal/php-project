@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 
 class GeneratePolicyCommand extends MakeCommand
 {
-    // для политики вызывается отдельная команда генерации
     protected $signature = 'egal:make:policy {modelName}';
 
     protected string $stubFileBaseName = 'policy';
@@ -32,12 +31,10 @@ class GeneratePolicyCommand extends MakeCommand
     public function writeAttributesPolicyMethods()
     {
         $stubFilesDir = realpath(__DIR__ . '/stubs');
-        // получить все атрибуты модели
         $modelClassName = 'App\Models' . '\\' . $this->argument('modelName');
         /** @var Model $modelInstance */
         $modelInstance = new $modelClassName();
         $fields = $modelInstance->getModelMetadata()->getFieldNames();
-        // для каждого по шаблону сгенерировать методы проверки и записать в fileContents
         foreach ($fields as $field) {
             $this->fileContents .= file_get_contents(realpath($stubFilesDir . '/fields_policy.stub')) . PHP_EOL;
             $this->fileContents = str_replace('{{field}}', ucwords($field), $this->fileContents);

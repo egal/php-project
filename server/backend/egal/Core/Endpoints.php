@@ -19,7 +19,6 @@ class Endpoints
     {
         $this->model = $model;
         $this->modelClass = get_class($model);
-        // по названию парсинг класса, либо getModelClass
     }
 
     public function endpointIndex()

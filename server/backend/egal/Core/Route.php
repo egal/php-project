@@ -30,12 +30,10 @@ class Route
         $registrar = $this->resolveRegistrar(ResourceRegistrar::class);
 
         return $this->makePendingResourceRegistration($registrar, $resource, $controller, $options);
-        // работает с index, create, show ....
     }
 
     public function morphToManyResource(string $resource, string $relation, array $access, array $options = []): PendingResourceRegistration
     {
-        // работает с relationIndex, relationCreate, relationShow ....
     }
 
     protected function resolveRegistrar(string $registrarClass): ResourceRegistrar

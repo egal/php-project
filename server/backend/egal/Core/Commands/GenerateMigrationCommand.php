@@ -34,12 +34,10 @@ class GenerateMigrationCommand extends MakeCommand
     public function writeUpMethod()
     {
         $stubFilesDir = realpath(__DIR__ . '/stubs');
-        // получить все атрибуты модели
         $modelClassName = 'App\Models' . '\\' . $this->argument('modelName');
         /** @var Model $modelInstance */
         $modelInstance = new $modelClassName();
         $fields = $modelInstance->getModelMetadata()->getFieldsData();
-        // для каждого по шаблону сгенерировать методы проверки и записать в fileContents
         foreach ($fields as $name => $type) {
             $this->fileContents .= file_get_contents(realpath($stubFilesDir . '/up_migration.stub'));
             $this->fileContents = str_replace('{{field_name}}', strtolower(Str::snake($name)), $this->fileContents);

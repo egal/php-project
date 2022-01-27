@@ -22,7 +22,7 @@ class Request
      */
     public function call(): array
     {
-        // обработка ошибок
+        // TODO обработка ошибок
         $endpointMethod = 'endpoint' . ucfirst(EndpointMethod::getEndpointMethod($this->httpMethod, isset($this->id)));
         $endpointMethod .= ucwords($this->customMethod) ?? '';
 

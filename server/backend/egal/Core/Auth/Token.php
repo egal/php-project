@@ -87,6 +87,7 @@ abstract class Token
      */
     public static function decode(string $encodedJWT, string $key): array
     {
+        //TODO декодирование токена
 //        return (array) JWT::decode($encodedJWT, $key, ['HS256']);
         return  [
             "type" => "ust",
