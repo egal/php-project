@@ -4,10 +4,19 @@ namespace Egal\Core;
 
 class TableField
 {
-    protected FieldMetadata $fieldMetadata;
+    protected string $fieldName;
 
-    public static function make(FieldMetadata $fieldName):self
+    public static function make(string $fieldName):self
     {
+        $tableField = new self();
+        $tableField->fieldName = $fieldName;
+
+        return $tableField;
+    }
+
+    public function getName(): string
+    {
+        return $this->fieldName;
     }
 
     public function setLabel():self

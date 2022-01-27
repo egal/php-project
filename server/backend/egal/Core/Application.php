@@ -33,6 +33,7 @@ class Application extends LaravelApplication
     public function flush()
     {
         parent::flush();
+        // TODO почистить роут, а не роут назначать null
         $this->router = null;
     }
 

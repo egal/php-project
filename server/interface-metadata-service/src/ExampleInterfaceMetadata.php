@@ -1,5 +1,7 @@
 <?php
 
+use Egal\Core\TableField;
+use Egal\Core\TableFilter;
 use Egal\Core\TableMetadata;
 
 
@@ -18,7 +20,16 @@ $metadata = TableMetadata::make()
 
     )
     ->addRelation()
-    ->addFilters()
+    ->applyHiddenFilters(
+        TableFilter::make()
+            ->setParam(TableFilter::make()
+                ->setParam('title')
+                ->setOperator('=')
+                ->setValue('test'))
+            ->setOperator('and')
+            ->setValue()
+
+    )
     ->addOrders();
 
 return $metadata;

@@ -44,4 +44,5 @@ class Post extends Model
                     ->belongsTo(Channel::class)
             );
     }
+
 }

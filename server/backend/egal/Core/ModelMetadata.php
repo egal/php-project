@@ -1,6 +1,9 @@
 <?php
 
 namespace Egal\Core;
+
+use Exception;
+
 class ModelMetadata
 {
     protected string $modelName;
@@ -29,21 +32,61 @@ class ModelMetadata
         return $this;
     }
 
+    /**
+     * Set relations metadata for model.
+     *
+     * @param RelationMetadata ...$relationsMetadata
+     *
+     * @return self
+     */
     public function setRelations(...$relationsMetadata):self
     {
+        $this->relations = $relationsMetadata;
+
+        return $this;
     }
 
-    public function getValidationRules(): array
+    public function getFieldByName(string $fieldName): FieldMetadata
     {
+        foreach ($this->fields as $field) {
+            if ($field->getName() === $fieldName) {
+                return $field;
+            }
+        }
 
+        // TODO: СДелать эксепшн для этого случая
+        throw new Exception();
+    }
+
+    public function getRelationByName(string $relationName): RelationMetadata
+    {
+        foreach ($this->relations as $relation) {
+            if ($relation->getName() === $relationName) {
+                return $relation;
+            }
+        }
+
+        // TODO: СДелать эксепшн для этого случая
+        throw new Exception();
+    }
+
+    public function getFieldValidationRules(): array
+    {
+        $fieldNames = [];
+        foreach ($this->fields as $field) {
+            $fieldNames[] = $field->getValidationRules();
+        }
+
+        return $fieldNames;
     }
 
     public function getFieldNames(): array
     {
-        $fieldNames = [];
+       $fieldNames = [];
        foreach ($this->fields as $field) {
            $fieldNames[] = $field->getName();
        }
+
        return $fieldNames;
     }
 
@@ -53,6 +96,7 @@ class ModelMetadata
         foreach ($this->fields as $field) {
             $fieldsData[$field->getName()] = $field->getType();
         }
+
         return $fieldsData;
     }
 
@@ -62,6 +106,7 @@ class ModelMetadata
         foreach ($this->relations as $relation) {
             $relationNames[] = $relation->getName();
         }
+
         return $relationNames;
     }
 
@@ -71,6 +116,7 @@ class ModelMetadata
         foreach ($this->relations as $relation) {
             $relationData[$relation->getName()] = $relation->getClass();
         }
+
         return $relationData;
     }
 }

@@ -62,6 +62,7 @@ class APIController
                     break;
                 case 4:
                     $endpointRequest->setId($segment);
+//   TODO             default
             }
         }
     }
