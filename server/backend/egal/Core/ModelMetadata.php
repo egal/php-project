@@ -1,7 +1,6 @@
 <?php
 
 namespace Egal\Core;
-
 class ModelMetadata
 {
     protected string $modelName;
@@ -30,11 +29,7 @@ class ModelMetadata
         return $this;
     }
 
-    public function relations(...$relationsMetadata):self
-    {
-    }
-
-    public function allowEndpoints(array $array):self
+    public function setRelations(...$relationsMetadata):self
     {
     }
 

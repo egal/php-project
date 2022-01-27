@@ -2,20 +2,16 @@
 
 namespace Egal\Core;
 
-class TableField extends FieldMetadata
+class TableField
 {
+    protected FieldMetadata $fieldMetadata;
 
-    public static function make():self
+    public static function make(FieldMetadata $fieldName):self
     {
     }
 
     public function setLabel():self
     {
-    }
-
-    public function setType():self
-    {
-
     }
 
     public function setComputed():self

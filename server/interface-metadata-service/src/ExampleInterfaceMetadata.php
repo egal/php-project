@@ -1,21 +1,21 @@
 <?php
 
-use App\egal\TableField;
-use App\egal\TableMetadata;
+use Egal\Core\TableMetadata;
 
-$metadata = new TableMetadata();
 
-$metadata
-    ->addField(
+$metadata = TableMetadata::make()
+    ->addRoleAccesses()
+    ->addFields(
         TableField::make()
             ->setLabel()
             ->setType()
-            ->setComputed()
+            ->setComputed(),
+        TableField::make()
+            ->setLabel()
+            ->setType()
     )
     ->addField(
-        TableField::make()
-            ->setLabel()
-            ->setType()
+
     )
     ->addRelation()
     ->addFilters()

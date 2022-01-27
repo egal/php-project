@@ -5,15 +5,17 @@ namespace Egal\Core;
 class TableMetadata
 {
 
-    public function __construct()
+    protected ModelMetadata $modelMetadata;
+
+    public static function make(ModelMetadata $modelMetadata): self
     {
     }
 
-    public function addField(FieldMetadata $field):self
+    public function addFields(TableField $field):self
     {
     }
 
-    public function addRelation():self
+    public function addRelations(TableRelation $relation):self
     {
     }
 
@@ -21,7 +23,11 @@ class TableMetadata
     {
     }
 
-    public function addOrders():self
+    public function addOrders(TableOrder $orders):self
+    {
+    }
+
+    public function addRoleAccesses(array $roles):self
     {
     }
 }
