@@ -2,7 +2,7 @@
 
 namespace Egal\Core\Commands;
 
-use App\egal\ReadingStudFileException;
+use Egal\Core\Commands\Exceptions\ReadingStudFileException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 

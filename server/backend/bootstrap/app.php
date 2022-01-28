@@ -58,5 +58,10 @@ $app->register(Egal\Core\ServiceProvider::class);
 | from the actual running of the application and sending responses.
 |
 */
+    //TODO check Глебом и зачем нам namespace
+$app->setModelNamespace('App\\Models');
+$app->setEndpointsNamespace('App\\Endpoints');
+$app->setModelPath(__DIR__ . '../Models');
+$app->setEndpointsPath(__DIR__ . '../Endpoints');
 
 return $app;

@@ -2,8 +2,8 @@
 
 namespace App\Endpoints;
 
-use Egal\Core\Endpoints;
 use App\Models\Post;
+use Egal\Core\Model\Endpoints;
 
 class CommentEndpoints extends Endpoints
 {

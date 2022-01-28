@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use Egal\Auth\User;
-use Egal\Core\HttpPolicy;
+use Egal\Core\Auth\User;
+use Egal\Core\Model\HttpPolicy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 

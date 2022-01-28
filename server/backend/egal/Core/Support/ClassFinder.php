@@ -4,6 +4,7 @@ namespace Egal\Core\Support;
 
 class ClassFinder
 {
+    // TODO делать поиск по пути
     public static function getClasses(string $namespaceClasses, string $parentClass = null): array
     {
         $pathClasses = lcfirst(str_replace('\\', '/', $namespaceClasses));

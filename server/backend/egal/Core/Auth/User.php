@@ -2,9 +2,8 @@
 
 namespace Egal\Core\Auth;
 
-use Egal\Core\Model;
-use Egal\Core\ModelMetadata;
-use Illuminate\Support\Facades\Log;
+use Egal\Core\Model\Model;
+use Egal\Core\Model\Metadata\ModelMetadata;
 
 class User extends Model
 {

@@ -15,7 +15,7 @@ class GenerateInterfaceMetadataCommand extends Command
      */
     public function handle()
     {
-        $this->line("<info>Created Interface Metadata</info>");
+        $this->line("<info>Created InterfacesMetadata Metadata</info>");
     }
 
 }

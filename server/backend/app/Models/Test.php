@@ -2,21 +2,21 @@
 
 namespace App\Models;
 
-use Egal\Core\Model;
-use Egal\Core\FieldMetadata;
-use Egal\Core\ModelMetadata;
+use Egal\Core\Model\Metadata\FieldMetadata;
+use Egal\Core\Model\Metadata\ModelMetadata;
+use Egal\Core\Model\Model;
 
 class Test extends Model
 {
 
     static function getModelMetadata(): ModelMetadata
     {
-        return ModelMetadata::make()
+        return ModelMetadata::make(self::class)
             ->setFields(
-                FieldMetadata::make()
-                    ->setName('title'),
-                FieldMetadata::make()
-                    ->setName('description')
+                FieldMetadata::make('title')
+                    ->string(),
+                FieldMetadata::make('description')
+                    ->text()
             );
     }
 }

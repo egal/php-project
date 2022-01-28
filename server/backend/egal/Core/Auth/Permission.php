@@ -2,8 +2,8 @@
 
 namespace Egal\Core\Auth;
 
-use Egal\Core\Model;
-use Egal\Core\ModelMetadata;
+use Egal\Core\Model\Model;
+use Egal\Core\Model\Metadata\ModelMetadata;
 
 class Permission extends Model
 {

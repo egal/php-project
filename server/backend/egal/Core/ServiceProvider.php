@@ -8,6 +8,11 @@ use Egal\Core\Commands\GenerateInterfaceMetadataCommand;
 use Egal\Core\Commands\GenerateMigrationCommand;
 use Egal\Core\Commands\GenerateModelCommand;
 use Egal\Core\Commands\GeneratePolicyCommand;
+use Egal\Core\Exception\CoreInitializationException;
+use Egal\Core\Route\Request;
+use Egal\Core\Route\ResourcesCacheStore;
+use Egal\Core\Route\Route;
+use Egal\Core\Route\Router;
 use \Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 
 class ServiceProvider extends LaravelServiceProvider

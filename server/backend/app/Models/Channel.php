@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Egal\Core\Model;
-use Egal\Core\ModelMetadata;
+use Egal\Core\Model\Metadata\ModelMetadata;
+use Egal\Core\Model\Model;
 
 class Channel extends Model
 {

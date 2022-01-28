@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 
 use App\Models\Test;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 class DebugCommand extends Command
 {
@@ -14,7 +15,6 @@ class DebugCommand extends Command
 
     public function handle(): void
     {
-        $fileName = 'App\\terdg';
-        dump(class_exists($fileName));
+        dump($modelName = app()->getModelNamespace() .'\\' );
     }
 }
