@@ -1,5 +1,9 @@
 version: "3.7"
 services:
+  postgres:
+    ports:
+      - published: 5432
+        target: 5432
   backend:
     build:
       args:
@@ -17,11 +21,3 @@ services:
       APP_ENV: local
       APP_DEBUG: 'true'
       LOG_CHANNEL: syslog
-  swagger:
-    ports:
-      - published: 8080
-        target: 8080
-
-
-
-

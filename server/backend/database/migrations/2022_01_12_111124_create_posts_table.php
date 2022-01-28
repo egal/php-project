@@ -15,6 +15,11 @@ class CreatePostsTable extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('content');
+            $table->bigInteger('channel_id');
+            $table->foreign('channel_id')->references('id')->on('channels')
+                ->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->timestamps();
         });
     }

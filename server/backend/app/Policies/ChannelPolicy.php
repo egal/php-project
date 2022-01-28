@@ -2,12 +2,12 @@
 
 namespace App\Policies;
 
-use App\egal\auth\User;
-use App\egal\EgalHttpPolicy;
+use Egal\Auth\User;
+use Egal\Core\HttpPolicy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-class ChannelPolicy extends EgalHttpPolicy
+class ChannelPolicy extends HttpPolicy
 {
 
     public function endpointCreate(User $user, Model $entity): bool

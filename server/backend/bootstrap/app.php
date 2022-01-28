@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 /*
 |--------------------------------------------------------------------------
@@ -10,9 +10,12 @@
 | the IoC container for the system binding all of the various parts.
 |
 */
+require_once __DIR__ . '/../vendor/autoload.php';
 
-$app = new Illuminate\Foundation\Application(
-    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
+date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
+
+$app = new Egal\Core\Application(
+    dirname(__DIR__)
 );
 
 /*
@@ -40,6 +43,10 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
+
+//$app->withFacades();
+
+$app->register(Egal\Core\ServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

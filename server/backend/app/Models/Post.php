@@ -2,36 +2,37 @@
 
 namespace App\Models;
 
-use App\egal\EgalModel;
-use App\egal\FieldMetadata;
-use App\egal\ModelMetadata;
-use App\egal\RelationMetadata;
+use Egal\Core\Model;
+use Egal\Core\FieldMetadata;
+use Egal\Core\ModelMetadata;
+use Egal\Core\RelationMetadata;
 
 /**
  * @property $title
  * @property $content
  */
-class Post extends EgalModel
+class Post extends Model
 {
 
     public static function getModelMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(static::class)
-            ->fields(
-                FieldMetadata::make('title')
+        return ModelMetadata::make()
+            ->setFields(
+                FieldMetadata::make()
+                    ->setName('title')
                     ->string()
                     ->min()
                     ->max()
-                    ->required()
+                    ->setRequired()
                     ->setCustomValidationRules([]) // массив названий кастомных правил
                     ->setVisable()
-                    ->setFillable()
-                    ->setName(),
-                FieldMetadata::make('content')
+                    ->setFillable(),
+                FieldMetadata::make()
+                    ->setName('description')
                     ->string()
                     ->min()
                     ->max()
-                    ->required()
+                    ->setRequired()
                     ->setCustomValidationRules([]) // массив названий кастомных правил
                     ->setVisable()
                     ->setFillable()
@@ -39,7 +40,7 @@ class Post extends EgalModel
                     ->setFilterable()
                     ->setName()
             )
-            ->relations(
+            ->setRelations(
                 RelationMetadata::make(Channel::class)
                     ->belongsTo(Channel::class)
             );

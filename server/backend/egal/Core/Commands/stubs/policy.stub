@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Policies;
+
+use Egal\Auth\User;
+use Egal\Core\EgalHttpPolicy;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+
+class {{ class }}Policy extends EgalHttpPolicy
+{
+
+    public function endpointIndex(User $user, Collection $entity): bool
+    {
+        return false;
+    }
+
+    public function endpointShow(User $user, Model $entity): bool
+    {
+        return false;
+    }
+
+    public function endpointCreate(User $user, Model $entity): bool
+    {
+        return false;
+    }
+
+    public function endpointUpdate(User $user, Model $entity): bool
+    {
+        return false;
+    }
+
+    public function endpointDelete(User $user, Model $entity): bool
+    {
+        return false;
+    }
+
+    public function index(User $user, Collection $entity): bool
+    {
+        return false;
+    }
+
+    public function show(User $user, Model $entity): bool
+    {
+        return false;
+    }
+
+    public function create(User $user, Model $entity): bool
+    {
+        return false;
+    }
+
+    public function update(User $user, Model $entity): bool
+    {
+        return false;
+    }
+
+    public function delete(User $user, Model $entity): bool
+    {
+        return false;
+    }
+

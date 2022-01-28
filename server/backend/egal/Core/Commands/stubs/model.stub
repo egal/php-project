@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Models;
+
+use Egal\Core\EgalModel;
+use Egal\Core\ModelMetadata;
+
+class {{ class }} extends EgalModel
+{
+
+    public static function getModelMetadata(): ModelMetadata
+    {
+        return ModelMetadata::make(static::class)
+            ->fields(
+                FieldMetadata::make('your_attribute')
+                    ->string()
+                    ->min()
+                    ->max()
+                    ->required()
+                    ->setCustomValidationRules([])
+                    ->setVisable()
+                    ->setFillable()
+                    ->setSortable()
+                    ->setFilterable()
+            )
+            ->relations(
+                RelationMetadata::make('yourRelationName')
+                    ->belongsTo(YourRelation::class)
+            );
+    }
+}
