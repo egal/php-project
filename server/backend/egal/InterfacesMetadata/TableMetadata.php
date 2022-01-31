@@ -2,6 +2,7 @@
 
 namespace Egal\Core\Interface;
 
+use Egal\Core\Model\Filter\FilterInterface;
 use Egal\Core\Traits\Arrayable;
 use Egal\Core\Model\Metadata\ModelMetadata;
 use Exception;
@@ -52,14 +53,14 @@ class TableMetadata
         return $this;
     }
 
-    public function setFilters(TableFilter ...$filters):self
+    public function setRequestFilters(FilterInterface ...$filters):self
     {
         $this->filters = $filters;
 
         return $this;
     }
 
-    public function setOrders(TableOrder ...$orders):self
+    public function setRequestOrders(TableOrder ...$orders):self
     {
         $this->orders = $orders;
 
@@ -83,12 +84,12 @@ class TableMetadata
         return $this->relations;
     }
 
-    public function getFilters(): array
+    public function getRequestFilters(): array
     {
         return $this->filters;
     }
 
-    public function getOrders(): array
+    public function getRequestOrders(): array
     {
         return $this->orders;
     }

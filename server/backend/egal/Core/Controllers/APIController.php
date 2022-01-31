@@ -3,10 +3,12 @@
 namespace Egal\Core\Controllers;
 
 use Egal\Core\Auth\Session;
+use Egal\Core\Auth\User;
 use Egal\Core\Model\Endpoints;
 use Egal\Core\Route\Request;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request as LaravelRequest;
 
@@ -104,6 +106,7 @@ class APIController
     {
 //        $modelName = config('namespaces.models') .'\\' . ucwords(Str::singular($segment));
         $modelName = app()->getModelNamespace() .'\\' . ucwords(Str::singular($segment));
+//        Route::get('/user')->defaults('model_class', User::class);
         $this->model = new $modelName();
         $endpointRequest->setModel($this->model);
     }

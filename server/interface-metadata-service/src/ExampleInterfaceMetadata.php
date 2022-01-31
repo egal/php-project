@@ -1,35 +1,51 @@
 <?php
 
-use Egal\Core\TableField;
-use Egal\Core\TableFilter;
-use Egal\Core\TableMetadata;
 
+use Egal\Core\Interface\TableField;
+use Egal\Core\Interface\TableMetadata;
+use Egal\Core\Interface\TableRelation;
+use Egal\Core\Model\Filter\CompositeFilter;
+use Egal\Core\Model\Filter\Filter;
 
-$metadata = TableMetadata::make()
-    ->addRoleAccesses()
-    ->addFields(
-        TableField::make()
+$postMetadata = \App\Models\Post::getModelMetadata();
+$metadata = TableMetadata::make($postMetadata)
+    ->setRoleAccesses(['admin'])
+    ->setFields(
+        TableField::make('title')
             ->setLabel()
-            ->setType()
             ->setComputed(),
-        TableField::make()
+        TableField::make('description')
             ->setLabel()
-            ->setType()
     )
-    ->addField(
-
+    ->setRelations(TableRelation::make()->setName('channels'))
+//    ->applyHiddenFilters(
+//        TableFilter::make()
+//            ->setParam(TableFilter::make()
+//                ->setParam('title')
+//                ->setOperator('=')
+//                ->setValue('test'))
+//            ->setOperator('and')
+//            ->setValue()
+//
+//    )
+    ->setRequestFilters(
+        CompositeFilter::make()
+            ->setParam(
+                Filter::make()
+                    ->setParam('title')
+                    ->setOperator('!=')
+                    ->setValue('test')
+            )
+            ->setOperator('AND')
+            ->setDefaulHiddenFilter(
+                Filter::make('description', '!=', 'lalala' , 'and'),
+                CompositeFilter::make(
+                    Filter::make('description', '!=', 'lalala' , 'and'),
+                    Filter::make('description', '!=', 'lalala' , 'and')
+                )
+            )
+            ->setOperatorAfter('OR'),
     )
-    ->addRelation()
-    ->applyHiddenFilters(
-        TableFilter::make()
-            ->setParam(TableFilter::make()
-                ->setParam('title')
-                ->setOperator('=')
-                ->setValue('test'))
-            ->setOperator('and')
-            ->setValue()
-
-    )
-    ->addOrders();
+    ->setRequestOrders();
 
 return $metadata;
