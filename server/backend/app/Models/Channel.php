@@ -32,6 +32,8 @@ class Channel extends Model
 
     static function getModelMetadata(): ModelMetadata
     {
+        $test = new Channel();
+        $test->newQuery()->orderBy();
         // TODO: Implement getModelMetadata() method.
     }
 }

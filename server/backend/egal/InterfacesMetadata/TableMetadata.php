@@ -15,8 +15,8 @@ class TableMetadata
     protected ModelMetadata $modelMetadata;
     protected array $fields;
     protected array $relations;
-    protected array $filters;
-    protected array $orders;
+    protected array $defaultFilters;
+    protected array $defaultOrders;
     protected array $roleAccesses;
 
     public static function make(ModelMetadata $modelMetadata): self
@@ -53,16 +53,16 @@ class TableMetadata
         return $this;
     }
 
-    public function setRequestFilters(FilterInterface ...$filters):self
+    public function setDefaultFilters(FilterInterface ...$filters):self
     {
-        $this->filters = $filters;
+        $this->defaultFilters = $filters;
 
         return $this;
     }
 
-    public function setRequestOrders(TableOrder ...$orders):self
+    public function setDefaultOrders(TableOrder ...$orders):self
     {
-        $this->orders = $orders;
+        $this->defaultOrders = $orders;
 
         return $this;
     }
@@ -84,14 +84,14 @@ class TableMetadata
         return $this->relations;
     }
 
-    public function getRequestFilters(): array
+    public function getDefaultFilters(): array
     {
-        return $this->filters;
+        return $this->defaultFilters;
     }
 
-    public function getRequestOrders(): array
+    public function getDefaultOrders(): array
     {
-        return $this->orders;
+        return $this->defaultOrders;
     }
 
     public function getRoleAccesses(): array

@@ -10,26 +10,17 @@ class TableOrder
     use Arrayable;
 
     protected string $fieldName;
-    protected string $orderBy;
+    protected string $direction;
 
-    public static function make(): self
+    public static function make(string $fieldName, string $direction = 'asc'): self
     {
-        return new self();
-    }
+        $tableOrder = new self();
+        $tableOrder->fieldName = $fieldName;
 
-    public function setFieldName(string $fieldName): self
-    {
-        $this->fieldName = $fieldName;
+        if (in_array($direction, OrderByEnum::getAllOrders())) {
+            $tableOrder->direction = $direction;
 
-        return $this;
-    }
-
-    public function setOrderBy(string $orderBy): self
-    {
-        if (in_array($orderBy, OrderByEnum::getAllOrders())) {
-            $this->orderBy = $orderBy;
-
-            return $this;
+            return $tableOrder;
         }
 
         // TODO: Сделать эксепшн для этой ситуации
@@ -41,8 +32,8 @@ class TableOrder
         return $this->fieldName;
     }
 
-    public function getOrderBy(): string
+    public function getDirection(): string
     {
-        return $this->orderBy;
+        return $this->direction;
     }
 }

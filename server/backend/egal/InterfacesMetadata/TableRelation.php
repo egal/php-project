@@ -4,22 +4,18 @@ namespace Egal\Core\Interface;
 
 class TableRelation
 {
-    protected string $relationName;
+    protected string $name;
 
-    public static function make(): self
+    public static function make(string $relationName): self
     {
-        return new self();
-    }
+        $tableField = new self();
+        $tableField->name = $relationName;
 
-    public function setName(string $relationName): self
-    {
-        $this->relationName = $relationName;
-
-        return $this;
+        return $tableField;
     }
 
     public function getName(): string
     {
-        return $this->relationName;
+        return $this->name;
     }
 }

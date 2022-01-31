@@ -8,39 +8,37 @@ class Filter implements FilterInterface
     protected string $param;
     protected string $operator;
     protected string $value;
-    protected string $operatorAfter = 'AND';
+    protected string $operatorAfter;
 
-    public static function make(): self
+    public static function make(string $param, string $operator, string $value, string $operatorAfter = 'and'): self
     {
-        return new self();
+        $filter = new self();
+        $filter->param = $param;
+        $filter->operator = $operator;
+        $filter->value = $value;
+        $filter->operatorAfter = $operatorAfter;
+
+        return $filter;
     }
 
-    public function setParam(string $param): self
+    public function getParam(): string
     {
-        $this->param = $param;
-
-        return $this;
+        return $this->param;
     }
 
-    public function setOperator(string $operator): self
+    public function getOperator(): string
     {
-        $this->operator = $operator;
-
-        return $this;
+        return $this->operator;
     }
 
-    public function setValue(string $value): self
+    public function getValue(): string
     {
-        $this->value = $value;
-
-        return $this;
+        return $this->value;
     }
 
-    public function setOperatorAfter(string $operatorAfter): self
+    public function getOperatorAfter(): string
     {
-        $this->operatorAfter = $operatorAfter;
-
-        return $this;
+        return $this->operatorAfter;
     }
 
 }

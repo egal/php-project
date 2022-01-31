@@ -1,51 +1,34 @@
 <?php
 
 
+use App\Models\Post;
 use Egal\Core\Interface\TableField;
 use Egal\Core\Interface\TableMetadata;
 use Egal\Core\Interface\TableRelation;
 use Egal\Core\Model\Filter\CompositeFilter;
 use Egal\Core\Model\Filter\Filter;
 
-$postMetadata = \App\Models\Post::getModelMetadata();
-$metadata = TableMetadata::make($postMetadata)
+$metadata = TableMetadata::make(Post::getModelMetadata())
     ->setRoleAccesses(['admin'])
     ->setFields(
         TableField::make('title')
-            ->setLabel()
-            ->setComputed(),
+            ->setLabel('Заголовок')
+            ->setComputed([
+                'format:upper'
+            ]),
         TableField::make('description')
-            ->setLabel()
+            ->setLabel('Описание')
     )
-    ->setRelations(TableRelation::make()->setName('channels'))
-//    ->applyHiddenFilters(
-//        TableFilter::make()
-//            ->setParam(TableFilter::make()
-//                ->setParam('title')
-//                ->setOperator('=')
-//                ->setValue('test'))
-//            ->setOperator('and')
-//            ->setValue()
-//
-//    )
-    ->setRequestFilters(
-        CompositeFilter::make()
-            ->setParam(
-                Filter::make()
-                    ->setParam('title')
-                    ->setOperator('!=')
-                    ->setValue('test')
-            )
-            ->setOperator('AND')
-            ->setDefaulHiddenFilter(
-                Filter::make('description', '!=', 'lalala' , 'and'),
-                CompositeFilter::make(
-                    Filter::make('description', '!=', 'lalala' , 'and'),
-                    Filter::make('description', '!=', 'lalala' , 'and')
-                )
-            )
-            ->setOperatorAfter('OR'),
+    ->setRelations(
+        TableRelation::make('channels')
     )
-    ->setRequestOrders();
+    ->setDefaultFilters(
+        Filter::make('description', '!=', 'lalala'),
+        CompositeFilter::make(
+            Filter::make('description', '!=', 'lalala' , 'or'),
+            Filter::make('description', '!=', 'lalala')
+        )
+    )
+    ->setDefaultOrders();
 
 return $metadata;

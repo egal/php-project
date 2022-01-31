@@ -5,41 +5,19 @@ namespace Egal\Core\Model\Filter;
 class CompositeFilter implements FilterInterface
 {
 
-    protected FilterInterface $param;
-    protected string $operator;
-    protected FilterInterface $value;
-    protected string $operatorAfter = 'AND';
+    protected array $filters;
 
-    public static function make(): self
+    public static function make(FilterInterface ...$filters): self
     {
-        return new self();
+        $compositeFilter = new self();
+        $compositeFilter->filters = $filters;
+
+        return $compositeFilter;
     }
 
-    public function setParam(FilterInterface $param): self
+    public function getFilters(): array
     {
-        $this->param = $param;
-
-        return $this;
+        return $this->filters;
     }
 
-    public function setOperator(string $operator): self
-    {
-        $this->operator = $operator;
-
-        return $this;
-    }
-
-    public function setValue(FilterInterface $value): self
-    {
-        $this->value = $value;
-
-        return $this;
-    }
-
-    public function setOperatorAfter(string $operatorAfter): self
-    {
-        $this->operatorAfter = $operatorAfter;
-
-        return $this;
-    }
 }
