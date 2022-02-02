@@ -15,6 +15,6 @@ class DebugCommand extends Command
 
     public function handle(): void
     {
-        dump($modelName = app()->getModelNamespace() .'\\' );
+//        dump($modelName = app()->getModelNamespace() .'\\' );
     }
 }

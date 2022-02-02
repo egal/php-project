@@ -5,24 +5,26 @@ namespace Egal\Core\Support;
 class ClassFinder
 {
     // TODO делать поиск по пути
-    public static function getClasses(string $namespaceClasses, string $parentClass = null): array
+    public static function getClasses(string $pathClasses, string $namespaceClasses, string $parentClass = null, &$classes = []): array
     {
-        $pathClasses = lcfirst(str_replace('\\', '/', $namespaceClasses));
-
-        $classes = [];
-        foreach (scandir(base_path($pathClasses)) as $class) {
-            $class = str_replace('.php', '', $class);
-            if (!is_dir($class)) {
-                if ($parentClass) {
-                    if (get_parent_class($namespaceClasses . '\\' . $class) === $parentClass) {
-                        $classes[] = $class;
+        foreach (array_diff(scandir($pathClasses), ['.', '..']) as $file) {
+            $fileWithPath = realpath($pathClasses . DIRECTORY_SEPARATOR . $file);
+            if (!is_dir($fileWithPath)) {
+                $className = basename($file, '.php');
+                $class = $namespaceClasses . '\\' . $className;
+                if (class_exists($class)) {
+                    if ($parentClass) {
+                        if (get_parent_class($class) === $parentClass) {
+                            $classes[$className] = $class;
+                        }
+                    } else {
+                        $classes[$className] = $class;
                     }
-                } else {
-                    $classes[] = $class;
                 }
+            } else {
+                self::getClasses($fileWithPath, $namespaceClasses . '\\' . $file, null, $classes);
             }
         }
-
         return $classes;
     }
 }

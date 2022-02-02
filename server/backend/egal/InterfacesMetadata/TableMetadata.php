@@ -53,7 +53,7 @@ class TableMetadata
         return $this;
     }
 
-    public function setDefaultFilters(FilterInterface ...$filters):self
+    public function setDefaultFilter(FilterInterface ...$filters):self
     {
         $this->defaultFilters = $filters;
 

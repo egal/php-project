@@ -7,13 +7,20 @@ use Illuminate\Support\Arr;
 class PendingResourceRegistration extends \Illuminate\Routing\PendingResourceRegistration
 {
     /**
+     * The resource registrar.
+     *
+     * @var ResourceRegistrar
+     */
+    protected $registrar;
+
+    /**
      * Create a new pending resource registration instance.
      *
      * @param ResourceRegistrar $registrar
      * @param string $name
      * @param string $controller
      * @param array $options
-     * @return void
+     * @param array $routeDefaults
      */
     public function __construct(ResourceRegistrar $registrar, string $name, string $controller, array $options)
     {
@@ -26,7 +33,7 @@ class PendingResourceRegistration extends \Illuminate\Routing\PendingResourceReg
                     'except' => ['restore', 'batchRestore'],
                 ],
                 $options
-            )
+            ),
         );
     }
 
@@ -61,6 +68,15 @@ class PendingResourceRegistration extends \Illuminate\Routing\PendingResourceReg
         $this->except($except);
 
         return $this;
+    }
+
+    public function register()
+    {
+        $this->registered = true;
+
+        return $this->registrar->register(
+            $this->name, $this->controller, $this->options
+        );
     }
 }
 

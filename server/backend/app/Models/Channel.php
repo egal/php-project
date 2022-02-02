@@ -7,18 +7,6 @@ use Egal\Core\Model\Model;
 
 class Channel extends Model
 {
-    protected $fillable = [
-        'title',
-    ];
-
-    /**
-     * Validation rules
-     *
-     * @var array
-     */
-    public static $rules = [
-        'title' => 'required',
-    ];
 
     protected static function boot()
     {

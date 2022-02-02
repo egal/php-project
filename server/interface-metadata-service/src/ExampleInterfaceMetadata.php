@@ -22,7 +22,7 @@ $metadata = TableMetadata::make(Post::getModelMetadata())
     ->setRelations(
         TableRelation::make('channels')
     )
-    ->setDefaultFilters(
+    ->setDefaultFilter(
         Filter::make('description', '!=', 'lalala'),
         CompositeFilter::make(
             Filter::make('description', '!=', 'lalala' , 'or'),

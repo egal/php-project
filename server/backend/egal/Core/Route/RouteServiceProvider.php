@@ -37,6 +37,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->configureRateLimiting();
 
+        // TODO вместо app('router') фасад с индексацией
         app('router')->parse(app()->getModelNamespace(), app()->getEndpointsNamespace());
 
         $this->routes(function () {

@@ -13,6 +13,8 @@ use Illuminate\Routing\PendingResourceRegistration as LaravelPendingResourceRegi
 class Router extends \Illuminate\Routing\Router
 {
 
+    const EGAL_CORE_MODEL_ENDPOINTS = 'Egal\Core\Model\Endpoints';
+
     public function __construct(Dispatcher $events)
     {
         parent::__construct($events);
@@ -23,8 +25,8 @@ class Router extends \Illuminate\Routing\Router
      */
     public function parse(string $namespaceModels, string $namespaceEndpoints): void
     {
-        $models = ClassFinder::getClasses($namespaceModels, 'Egal\Core\Model\Model');
-        $endpoints = ClassFinder::getClasses($namespaceEndpoints, 'Egal\Core\Model\Endpoints');
+        $models = ClassFinder::getClasses(app_path('/Models'), $namespaceModels, 'Egal\Core\Model\Model');
+        $endpoints = ClassFinder::getClasses(app_path('/Endpoints'), $namespaceEndpoints, self::EGAL_CORE_MODEL_ENDPOINTS);
 
         $this->parseModelRoutes($this->getModelEndpoints($models, $endpoints), $namespaceEndpoints);
     }
@@ -56,15 +58,15 @@ class Router extends \Illuminate\Routing\Router
     private function getModelEndpoints(array $models, array $endpoints): array
     {
         $modelEndpoints = [];
-        foreach ($endpoints as $endpoint) {
-            $modelName = str_replace('Endpoints', '', $endpoint);
-            if (in_array($modelName, $models)) {
-                $modelEndpoints[$modelName] = $endpoint;
+        foreach ($endpoints as $endpointName => $endpointClass) {
+            $modelName = str_replace('Endpoints', '', $endpointName);
+            if (array_key_exists($modelName, $models)) {
+                $modelEndpoints[$models[$modelName]] = $endpointClass;
             }
         }
 
-        foreach (array_diff($models, array_keys($modelEndpoints)) as $modelName) {
-            $modelEndpoints[$modelName] = 'Endpoints';
+        foreach (array_diff($models, array_keys($modelEndpoints)) as $modelClass) {
+            $modelEndpoints[$modelClass] = self::EGAL_CORE_MODEL_ENDPOINTS;
         }
 
         return $modelEndpoints;
@@ -76,13 +78,22 @@ class Router extends \Illuminate\Routing\Router
     private function parseModelRoutes($modelEndpoints, string $namespaceEndpoints): void
     {
         foreach ($modelEndpoints as $model => $endpoint) {
-            $model = strtolower($model);
-            app('router')->resource('/' . Str::plural($model), APIController::class, ['as' => 'api']);
+            $modelReflectionClass = new \ReflectionClass($model);
+            app('router')
+                ->resource(
+                    '/' . Str::plural(strtolower($modelReflectionClass->getShortName())),
+                    APIController::class,
+                    [
+                        'as' => 'api',
+                        'model_class' => $model,
+                        'endpoints_class' => $endpoint
+                    ]
+                );
 
-            if ($endpoint !== 'Endpoints') {
-                $customEndpoints = get_class_methods($namespaceEndpoints . '\\' . $endpoint);
-                foreach ($customEndpoints as $customEndpoint) {
-                    $this->generateCustomRoute($customEndpoint, $model);
+            if ($endpoint !== self::EGAL_CORE_MODEL_ENDPOINTS) {
+                $customEndpointsMethods = get_class_methods($endpoint);
+                foreach ($customEndpointsMethods as $customEndpointsMethod) {
+                    $this->generateCustomRoute($customEndpointsMethod, $model, $endpoint);
                 }
             }
         }
@@ -91,20 +102,24 @@ class Router extends \Illuminate\Routing\Router
     /**
      * @throws Exception
      */
-    private function generateCustomRoute(string $endpoint, $model): void
+    private function generateCustomRoute(string $endpointMethod, string $model, string $endpoint): void
     {
-        $endpointParts = [];
+        $endpointsMethodParts = [];
         $defaultEndpoints = implode('|', EndpointMethod::getAllEndpointMethods());
-        $endpointPattern = '/(endpoint)(' . $defaultEndpoints . ')([a-zA-Z]+)/i';
-        if (preg_match($endpointPattern, $endpoint, $endpointParts)) {
-            $endpointMethod = $endpointParts[2];
+        $endpointsMethodPattern = '/(endpoint)(' . $defaultEndpoints . ')([a-zA-Z]+)/i';
+        $modelReflectionClass = new \ReflectionClass($model);
+        if (preg_match($endpointsMethodPattern, $endpointMethod, $endpointsMethodParts)) {
+            $endpointMethod = $endpointsMethodParts[2];
             $httpMethod = EndpointMethod::getHttpMethod($endpointMethod);
 
             $paramUrl = EndpointMethod::isWithId($endpointMethod) ? '/{id}' : '';
-            $uri = '/' . Str::plural($model) . '/' . strtolower($endpointParts[3]) . $paramUrl;
+            $uri = '/' . Str::plural(strtolower($modelReflectionClass->getShortName())) . '/'
+                . strtolower($endpointsMethodParts[3]) . $paramUrl;
 
             app('router')
-                ->$httpMethod($uri, ['as' => 'api', 'uses' => 'Egal\Core\Controllers\APIController@main' . $endpoint]);
+                ->$httpMethod($uri, ['as' => 'api', 'uses' => 'Egal\Core\Controllers\APIController@main' . $endpointMethod])
+                ->defaults('model_class', $model)
+                ->defaults('endpoints_class', $endpoint);
         }
     }
 

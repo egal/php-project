@@ -3,20 +3,15 @@
 namespace Egal\Core\Controllers;
 
 use Egal\Core\Auth\Session;
-use Egal\Core\Auth\User;
 use Egal\Core\Model\Endpoints;
+use Egal\Core\Model\Model;
 use Egal\Core\Route\Request;
 use Exception;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request as LaravelRequest;
 
 class APIController
 {
-
-    public $endpointsNamespace;
-    public $model;
 
     /**
      * @throws Exception
@@ -42,7 +37,6 @@ class APIController
      */
     private function createEndpointRequest(LaravelRequest $request): Request
     {
-        Log::debug('createEndpointRequest');
         $endpointRequest = new Request();
 
         $endpointRequest->setHttpMethod($request->getMethod());
@@ -54,22 +48,22 @@ class APIController
 
     private function setRequestParams(LaravelRequest $request, Request $endpointRequest): void
     {
-        $this->endpointsNamespace = config('namespaces.endpoints');
+
+        $model = new ($request->route()->parameter('model_class'));
+        $endpointsClass = $request->route()->parameter('endpoints_class');
+        $endpointRequest->setModel($model);
+
         foreach ($request->segments() as $key => $segment) {
             switch ($key) {
-                case 0:
-                    $this->setModel($endpointRequest, $segment);
-                    break;
                 case 1:
-                    $model = $endpointRequest->getModel();
-                    $this->setMethod($endpointRequest, $segment, $model);
+                    $this->setMethod($endpointRequest, $segment, $model, $endpointsClass);
+                    break;
+                case 2:
+                    $this->setRelationModel($endpointRequest, $segment, $model);
                     break;
                 case 3:
                     $model = $endpointRequest->getRelation();
-                    $this->setMethod($endpointRequest, $segment, $model);
-                    break;
-                case 2:
-                    $this->setRelationModel($endpointRequest, $segment);
+                    $this->setMethod($endpointRequest, $segment, $model, $endpointsClass);
                     break;
                 case 4:
                     $endpointRequest->setId($segment);
@@ -78,9 +72,8 @@ class APIController
         }
     }
 
-    private function setMethod(Request $endpointRequest, ?string $segment, $model): void
+    private function setMethod(Request $endpointRequest, ?string $segment, Model $model, string $endpointsClass): void
     {
-        $endpointsClass = $this->endpointsNamespace . '\\' . ucwords(Str::singular($model)) . 'Endpoints';
         if (!class_exists($endpointsClass) || !method_exists($endpointsClass, $segment)) {
             $endpointsClass = Endpoints::class;
             $endpointRequest->setId($segment);
@@ -88,27 +81,18 @@ class APIController
             $endpointRequest->setCustomMethod($segment);
         }
 
-        $endpointRequest->setEndpoint(new $endpointsClass($this->model));
+        $endpointRequest->setEndpoint(new $endpointsClass($model));
     }
 
-    private function setRelationModel(Request $endpointRequest, ?string $segment): void
+    private function setRelationModel(Request $endpointRequest, ?string $segment, Model $model): void
     {
-        if (!in_array($segment, $this->model::getModelMetadata()->getRelationNames())) {
+        if (!in_array($segment, $model::getModelMetadata()->getRelationNames())) {
             $endpointRequest->setId($segment);
         } else {
-            $modelMetadata = $this->model::getModelMetadata();
+            $modelMetadata = $model::getModelMetadata();
             $relationClass = $modelMetadata->getRelationsData()[$segment];
             $endpointRequest->setRelation($relationClass);
         }
-    }
-
-    private function setModel(Request $endpointRequest, ?string $segment): void
-    {
-//        $modelName = config('namespaces.models') .'\\' . ucwords(Str::singular($segment));
-        $modelName = app()->getModelNamespace() .'\\' . ucwords(Str::singular($segment));
-//        Route::get('/user')->defaults('model_class', User::class);
-        $this->model = new $modelName();
-        $endpointRequest->setModel($this->model);
     }
 
 }

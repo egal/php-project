@@ -3,7 +3,9 @@
 namespace Egal\Core\Route;
 
 use Illuminate\Routing\Route;
+use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Str;
 
 class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
 {
@@ -41,7 +43,10 @@ class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
 
         $action = $this->getResourceAction($name, $controller, 'search', $options);
 
-        return $this->router->post($uri, $action);
+        dump($options);
+        return $this->router->post($uri, $action)
+            ->defaults('model_class', $options['model_class'])
+            ->defaults('endpoints_class', $options['endpoints_class']);
     }
 
     /**
@@ -59,7 +64,9 @@ class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
 
         $action = $this->getResourceAction($name, $controller, 'restore', $options);
 
-        return $this->router->post($uri, $action);
+        return $this->router->post($uri, $action)
+            ->defaults('model_class', $options['model_class'])
+            ->defaults('endpoints_class', $options['endpoints_class']);
     }
 
     /**
@@ -77,7 +84,9 @@ class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
 
         $action = $this->getResourceAction($name, $controller, 'batchStore', $options);
 
-        return $this->router->post($uri, $action);
+        return $this->router->post($uri, $action)
+            ->defaults('model_class', $options['model_class'])
+            ->defaults('endpoints_class', $options['endpoints_class']);
     }
 
     /**
@@ -95,7 +104,9 @@ class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
 
         $action = $this->getResourceAction($name, $controller, 'batchUpdate', $options);
 
-        return $this->router->patch($uri, $action);
+        return $this->router->patch($uri, $action)
+            ->defaults('model_class', $options['model_class'])
+            ->defaults('endpoints_class', $options['endpoints_class']);
     }
 
     /**
@@ -113,7 +124,9 @@ class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
 
         $action = $this->getResourceAction($name, $controller, 'batchDestroy', $options);
 
-        return $this->router->delete($uri, $action);
+        return $this->router->delete($uri, $action)
+            ->defaults('model_class', $options['model_class'])
+            ->defaults('endpoints_class', $options['endpoints_class']);
     }
 
     /**
@@ -131,7 +144,9 @@ class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
 
         $action = $this->getResourceAction($name, $controller, 'batchRestore', $options);
 
-        return $this->router->post($uri, $action);
+        return $this->router->post($uri, $action)
+            ->defaults('model_class', $options['model_class'])
+            ->defaults('endpoints_class', $options['endpoints_class']);
     }
 
     protected function addResourceDestroy($name, $base, $controller, $options)
@@ -142,7 +157,9 @@ class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
 
         $action = $this->getResourceAction($name, $controller, 'main', $options);
 
-        return $this->router->delete($uri, $action);
+        return $this->router->delete($uri, $action)
+            ->defaults('model_class', $options['model_class'])
+            ->defaults('endpoints_class', $options['endpoints_class']);
     }
 
     protected function addResourceEdit($name, $base, $controller, $options)
@@ -153,7 +170,9 @@ class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
 
         $action = $this->getResourceAction($name, $controller, 'main', $options);
 
-        return $this->router->get($uri, $action);
+        return $this->router->get($uri, $action)
+            ->defaults('model_class', $options['model_class'])
+            ->defaults('endpoints_class', $options['endpoints_class']);
     }
 
     protected function addResourceIndex($name, $base, $controller, $options)
@@ -164,7 +183,9 @@ class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
 
         $action = $this->getResourceAction($name, $controller, 'main', $options);
 
-        return $this->router->get($uri, $action);
+        return $this->router->get($uri, $action)
+            ->defaults('model_class', $options['model_class'])
+            ->defaults('endpoints_class', $options['endpoints_class']);
     }
 
     protected function addResourceShow($name, $base, $controller, $options)
@@ -175,7 +196,9 @@ class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
 
         $action = $this->getResourceAction($name, $controller, 'main', $options);
 
-        return $this->router->get($uri, $action);
+        return $this->router->get($uri, $action)
+            ->defaults('model_class', $options['model_class'])
+            ->defaults('endpoints_class', $options['endpoints_class']);
     }
 
     protected function addResourceStore($name, $base, $controller, $options)
@@ -186,7 +209,9 @@ class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
 
         $action = $this->getResourceAction($name, $controller, 'main', $options);
 
-        return $this->router->post($uri, $action);
+        return $this->router->post($uri, $action)
+            ->defaults('model_class', $options['model_class'])
+            ->defaults('endpoints_class', $options['endpoints_class']);
     }
 
     protected function addResourceUpdate($name, $base, $controller, $options)
@@ -197,7 +222,9 @@ class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
 
         $action = $this->getResourceAction($name, $controller, 'main', $options);
 
-        return $this->router->match(['PUT', 'PATCH'], $uri, $action);
+        return $this->router->match(['PUT', 'PATCH'], $uri, $action)
+            ->defaults('model_class', $options['model_class'])
+            ->defaults('endpoints_class', $options['endpoints_class']);
     }
 
     public function register($name, $controller, array $options = [])
@@ -209,6 +236,40 @@ class ResourceRegistrar extends \Illuminate\Routing\ResourceRegistrar
             )
         );
 
-        return parent::register($name, $controller, $options);
+        if (isset($options['parameters']) && ! isset($this->parameters)) {
+            $this->parameters = $options['parameters'];
+        }
+
+        // If the resource name contains a slash, we will assume the developer wishes to
+        // register these resource routes with a prefix so we will set that up out of
+        // the box so they don't have to mess with it. Otherwise, we will continue.
+        if (Str::contains($name, '/')) {
+            $this->prefixedResource($name, $controller, $options);
+
+            return;
+        }
+
+        // We need to extract the base resource from the resource name. Nested resources
+        // are supported in the framework, but we need to know what name to use for a
+        // place-holder on the route parameters, which should be the base resources.
+        $base = $this->getResourceWildcard(last(explode('.', $name)));
+
+        $defaults = $this->resourceDefaults;
+
+        $collection = new RouteCollection;
+
+        foreach ($this->getResourceMethods($defaults, $options) as $m) {
+            $route = $this->{'addResource'.ucfirst($m)}(
+                $name, $base, $controller, $options
+            );
+
+            if (isset($options['bindingFields'])) {
+                $this->setResourceBindingFields($route, $options['bindingFields']);
+            }
+
+            $collection->add($route);
+        }
+
+        return $collection;
     }
 }
