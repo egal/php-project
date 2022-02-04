@@ -2,12 +2,12 @@
 
 namespace App\Policies;
 
-use App\egal\auth\User;
-use App\egal\EgalHttpPolicy;
+use Egal\Core\Auth\User;
+use Egal\Core\Model\HttpPolicy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-class PostPolicy extends EgalHttpPolicy
+class PostPolicy extends HttpPolicy
 {
     // если политики нет, то методы всем доступны
     // при генерации все методы политики возвращают false

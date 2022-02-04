@@ -1,0 +1,14 @@
+     public function show{{field}}(User $user, Model $entity): bool
+    {
+        return false;
+    }
+
+    public function create{{field}}(User $user, Model $entity): bool
+    {
+        return false;
+    }
+
+    public function update{{field}}(User $user, Model $entity): bool
+    {
+        return false;
+    }

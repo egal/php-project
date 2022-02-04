@@ -1,0 +1,44 @@
+<?php
+
+namespace Egal\Core\Commands;
+
+use Egal\Core\Model;
+use Illuminate\Support\Str;
+
+class GeneratePolicyCommand extends MakeCommand
+{
+    protected $signature = 'egal:make:policy {modelName}';
+
+    protected string $stubFileBaseName = 'policy';
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        $modelName = $this->argument('modelName');
+        $this->fileBaseName = $modelName . 'Policy';
+        $this->filePath = base_path('app/Policies') . '/' . $this->fileBaseName . '.php';
+        $this->fileContents = str_replace('{{ class }}', $modelName, $this->fileContents);
+        $this->writeAttributesPolicyMethods();
+        $this->writeFile();
+
+        $this->line("<info>Created Policy Class</info>");
+    }
+
+    public function writeAttributesPolicyMethods()
+    {
+        $stubFilesDir = realpath(__DIR__ . '/stubs');
+        $modelClassName = 'App\Models' . '\\' . $this->argument('modelName');
+        /** @var Model $modelInstance */
+        $modelInstance = new $modelClassName();
+        $fields = $modelInstance->getModelMetadata()->getFieldNames();
+        foreach ($fields as $field) {
+            $this->fileContents .= file_get_contents(realpath($stubFilesDir . '/fields_policy.stub')) . PHP_EOL;
+            $this->fileContents = str_replace('{{field}}', ucwords($field), $this->fileContents);
+        }
+        $this->fileContents .= PHP_EOL . '}';
+    }
+}

@@ -1,22 +1,19 @@
 <?php
 
+use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\Artisan;
+
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| Console Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
+| This file is where you may define all of your Closure based console
+| commands. Each Closure is bound to a command instance allowing a
+| simple approach to interacting with each command's IO methods.
 |
 */
 
-// формируется на основе метаданных моделей
-
-\App\egal\Facades\EgalRoute::resource('/posts');
-//\Illuminate\Support\Facades\Route::post('/posts', [\App\Http\Controllers\PostController::class, 'custom']);
-//\Illuminate\Support\Facades\Route::post('/posts', [\App\egal\APIController::class, 'create']);
-//\Illuminate\Support\Facades\Route::put('/posts', [\App\egal\APIController::class, 'update']);
-use Illuminate\Support\Facades\Route;
-
-//Route::put('/posts/{post}/update', [\App\egal\APIController::class, 'update']);
+Artisan::command('inspire', function () {
+    $this->comment(Inspiring::quote());
+})->purpose('Display an inspiring quote');

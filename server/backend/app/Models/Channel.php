@@ -2,20 +2,11 @@
 
 namespace App\Models;
 
-class Channel extends \Illuminate\Database\Eloquent\Model
-{
-    protected $fillable = [
-        'title',
-    ];
+use Egal\Core\Model\Metadata\ModelMetadata;
+use Egal\Core\Model\Model;
 
-    /**
-     * Validation rules
-     *
-     * @var array
-     */
-    public static $rules = [
-        'title' => 'required',
-    ];
+class Channel extends Model
+{
 
     protected static function boot()
     {
@@ -25,5 +16,12 @@ class Channel extends \Illuminate\Database\Eloquent\Model
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    static function getModelMetadata(): ModelMetadata
+    {
+        $test = new Channel();
+        $test->newQuery()->orderBy();
+        // TODO: Implement getModelMetadata() method.
     }
 }

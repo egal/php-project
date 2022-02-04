@@ -1,5 +1,9 @@
 version: "3.7"
 services:
+  postgres:
+    ports:
+      - published: 5433
+        target: 5432
   backend:
     build:
       args:
@@ -8,7 +12,7 @@ services:
     volumes:
       - ./server/backend:/app:rw
     ports:
-      - published: 80
+      - published: 81
         target: 8080
     command: sh -c "/wait && php -S 0.0.0.0:8080 -t public"
     command: sh -c "/wait && php artisan octane:start --host=0.0.0.0 --port=8080 --watch"
@@ -17,11 +21,3 @@ services:
       APP_ENV: local
       APP_DEBUG: 'true'
       LOG_CHANNEL: syslog
-  swagger:
-    ports:
-      - published: 8080
-        target: 8080
-
-
-
-
