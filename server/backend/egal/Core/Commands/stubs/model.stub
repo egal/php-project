@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
-use Egal\Core\EgalModel;
-use Egal\Core\ModelMetadata;
+use Egal\Core\Model\Model;
+use Egal\Core\Model\Metadata\ModelMetadata;
+use Egal\Core\Model\Metadata\FieldMetadata;
+use Egal\Core\Model\Metadata\RelationMetadata;
 
-class {{ class }} extends EgalModel
+class {{ class }} extends Model
 {
 
     public static function getModelMetadata(): ModelMetadata
     {
         return ModelMetadata::make(static::class)
-            ->fields(
+            ->setFields(
                 FieldMetadata::make('your_attribute')
                     ->string()
                     ->min()
@@ -23,7 +25,7 @@ class {{ class }} extends EgalModel
                     ->setSortable()
                     ->setFilterable()
             )
-            ->relations(
+            ->setRelations(
                 RelationMetadata::make('yourRelationName')
                     ->belongsTo(YourRelation::class)
             );

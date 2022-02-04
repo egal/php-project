@@ -24,7 +24,7 @@ class Endpoints
 
     public function endpointIndex()
     {
-        return $this->model->newQuery()->get();
+        return $this->model->newQuery()->get()->toArray();
     }
 
     public function endpointShow($attributes)
@@ -36,45 +36,23 @@ class Endpoints
     public function endpointCreate($attributes)
     {
         // посмотреть на реализацию Sanctum
-        if (Session::user()->cannot(__METHOD__)) {
-            throw new NoAccessException();
-        }
-        return $this->model->newQuery()->create($attributes);
+//        if (Session::user()->cannot(__METHOD__)) {
+//            throw new NoAccessException();
+//        }
+        return $this->model->newQuery()->create($attributes)->toArray();
     }
 
     public function endpointUpdate($id, $attributes)
     {
-        return $this->model->newQuery()->find($id)->update($attributes);
+        $entity = $this->model->newQuery()->find($id);
+        $entity->update($attributes);
+        return $entity->toArray();
     }
 
     public function endpointDelete($id)
     {
-        return $this->model->newQuery()->find($id)->delete();
+        $entity = $this->model->newQuery()->find($id);
+        $entity->delete();
+        return $entity->toArray();
     }
-
-    public function endpointRelationIndex()
-    {
-        return $this->model->newQuery()->get();
-    }
-
-    public function endpointRelationShow($id)
-    {
-        return $this->model->newQuery()->find($id);
-    }
-
-    public function endpointRelationCreate($attributes)
-    {
-        return $this->model->newQuery()->create($attributes);
-    }
-
-    public function endpointRelationUpdate($id, $attributes)
-    {
-        return $this->model->newQuery()->find($id)->update($attributes);
-    }
-
-    public function endpointRelationDelete($id)
-    {
-        return $this->model->newQuery()->find($id)->delete();
-    }
-
 }

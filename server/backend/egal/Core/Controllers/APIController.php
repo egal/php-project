@@ -3,11 +3,9 @@
 namespace Egal\Core\Controllers;
 
 use Egal\Core\Auth\Session;
-use Egal\Core\Model\Endpoints;
 use Egal\Core\Model\Model;
 use Egal\Core\Route\Request;
 use Exception;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request as LaravelRequest;
 
 class APIController
@@ -52,6 +50,8 @@ class APIController
         $model = new ($request->route()->parameter('model_class'));
         $endpointsClass = $request->route()->parameter('endpoints_class');
         $endpointRequest->setModel($model);
+        $endpointRequest->setEndpoint(new $endpointsClass($model));
+
 
         foreach ($request->segments() as $key => $segment) {
             switch ($key) {
@@ -75,13 +75,10 @@ class APIController
     private function setMethod(Request $endpointRequest, ?string $segment, Model $model, string $endpointsClass): void
     {
         if (!class_exists($endpointsClass) || !method_exists($endpointsClass, $segment)) {
-            $endpointsClass = Endpoints::class;
             $endpointRequest->setId($segment);
         } else {
             $endpointRequest->setCustomMethod($segment);
         }
-
-        $endpointRequest->setEndpoint(new $endpointsClass($model));
     }
 
     private function setRelationModel(Request $endpointRequest, ?string $segment, Model $model): void
