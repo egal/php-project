@@ -29,10 +29,14 @@ return [
                             'logo' => ['type' => 'asset', 'path' => 'logo.svg'],
                             'compact_logo' => ['type' => 'asset', 'path' => 'logo.svg'],
                             'links' => [
-                                ['label' => 'Profile', 'urn' => '/profile', 'page' => 'current_user_profile'],
-                                ['label' => 'Foo', 'urn' => '/foo', 'page' => 'foo'],
-                                ['label' => 'Bar', 'urn' => '/bar', 'page' => 'bar'],
-                                ['label' => 'Custom', 'urn' => '/custom', 'page' => 'custom'],
+                                ['type' => 'link', 'label' => 'Profile', 'urn' => '/profile', 'page' => 'current_user_profile'],
+                                ['type' => 'link', 'label' => 'Foo', 'urn' => '/foo', 'page' => 'foo'],
+                                ['type' => 'link', 'label' => 'Bar', 'urn' => '/bar', 'page' => 'bar'],
+                                ['type' => 'link', 'label' => 'Custom', 'urn' => '/custom', 'page' => 'custom'],
+                                ['type' => 'nested', 'label' => 'Nested', 'links' => [
+                                    ['type' => 'link', 'label' => 'Foo', 'urn' => '/foo', 'page' => 'foo'],
+                                    ['type' => 'link', 'label' => 'Bar', 'urn' => '/bar', 'page' => 'bar'],
+                                ]],
                             ],
                         ],
                     ],
