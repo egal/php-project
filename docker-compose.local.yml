@@ -4,19 +4,20 @@ services:
     ports:
       - published: 5433
         target: 5432
-  backend:
+  main-service:
     build:
       args:
         DEBUG: 'true'
     user: ${UID}:${GID}
     volumes:
-      - ./server/backend:/app:rw
+      - ./server/main-service:/app:rw
     ports:
-      - published: 81
+      - published: 80
         target: 8080
     command: sh -c "/wait && php -S 0.0.0.0:8080 -t public"
     command: sh -c "/wait && php artisan octane:start --host=0.0.0.0 --port=8080 --watch"
     command: sh -c "/wait && php artisan octane:start --host=0.0.0.0 --port=8080"
+    command: php artisan octane:start --host=0.0.0.0 --port=8080
     environment:
       APP_ENV: local
       APP_DEBUG: 'true'

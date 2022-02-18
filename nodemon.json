@@ -1,5 +1,5 @@
 {
   "watch": ["."],
   "ext": "php",
-  "exec": "docker-compose up --force-recreate --timeout 0 backend"
+  "exec": "docker-compose up -d --force-recreate --timeout 0 main-service && docker-compose logs -f main-service"
 }
