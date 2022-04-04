@@ -108,10 +108,7 @@ return [
 
     'password_timeout' => 10800,
 
+    'private_key' => env('AUTH_PRIVATE_KEY'),
     'public_key' => env('AUTH_PUBLIC_KEY'),
-    'service' => [
-        'private_key' => env('AUTH_SERVICE_PRIVATE_KEY'),
-        'public_key' => env('AUTH_SERVICE_PUBLIC_KEY'),
-    ],
 
 ];

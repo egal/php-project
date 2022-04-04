@@ -1,13 +1,15 @@
 <?php
 
+namespace Egal\Core\Facades;
+
 use Illuminate\Support\Facades\Facade;
 
-class Auth extends Facade
+class Route extends Facade
 {
 
     protected static function getFacadeAccessor()
     {
-        return 'Auth';
+        return 'EgalRoute';
     }
 
 }

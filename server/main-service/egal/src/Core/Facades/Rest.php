@@ -13,7 +13,7 @@ class Rest extends Facade
 
     protected static function getFacadeAccessor()
     {
-        return 'Rest';
+        return 'EgalRest';
     }
 
 }

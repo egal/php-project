@@ -2,6 +2,8 @@
 
 namespace Egal\Core;
 
+use Egal\Core\Auth\Gate;
+use Egal\Core\Interfaces\Gate as GateInterface;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
@@ -14,7 +16,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(GateInterface::class, fn() => new Gate());
     }
 
     /**

@@ -30,8 +30,11 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "Egal\\": "egal/"
-        }
+            "Egal\\": "egal/src/"
+        },
+        "files": [
+            "egal/src/Core/functions/dump.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Facade;
-
 return [
 
     /*
@@ -141,7 +139,7 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
-        Illuminate\Auth\AuthServiceProvider::class,
+//        Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
         Illuminate\Bus\BusServiceProvider::class,
         Illuminate\Cache\CacheServiceProvider::class,
@@ -152,13 +150,13 @@ return [
         Illuminate\Filesystem\FilesystemServiceProvider::class,
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
         Illuminate\Hashing\HashServiceProvider::class,
-        Illuminate\Mail\MailServiceProvider::class,
+//        Illuminate\Mail\MailServiceProvider::class,
         Illuminate\Notifications\NotificationServiceProvider::class,
         Illuminate\Pagination\PaginationServiceProvider::class,
         Illuminate\Pipeline\PipelineServiceProvider::class,
-        Illuminate\Queue\QueueServiceProvider::class,
-        Illuminate\Redis\RedisServiceProvider::class,
-        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+//        Illuminate\Queue\QueueServiceProvider::class,
+//        Illuminate\Redis\RedisServiceProvider::class,
+//        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
@@ -167,12 +165,12 @@ return [
         /*
          * Package Service Providers...
          */
+        Egal\Core\ServiceProvider::class,
 
         /*
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
@@ -190,9 +188,10 @@ return [
     |
     */
 
-    'aliases' => Facade::defaultAliases()->merge([
-        'Rest' => \Egal\Core\Rest\Controller::class,
-        'Auth' => \Egal\Core\Auth\Manager::class,
+    'aliases' => Illuminate\Support\Facades\Facade::defaultAliases()->merge([
+        'EgalRest' => Egal\Core\Rest\Controller::class,
+        'EgalAuth' => Egal\Core\Auth\Manager::class,
+        'EgalRoute' => Egal\Core\Http\Route::class,
     ])->toArray(),
 
 ];

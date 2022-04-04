@@ -27,7 +27,7 @@ class Controller extends BaseController
 
         Rest::create($modelClass, $attributes);
 
-        return response()->setStatusCode(Response::HTTP_CREATED);
+        return response()->noContent(Response::HTTP_CREATED);
     }
 
 }
