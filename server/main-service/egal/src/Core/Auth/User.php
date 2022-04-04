@@ -23,7 +23,7 @@ class User
         $this->sub = $sub;
         $this->roles = $roles;
 
-        if ($model) {
+        if ($model) { # TODO: Implementation working with user model version in current service.
             $this->model = $model;
         }
     }
@@ -67,6 +67,11 @@ class User
     public function can(Ability $ability, Model|string $model): bool
     {
         return Gate::check($this, $ability, $model);
+    }
+
+    public function getSub(): string
+    {
+        return $this->sub;
     }
 
 }

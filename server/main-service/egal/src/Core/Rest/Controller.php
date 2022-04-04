@@ -4,16 +4,17 @@ namespace Egal\Core\Rest;
 
 use Egal\Core\Auth\Ability;
 use Egal\Core\Database\Model;
-use Egal\Core\Exceptions\NoAccessException;
 use Egal\Core\Facades\Auth;
 use Egal\Core\Facades\Gate;
-use Exception;
 use Illuminate\Support\Facades\Validator;
 
 class Controller
 {
 
-    public function index(string $modelClass, array $filter = []): array
+    /**
+     * TODO: Selecting (with relation loading), filtering, sorting, scoping.
+     */
+    public function index(string $modelClass): array
     {
         $model = $this->newModelInstance($modelClass);
         $collection = $model->newQuery()->get();

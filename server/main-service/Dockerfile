@@ -33,5 +33,10 @@ RUN composer install --no-interaction --no-progress --no-autoloader --no-cache \
     $(if [[ $DEBUG == 'true' ]]; then echo '--dev'; else echo '--no-dev'; fi)
 COPY . .
 RUN composer dump-autoload
+RUN if [[ $DEBUG == 'true' ]]; then \
+        apk add nodejs; \
+        apk add npm; \
+        npm install --save-dev; \
+    fi
 
 CMD /wait && php artisan octane:start --host=0.0.0.0

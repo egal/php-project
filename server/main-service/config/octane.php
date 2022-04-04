@@ -189,6 +189,7 @@ return [
         'routes',
         'composer.lock',
         '.env',
+        'egal/**/*.php',
     ],
 
     /*
