@@ -2,7 +2,6 @@
 
 use App\Http\Policies\PostPolicy;
 use App\Models\Post;
-use Egal\Core\Facades\Gate;
 use Egal\Core\Facades\Route as EgalRoute;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;

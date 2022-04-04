@@ -30,4 +30,29 @@ class Controller extends BaseController
         return response()->noContent(Response::HTTP_CREATED);
     }
 
+    public function show(Request $request, $key, string $modelClass)
+    {
+        return response()->json(Rest::show($modelClass, $key))->setStatusCode(Response::HTTP_OK);
+    }
+
+    public function update(Request $request, $key, string $modelClass)
+    {
+        if ($request->getContentType() !== 'json') {
+            throw new Exception('Unsupported content type!'); # TODO: Replace to additional exception class!
+        }
+
+        $attributes = json_decode($request->getContent(), true);
+
+        Rest::update($modelClass, $key, $attributes);
+
+        return response()->noContent();
+    }
+
+    public function delete(Request $request, $key, string $modelClass)
+    {
+        Rest::delete($modelClass, $key);
+
+        return response()->noContent();
+    }
+
 }
