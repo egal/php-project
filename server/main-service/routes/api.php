@@ -17,6 +17,7 @@ use Illuminate\Support\Str;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+# TODO: Header accept with value application/json.
 
 
 Route::get('/', fn() => response()->json(['message' => 'Hello!']));

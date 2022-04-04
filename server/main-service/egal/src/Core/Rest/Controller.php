@@ -17,13 +17,13 @@ class Controller
      */
     public function index(string $modelClass): array
     {
+        Gate::allowed(Auth::user(), Ability::showAny, $modelClass);
+
         $model = $this->newModelInstance($modelClass);
         $collection = $model->newQuery()->get();
 
-        Gate::allowed(Auth::user(), Ability::showAny, $modelClass);
-
-        foreach ($collection as $entity) {
-            Gate::allowed(Auth::user(), Ability::show, $entity);
+        foreach ($collection as $object) {
+            Gate::allowed(Auth::user(), Ability::show, $object);
         }
 
         return $collection->toArray();
@@ -31,6 +31,8 @@ class Controller
 
     public function create(string $modelClass, array $attributes = []): void
     {
+        Gate::allowed(Auth::user(), Ability::createAny, $modelClass);
+
         $model = $this->newModelInstance($modelClass);
         $metadata = $model->getMetadata();
 
@@ -38,21 +40,33 @@ class Controller
         # TODO: What is $customAttributes param in Validator::make.
         Validator::make($attributes, $metadata->getValidationRules())->validate();
 
-        $model->fill($attributes)->save();
+        $object = $model->fill($attributes);
+
+        Gate::allowed(Auth::user(), Ability::create, $object);
+
+        $object->save();
     }
 
     public function show(string $modelClass, $key): array
     {
+        Gate::allowed(Auth::user(), Ability::showAny, $modelClass);
+
         $model = $this->newModelInstance($modelClass);
         $object = $this->getModelObjectById($model, $key);
+
+        Gate::allowed(Auth::user(), Ability::show, $object);
 
         return $object->toArray();
     }
 
     public function update(string $modelClass, $key, array $attributes = []): void
     {
+        Gate::allowed(Auth::user(), Ability::updateAny, $modelClass);
+
         $model = $this->newModelInstance($modelClass);
         $object = $this->getModelObjectById($model, $key);
+
+        Gate::allowed(Auth::user(), Ability::update, $object);
 
         $metadata = $model->getMetadata();
         Validator::make($attributes, $metadata->getValidationRules())->validate();
@@ -62,8 +76,12 @@ class Controller
 
     public function delete(string $modelClass, $key): void
     {
+        Gate::allowed(Auth::user(), Ability::deleteAny, $modelClass);
+
         $model = $this->newModelInstance($modelClass);
         $object = $this->getModelObjectById($model, $key);
+
+        Gate::allowed(Auth::user(), Ability::delete, $object);
 
         $object->delete();
     }

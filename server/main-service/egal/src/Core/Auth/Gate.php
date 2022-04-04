@@ -31,11 +31,13 @@ class Gate
             return true;
         }
 
-        $policy = $this->policies[is_object($model) ? get_class($model) : $model] ?? null;
+        $policy = $this->policies[is_object($model) ? get_class($model) : $model] ?? null; # TODO: Many policies.
 
-        if (!$policy) {
+        if ($policy === null) {
             return false;
         }
+
+//        dd($policy->{$ability->name}($user));
 
         return is_object($model)
             ? $policy->{$ability->name}($user, $model)
@@ -47,7 +49,7 @@ class Gate
      */
     public function allowed(?User $user, Ability $ability, Model|string $model): bool
     {
-        if (!$this->check($user, $ability, $model)) {
+        if ($this->check($user, $ability, $model) === false) {
             throw new NoAccessException();
         }
 
