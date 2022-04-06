@@ -15,15 +15,17 @@ class Controller
     /**
      * TODO: Selecting (with relation loading), filtering, sorting, scoping.
      */
-    public function index(string $modelClass): array
+    public function index(string $modelClass, array $filter = []): array
     {
-        Gate::allowed(Auth::user(), Ability::showAny, $modelClass);
+        #TODO: Test filter-query parsing.
+
+        Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
         $collection = $model->newQuery()->get();
 
         foreach ($collection as $object) {
-            Gate::allowed(Auth::user(), Ability::show, $object);
+            Gate::allowed(Auth::user(), Ability::Show, $object);
         }
 
         return $collection->toArray();
@@ -31,7 +33,7 @@ class Controller
 
     public function create(string $modelClass, array $attributes = []): void
     {
-        Gate::allowed(Auth::user(), Ability::createAny, $modelClass);
+        Gate::allowed(Auth::user(), Ability::CreateAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
         $metadata = $model->getMetadata();
@@ -42,31 +44,31 @@ class Controller
 
         $object = $model->fill($attributes);
 
-        Gate::allowed(Auth::user(), Ability::create, $object);
+        Gate::allowed(Auth::user(), Ability::Create, $object);
 
         $object->save();
     }
 
     public function show(string $modelClass, $key): array
     {
-        Gate::allowed(Auth::user(), Ability::showAny, $modelClass);
+        Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
         $object = $this->getModelObjectById($model, $key);
 
-        Gate::allowed(Auth::user(), Ability::show, $object);
+        Gate::allowed(Auth::user(), Ability::Show, $object);
 
         return $object->toArray();
     }
 
     public function update(string $modelClass, $key, array $attributes = []): void
     {
-        Gate::allowed(Auth::user(), Ability::updateAny, $modelClass);
+        Gate::allowed(Auth::user(), Ability::UpdateAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
         $object = $this->getModelObjectById($model, $key);
 
-        Gate::allowed(Auth::user(), Ability::update, $object);
+        Gate::allowed(Auth::user(), Ability::Update, $object);
 
         $metadata = $model->getMetadata();
         Validator::make($attributes, $metadata->getValidationRules())->validate();
@@ -76,12 +78,12 @@ class Controller
 
     public function delete(string $modelClass, $key): void
     {
-        Gate::allowed(Auth::user(), Ability::deleteAny, $modelClass);
+        Gate::allowed(Auth::user(), Ability::DeleteAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
         $object = $this->getModelObjectById($model, $key);
 
-        Gate::allowed(Auth::user(), Ability::delete, $object);
+        Gate::allowed(Auth::user(), Ability::Delete, $object);
 
         $object->delete();
     }

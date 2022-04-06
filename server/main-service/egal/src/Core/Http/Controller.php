@@ -14,7 +14,8 @@ class Controller extends BaseController
 
     public function index(Request $request, string $modelClass)
     {
-        return response()->json(Rest::index($modelClass))->setStatusCode(Response::HTTP_OK);
+        $filter = RequestQueryParser::parseFilter();
+        return response()->json(Rest::index($modelClass, $filter))->setStatusCode(Response::HTTP_OK);
     }
 
     public function create(Request $request, string $modelClass)

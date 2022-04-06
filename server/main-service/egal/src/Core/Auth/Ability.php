@@ -3,12 +3,12 @@
 namespace Egal\Core\Auth;
 
 enum Ability {
-    case show;
-    case showAny;
-    case create;
-    case createAny;
-    case update;
-    case updateAny;
-    case delete;
-    case deleteAny;
+    case Show;
+    case ShowAny;
+    case Create;
+    case CreateAny;
+    case Update;
+    case UpdateAny;
+    case Delete;
+    case DeleteAny;
 }
