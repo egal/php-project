@@ -29,13 +29,13 @@ class FilterApplier
             $operator = $condition->getOperator()->value;
             $value = $condition->getValue();
             $combiner = $condition->getCombiner()->value;
-//            self::validateConditionFieldAndValue($query, $field, $value);
-//            $fieldName = $field->getName();
+            self::validateConditionFieldAndValue($query, $field, $value);
+            $fieldName = $field->getName();
 
-//            $relation = $field->getRelation();
+            $relation = $field->getRelation();
             if (!empty($relation)) {
-                $clause = static function ($query) use ($field, $operator, $value): void {
-                    $query->where($field, $operator, $value);
+                $clause = static function ($query) use ($fieldName, $operator, $value): void {
+                    $query->where($fieldName, $operator, $value);
                 };
                 $query->has($relation, '>=', 1, $combiner, $clause);
             } else {
@@ -43,9 +43,9 @@ class FilterApplier
             }
         }
     }
-//
-//    private static function validateConditionFieldAndValue(Builder $query, Field $field, $value)
-//    {
-//    }
+
+    private static function validateConditionFieldAndValue(Builder $query, Field $field, $value)
+    {
+    }
 
 }

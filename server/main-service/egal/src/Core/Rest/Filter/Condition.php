@@ -7,12 +7,12 @@ class Condition
 
     use Combinable;
 
-    private string $field;
+    private Field $field;
     private Operator $operator;
     private null|bool|int|float|string $value;
 
     public static function make(
-        string                     $field,
+        Field                     $field,
         Operator                   $operator,
         null|bool|int|float|string $value,
         Combiner                   $combiner = Combiner::And
@@ -27,7 +27,7 @@ class Condition
         return $condition;
     }
 
-    public function getField(): string
+    public function getField(): Field
     {
         return $this->field;
     }

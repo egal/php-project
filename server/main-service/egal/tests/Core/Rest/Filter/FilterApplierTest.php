@@ -23,7 +23,7 @@ class FilterApplierTest extends TestCase
         return [
             [
                 FilterQuery::make([
-                    Condition::make('field', Operator::Equals, null, Combiner::And),
+                    Condition::make($field, Operator::Equals, null, Combiner::And),
                 ])
             ]
         ];
