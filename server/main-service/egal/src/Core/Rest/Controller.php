@@ -7,6 +7,7 @@ use Egal\Core\Database\Model;
 use Egal\Core\Exceptions\ObjectNotFoundException;
 use Egal\Core\Facades\Auth;
 use Egal\Core\Facades\Gate;
+use Egal\Core\Rest\Filter\Query as FilterQuery;
 use Illuminate\Support\Facades\Validator;
 
 class Controller
@@ -15,14 +16,14 @@ class Controller
     /**
      * TODO: Selecting (with relation loading), filtering, sorting, scoping.
      */
-    public function index(string $modelClass, array $filter = []): array
+    public function index(string $modelClass, ?FilterQuery $filter): array
     {
         #TODO: Test filter-query parsing.
 
         Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
-        $collection = $model->newQuery()->get();
+        $collection = $model::filter()->get();
 
         foreach ($collection as $object) {
             Gate::allowed(Auth::user(), Ability::Show, $object);

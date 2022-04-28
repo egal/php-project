@@ -4,6 +4,8 @@ namespace Egal\Core\Rest\Filter;
 
 enum Operator: string
 {
-    case Equal = 'eq';
-    case GreaterThen = 'gt';
+
+    case Equals = 'eq';
+    case NotEquals = 'not eq';
+
 }

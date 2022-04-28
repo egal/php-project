@@ -5,6 +5,7 @@ namespace App\Models;
 use Egal\Core\Database\Model;
 use Egal\Core\Database\Metadata\Model as ModelMetadata;
 use Egal\Core\Database\Metadata\Field as FieldMetadata;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Post extends Model
 {
@@ -17,6 +18,11 @@ class Post extends Model
                     ->required()
                     ->fillable()
             );
+    }
+
+    public function channel(): BelongsTo
+    {
+        return $this->belongsTo(Channel::class);
     }
 
 }

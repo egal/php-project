@@ -3,10 +3,10 @@
 namespace Egal\Core\Http;
 
 use Egal\Core\Facades\Rest;
+use Egal\Core\Rest\Filter\Parser as FilterParser;
 use Exception;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class Controller extends BaseController
@@ -14,7 +14,7 @@ class Controller extends BaseController
 
     public function index(Request $request, string $modelClass)
     {
-        $filter = RequestQueryParser::parseFilter();
+        $filter = (new FilterParser)->parse($request->get('filter'));
         return response()->json(Rest::index($modelClass, $filter))->setStatusCode(Response::HTTP_OK);
     }
 

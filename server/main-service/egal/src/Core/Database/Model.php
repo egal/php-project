@@ -3,8 +3,14 @@
 namespace Egal\Core\Database;
 
 use Egal\Core\Database\Metadata\Model as ModelMetadata;
+use Egal\Core\Rest\Filter\FilterApplier;
+use Egal\Core\Rest\Filter\Query as FilterQuery;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
+/**
+ * #TODO: Реализовать EnumModel.
+ */
 abstract class Model extends BaseModel
 {
 
@@ -32,6 +38,11 @@ abstract class Model extends BaseModel
     {
         $metadata = $this->getMetadata();
         $this->mergeFillable($metadata->getFillableFieldsNames());
+    }
+
+    public function scopeFilter(Builder $query, FilterQuery $filterQuery): Builder
+    {
+        return FilterApplier::applyQuery($query, $filterQuery);
     }
 
 }

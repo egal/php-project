@@ -4,17 +4,27 @@ namespace Egal\Core\Rest\Filter;
 
 class Condition
 {
-    protected Combiner $combiner;
-    protected string $field;
-    protected Operator $operator;
-    protected string $value;
 
-    public function __construct(string $field, Operator $operator, string $value, Combiner $combiner = Combiner::And)
+    use Combinable;
+
+    private string $field;
+    private Operator $operator;
+    private null|bool|int|float|string $value;
+
+    public static function make(
+        string                     $field,
+        Operator                   $operator,
+        null|bool|int|float|string $value,
+        Combiner                   $combiner = Combiner::And
+    ): static
     {
-        $this->combiner = $combiner;
-        $this->field = $field;
-        $this->operator = $operator;
-        $this->value = $value;
+        $condition = new static();
+        $condition->field = $field;
+        $condition->operator = $operator;
+        $condition->value = $value;
+        $condition->combiner = $combiner;
+
+        return $condition;
     }
 
     public function getField(): string
@@ -27,14 +37,9 @@ class Condition
         return $this->operator;
     }
 
-    public function getValue(): string
+    public function getValue(): float|bool|int|string|null
     {
         return $this->value;
-    }
-
-    public function getCombiner(): Combiner
-    {
-        return $this->combiner;
     }
 
 }

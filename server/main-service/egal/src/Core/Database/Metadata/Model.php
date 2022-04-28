@@ -2,8 +2,14 @@
 
 namespace Egal\Core\Database\Metadata;
 
+use Egal\Core\Rest\Filter\FilterApplier;
+use Egal\Core\Rest\Filter\Query as FilterQuery;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
+/**
+ * #TODO: Регистрация обработчиков событий через метаданные.
+ */
 class Model
 {
 

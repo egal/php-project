@@ -4,23 +4,33 @@ namespace Egal\Core\Rest\Filter;
 
 class Query
 {
-    private array $content = [];
+
+    use Combinable;
 
     /**
-     * @param array $content
+     * @var array<int, Query|Condition>
      */
-    public function __construct(array $content = [])
+    private array $conditions = [];
+
+    public function getConditions(): array
     {
-        $this->content = $content;
+        return $this->conditions;
     }
 
-    public function getContent(): array
+    public function addCondition(Query|Condition $condition): void
     {
-        return $this->content;
+        $this->conditions[] = $condition;
     }
 
-    public function addContentItem($item): void
+    /**
+     * @param array<int, Query|Condition> $conditions
+     */
+    public static function make(array $conditions = [], ?Combiner $combiner = Combiner::And): static
     {
-        $this->content[] = $item;
+        $query = new static();
+        $query->combiner = $combiner;
+        $query->conditions = $conditions;
+
+        return $query;
     }
 }
