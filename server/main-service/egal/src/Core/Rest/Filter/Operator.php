@@ -9,7 +9,20 @@ enum Operator: string
 
     case Equals = 'eq';
     case NotEquals = 'not eq';
-
+    case GreaterThenOperator = 'gt';
+    case LessThenOperator = 'lt';
+    case GreaterOrEqualOperator = 'ge';
+    case LessOrEqualOperator = 'le';
+    case ContainOperator = 'co';
+    case StartWithOperator = 'sw';
+    case EndWithOperator = 'ew';
+    case NotContainOperator = 'not co';
+    case EqualIgnoreCaseOperator = 'eqi';
+    case ContainIgnoreCaseOperator = 'coi';
+    case StartWithIgnoreCaseOperator = 'swi';
+    case EndWithIgnoreCaseOperator = 'ewi';
+    case NotEqualIgnoreCaseOperator = 'not eqi';
+    case NotContainIgnoreCaseOperator = 'not coi';
 
     public function getSqlOperator(): string
     {
@@ -18,28 +31,28 @@ enum Operator: string
                 return '=';
             case self::NotEquals:
                 return '!=';
-//            case self::GREATER_THEN_OPERATOR:
-//                return '>';
-//            case self::LESS_THEN_OPERATOR:
-//                return '<';
-//            case self::GREATER_OR_EQUAL_OPERATOR:
-//                return '>=';
-//            case self::LESS_OR_EQUAL_OPERATOR:
-//                return '<=';
-//            case self::CONTAIN_OPERATOR:
-//            case self::START_WITH_OPERATOR:
-//            case self::END_WITH_OPERATOR:
-//                return 'LIKE';
-//            case self::NOT_CONTAIN_OPERATOR:
-//                return 'NOT LIKE';
-//            case self::EQUAL_IGNORE_CASE_OPERATOR:
-//            case self::CONTAIN_IGNORE_CASE_OPERATOR:
-//            case self::START_WITH_IGNORE_CASE_OPERATOR:
-//            case self::END_WITH_IGNORE_CASE_OPERATOR:
-//                return 'ILIKE';
-//            case self::NOT_EQUAL_IGNORE_CASE_OPERATOR:
-//            case self::NOT_CONTAIN_IGNORE_CASE_OPERATOR:
-//                return 'NOT ILIKE';
+            case self::GreaterThenOperator:
+                return '>';
+            case self::LessThenOperator:
+                return '<';
+            case self::GreaterOrEqualOperator:
+                return '>=';
+            case self::LessOrEqualOperator:
+                return '<=';
+            case self::ContainOperator:
+            case self::StartWithOperator:
+            case self::EndWithOperator:
+                return 'LIKE';
+            case self::NotContainOperator:
+                return 'NOT LIKE';
+            case self::EqualIgnoreCaseOperator:
+            case self::ContainIgnoreCaseOperator:
+            case self::StartWithIgnoreCaseOperator:
+            case self::EndWithIgnoreCaseOperator:
+                return 'ILIKE';
+            case self::NotEqualIgnoreCaseOperator:
+            case self::NotContainIgnoreCaseOperator:
+                return 'NOT ILIKE';
             default:
                 throw new FilterSqlOperatorNotFoundException();
         }
