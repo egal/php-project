@@ -5,26 +5,70 @@ namespace Egal\Tests\Core\Rest\Filter;
 use Egal\Core\Database\Metadata\Field as FieldMetadata;
 use Egal\Core\Database\Metadata\Model as ModelMetadata;
 use Egal\Core\Database\Model;
+use Egal\Core\Rest\Controller;
 use Egal\Core\Rest\Filter\Combiner;
 use Egal\Core\Rest\Filter\Condition;
 use Egal\Core\Rest\Filter\Field;
 use Egal\Core\Rest\Filter\Operator;
 use Egal\Core\Rest\Filter\Query as FilterQuery;
+use Egal\Core\Rest\Filter\RelationField;
+use Egal\Tests\DatabaseSchema;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Schema\Blueprint;
 use PHPUnit\Framework\TestCase;
 
 class FilterApplierTest extends TestCase
 {
+    use DatabaseSchema;
+
     public function filterApplierDataProvider(): array
     {
-        $field = new Field('name');
-        $field->setRelation('category');
+        $fieldName = new Field('name');
+        $fieldCategoryName = new RelationField('name', 'category');
+        $fieldCategoryId = new Field('category_id');
 
         return [
             [
                 FilterQuery::make([
-                    Condition::make($field, Operator::Equals, null, Combiner::And),
-                ])
+                    Condition::make($fieldCategoryName, Operator::Equals, 'first ctg'),
+                ]),
+                [2]
+            ],
+            [
+                FilterQuery::make([
+                    Condition::make($fieldName, Operator::Equals, 'first prd'),
+                ]),
+                [1]
+            ],
+            [
+                FilterQuery::make([
+                    Condition::make($fieldName, Operator::Equals, 'first prd'),
+                    Condition::make($fieldName, Operator::Equals, 'second prd', Combiner::Or)
+                ]),
+                [1, 2]
+            ],
+            [
+                FilterQuery::make([
+                    Condition::make($fieldName, Operator::Equals, 'first prd'),
+                    Condition::make($fieldName, Operator::Equals, 'second prd')
+                ]),
+                []
+            ],
+            [
+                FilterQuery::make([
+                    Condition::make($fieldCategoryId, Operator::Equals, null)
+                ]),
+                [1]
+            ],
+            [
+                FilterQuery::make([
+                    Condition::make($fieldCategoryId, Operator::NotEquals, null),
+                    FilterQuery::make([
+                        Condition::make($fieldName, Operator::Equals, 'first prd'),
+                        Condition::make($fieldName, Operator::Equals, 'second prd', Combiner::Or),
+                    ], Combiner::And),
+                ]),
+                [2]
             ]
         ];
     }
@@ -32,14 +76,54 @@ class FilterApplierTest extends TestCase
     /**
      * @dataProvider filterApplierDataProvider()
      */
-    public function testFilterApplier(FilterQuery $filterQuery, string $expectedSql = '')
+    public function testFilterApplier(FilterQuery $filterQuery, array|string $expected)
     {
-        dump(ModelTestProduct::filter($filterQuery)->toSql());
+
+        if (is_string($expected)) {
+            $this->expectException($expected);
+        }
+
+        $result = array_column(ModelFilterApplierTestProduct::filter($filterQuery)->get()->toArray(), 'id');
+
+        $this->assertEquals($expected, $result);
+
+    }
+
+    protected function createSchema(): void
+    {
+
+        $this->schema()->create('categories', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        $this->schema()->create('products', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->foreign('category_id')->on('categories')->references('id');
+
+            $table->timestamps();
+        });
+
+        ModelFilterApplierTestCategory::query()->insert(['name' => 'first ctg']);
+        ModelFilterApplierTestCategory::query()->insert(['name' => 'second ctg']);
+
+        ModelFilterApplierTestProduct::query()->insert(['name' => 'first prd']);
+        ModelFilterApplierTestProduct::query()->insert(['name' => 'second prd', 'category_id' => 1]);
+    }
+
+    protected function dropSchema(): void
+    {
+        $this->schema()->drop('products');
+        $this->schema()->drop('categories');
     }
 }
 
-class ModelTestCategory extends Model
+class ModelFilterApplierTestCategory extends Model
 {
+    protected $table = 'categories';
 
     public function initializeMetadata(): ModelMetadata
     {
@@ -52,8 +136,9 @@ class ModelTestCategory extends Model
     }
 }
 
-class ModelTestProduct extends Model
+class ModelFilterApplierTestProduct extends Model
 {
+    protected $table = 'products';
 
     public function initializeMetadata(): ModelMetadata
     {
@@ -70,6 +155,6 @@ class ModelTestProduct extends Model
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(ModelTestCategory::class);
+        return $this->belongsTo(ModelFilterApplierTestCategory::class);
     }
 }

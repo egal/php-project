@@ -7,12 +7,12 @@ class Condition
 
     use Combinable;
 
-    private Field $field;
+    private Field|RelationField $field;
     private Operator $operator;
     private null|bool|int|float|string $value;
 
     public static function make(
-        Field                     $field,
+        Field|RelationField        $field,
         Operator                   $operator,
         null|bool|int|float|string $value,
         Combiner                   $combiner = Combiner::And
@@ -27,7 +27,7 @@ class Condition
         return $condition;
     }
 
-    public function getField(): Field
+    public function getField(): Field|RelationField
     {
         return $this->field;
     }

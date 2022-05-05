@@ -26,25 +26,25 @@ class FilterApplier
             self::applyQuery($query, $condition);
         } else {
             $field = $condition->getField();
-            $operator = $condition->getOperator()->value;
+            $operator = $condition->getOperator()->getSqlOperator();
             $value = $condition->getValue();
             $combiner = $condition->getCombiner()->value;
             self::validateConditionFieldAndValue($query, $field, $value);
             $fieldName = $field->getName();
 
-            $relation = $field->getRelation();
-            if (!empty($relation)) {
-                $clause = static function ($query) use ($fieldName, $operator, $value): void {
-                    $query->where($fieldName, $operator, $value);
+            if ($field instanceof RelationField) {
+                $relation = $field->getRelation();
+                $clause = static function ($query) use ($combiner, $fieldName, $operator, $value): void {
+                    $query->where($fieldName, $operator, $value, $combiner);
                 };
                 $query->has($relation, '>=', 1, $combiner, $clause);
             } else {
-                $query->where($field, $operator, $value, $combiner);
+                $query->where($fieldName, $operator, $value, $combiner);
             }
         }
     }
 
-    private static function validateConditionFieldAndValue(Builder $query, Field $field, $value)
+    private static function validateConditionFieldAndValue(Builder $query, Field|RelationField $field, $value)
     {
     }
 

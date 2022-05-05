@@ -12,3 +12,7 @@
     ```shell
     docker-compose up
     ```
+   
+4. Test:
+   docker-compose run --rm main-service php ./vendor/bin/phpunit ./egal/tests
+

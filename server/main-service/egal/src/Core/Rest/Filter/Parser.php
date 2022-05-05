@@ -21,7 +21,7 @@ class Parser
         $combinersAsStrings = array_map(fn(Combiner $operator) => $operator->value, Combiner::cases());
 
         $operatorsPattern = implode('|', $operatorsAsStrings);
-        $this->conditionRegPattern = "/^((?<combiner>and|or) )?(?<field>[a-z_]+) (?<operator>$operatorsPattern) (?<value>.+)$/";
+        $this->conditionRegPattern = "/^((?<combiner>and|or) )?(?<field>[a-z_]+\.{0,1}[a-z']+) (?<operator>$operatorsPattern) (?<value>.+)$/";
 
 
         $combinersSimplePattern = implode('|', $combinersAsStrings);
@@ -92,6 +92,8 @@ class Parser
         } else {
             throw new FilterParseException();
         }
+
+        $field = strpos($field, '.') ? RelationField::fromString($field) : Field::fromString($field);
 
         return $combiner === ''
             ? Condition::make($field, $operator, $value)

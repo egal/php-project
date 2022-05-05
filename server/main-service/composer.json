@@ -30,7 +30,8 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "Egal\\": "egal/src/"
+            "Egal\\": "egal/src/",
+            "Egal\\Tests\\": "egal/tests/"
         },
         "files": [
             "egal/src/Core/functions/dump.php"
