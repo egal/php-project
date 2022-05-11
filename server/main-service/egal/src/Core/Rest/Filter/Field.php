@@ -2,7 +2,7 @@
 
 namespace Egal\Core\Rest\Filter;
 
-class Field
+class Field extends AbstractField
 {
     protected string $name;
 
@@ -11,14 +11,14 @@ class Field
         $this->name = $name;
     }
 
-    public static function fromString(string $field): Field
-    {
-        return new self($field);
-    }
-
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public static function fromString(string $fieldString): Field
+    {
+        return new self($fieldString);
     }
 
 }

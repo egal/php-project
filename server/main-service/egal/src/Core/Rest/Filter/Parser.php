@@ -9,7 +9,10 @@ use Egal\Core\Exceptions\FilterParseException;
 
 class Parser
 {
-
+    protected const FIELD_PATTERN = '[a-z_]+';
+    protected const RELATION_FIELD_PATTERN = "(?<relation>[a-z_]+)\.{1}(?<relation_field>[a-z_]+)";
+    protected const MORPH_RELATION_FIELD_PATTERN = "(?<morph_relation>[a-z_]+)\[(?<types>([a-z_,]+))\]\.(?<morph_relation_field>[a-z_]+)";
+    protected const EXISTS_RELATION_PATTERN = "(?<exists_relation>[a-z_]+)\.(exists)\(\)";
 
     private string $conditionRegPattern;
     private string $subQueryRegPattern;
@@ -21,7 +24,8 @@ class Parser
         $combinersAsStrings = array_map(fn(Combiner $operator) => $operator->value, Combiner::cases());
 
         $operatorsPattern = implode('|', $operatorsAsStrings);
-        $this->conditionRegPattern = "/^((?<combiner>and|or) )?(?<field>[a-z_]+\.{0,1}[a-z']+) (?<operator>$operatorsPattern) (?<value>.+)$/";
+        $fieldElementPattern = "((?<field_element>" . self::FIELD_PATTERN . ")|(?<relation_field_element>" . self::RELATION_FIELD_PATTERN . ")|(?<morph_relation_field_element>" . self::MORPH_RELATION_FIELD_PATTERN . ")|(?<exists_relation_element>" . self::EXISTS_RELATION_PATTERN . "))";
+        $this->conditionRegPattern = "/^((?<combiner>and|or) )?$fieldElementPattern (?<operator>$operatorsPattern) (?<value>.+)$/";
 
 
         $combinersSimplePattern = implode('|', $combinersAsStrings);
@@ -52,8 +56,14 @@ class Parser
 
         foreach ($queryMatches as $match) {
             if (preg_match($this->conditionRegPattern, $match, $conditionMatches)) {
+                $notEmptyFieldElementArray = array_filter([
+                    $conditionMatches['field_element'],
+                    $conditionMatches['relation_field_element'],
+                    $conditionMatches['morph_relation_field_element'],
+                    $conditionMatches['exists_relation_element']
+                ]);
                 $condition = $this->makeConditionFromRaw(
-                    $conditionMatches['field'],
+                    array_shift($notEmptyFieldElementArray),
                     $conditionMatches['operator'],
                     $conditionMatches['value'],
                     $conditionMatches['combiner']
@@ -77,6 +87,17 @@ class Parser
     {
         $operator = Operator::from($operator);
 
+        $value = $this->makeValueFromRaw($value);
+
+        $field = $this->makeFieldFromRaw($field);
+
+        return $combiner === ''
+            ? Condition::make($field, $operator, $value)
+            : Condition::make($field, $operator, $value, Combiner::from($combiner));
+    }
+
+    private function makeValueFromRaw(string $value): string|int|bool|null|float
+    {
         if ($value === 'true') {
             $value = true;
         } elseif ($value === 'false') {
@@ -92,12 +113,31 @@ class Parser
         } else {
             throw new FilterParseException();
         }
+        return $value;
+    }
 
-        $field = strpos($field, '.') ? RelationField::fromString($field) : Field::fromString($field);
+    private function makeFieldFromRaw(string $field): AbstractField
+    {
+        switch (true) {
+            case preg_match("/^" . self::MORPH_RELATION_FIELD_PATTERN . "$/", $field, $matches):
+                $field = new MorphRelationField($matches['morph_relation_field'], $matches['morph_relation'], $matches['types']);
+                break;
+            case preg_match("/^" . self::EXISTS_RELATION_PATTERN . "$/", $field, $matches):
+                $field = new ExistsRelation($matches['exists_relation']);
+                break;
+            case preg_match("/^" . self::RELATION_FIELD_PATTERN . "$/", $field, $matches):
+                $field = new RelationField($matches['relation_field'], $matches['relation']);
+                break;
+            case preg_match("/^" . self::FIELD_PATTERN . "$/", $field):
+                $field = new Field($field);
+                break;
+            default:
+                dump($field);
+                dump("/^" . self::RELATION_FIELD_PATTERN . "$/");
+                throw new FilterParseException();
+        }
 
-        return $combiner === ''
-            ? Condition::make($field, $operator, $value)
-            : Condition::make($field, $operator, $value, Combiner::from($combiner));
+        return $field;
     }
 
 }

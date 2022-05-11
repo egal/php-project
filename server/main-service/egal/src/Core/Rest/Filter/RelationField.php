@@ -2,26 +2,26 @@
 
 namespace Egal\Core\Rest\Filter;
 
-class RelationField
+class RelationField extends AbstractField
 {
-    protected string $name;
     protected string $relation;
+    protected string $field;
 
-    public function __construct(string $name, string $relation)
+    public function __construct(string $field, string $relation)
     {
-        $this->name = $name;
+        $this->field = $field;
         $this->relation = $relation;
+    }
+
+    public function getField(): string
+    {
+        return $this->field;
     }
 
     public static function fromString(string $fieldString): RelationField
     {
         $fieldParts = explode('.', $fieldString);
         return new self(array_pop($fieldParts), array_pop($fieldParts));
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
     }
 
     public function getRelation(): string
