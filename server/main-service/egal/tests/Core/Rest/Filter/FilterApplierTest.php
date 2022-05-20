@@ -7,12 +7,15 @@ use Egal\Core\Database\Metadata\Model as ModelMetadata;
 use Egal\Core\Database\Model;
 use Egal\Core\Rest\Filter\Combiner;
 use Egal\Core\Rest\Filter\Condition;
+use Egal\Core\Rest\Filter\ExistsRelation;
 use Egal\Core\Rest\Filter\Field;
+use Egal\Core\Rest\Filter\MorphRelationField;
 use Egal\Core\Rest\Filter\Operator;
 use Egal\Core\Rest\Filter\Query as FilterQuery;
 use Egal\Core\Rest\Filter\RelationField;
 use Egal\Tests\DatabaseSchema;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Schema\Blueprint;
 use PHPUnit\Framework\TestCase;
@@ -33,36 +36,36 @@ class FilterApplierTest extends TestCase
                 ]),
                 [1]
             ],
-//            [
-//                FilterQuery::make([
-//                    Condition::make($fieldName, Operator::Equals, 'first prd'),
-//                    Condition::make($fieldName, Operator::Equals, 'second prd', Combiner::Or)
-//                ]),
-//                [1, 2]
-//            ],
-//            [
-//                FilterQuery::make([
-//                    Condition::make($fieldName, Operator::Equals, 'first prd'),
-//                    Condition::make($fieldName, Operator::Equals, 'second prd')
-//                ]),
-//                []
-//            ],
-//            [
-//                FilterQuery::make([
-//                    Condition::make($fieldCategoryId, Operator::Equals, null)
-//                ]),
-//                [1]
-//            ],
-//            [
-//                FilterQuery::make([
-//                    Condition::make($fieldCategoryId, Operator::NotEquals, null),
-//                    FilterQuery::make([
-//                        Condition::make($fieldName, Operator::Equals, 'first prd'),
-//                        Condition::make($fieldName, Operator::Equals, 'second prd', Combiner::Or),
-//                    ], Combiner::And),
-//                ]),
-//                [2]
-//            ]
+            [
+                FilterQuery::make([
+                    Condition::make($fieldName, Operator::Equals, 'first prd'),
+                    Condition::make($fieldName, Operator::Equals, 'second prd', Combiner::Or)
+                ]),
+                [1, 2]
+            ],
+            [
+                FilterQuery::make([
+                    Condition::make($fieldName, Operator::Equals, 'first prd'),
+                    Condition::make($fieldName, Operator::Equals, 'second prd')
+                ]),
+                []
+            ],
+            [
+                FilterQuery::make([
+                    Condition::make($fieldCategoryId, Operator::Equals, null)
+                ]),
+                [1]
+            ],
+            [
+                FilterQuery::make([
+                    Condition::make($fieldCategoryId, Operator::NotEquals, null),
+                    FilterQuery::make([
+                        Condition::make($fieldName, Operator::Equals, 'first prd'),
+                        Condition::make($fieldName, Operator::Equals, 'second prd', Combiner::Or),
+                    ], Combiner::And),
+                ]),
+                [2]
+            ]
         ];
     }
 
@@ -100,34 +103,68 @@ class FilterApplierTest extends TestCase
         ];
     }
 
-    public function filterApplierDataProviderMorphRelationField(): array
+    public function filterApplierDataProviderExistsRelation(): array
     {
-        $fieldCategoryName = new RelationField('name', 'category');
+        $categoryExists = new ExistsRelation('category');
 
         return [
             [
                 FilterQuery::make([
-                    Condition::make($fieldCategoryName, Operator::Equals, 'first ctg'),
+                    Condition::make($categoryExists, Operator::Equals, true),
                 ]),
                 [2]
             ],
             [
                 FilterQuery::make([
-                    Condition::make($fieldCategoryName, Operator::Equals, 'first ctg'),
-                    Condition::make($fieldCategoryName, Operator::Equals, 'second ctg', Combiner::Or)
-                ]),
-                [2]
-            ],
-            [
-                FilterQuery::make([
-                    Condition::make($fieldCategoryName, Operator::Equals, 'first ctg'),
-                    Condition::make($fieldCategoryName, Operator::Equals, 'second ctg')
+                    Condition::make($categoryExists, Operator::Equals, false),
+                    Condition::make($categoryExists, Operator::Equals, true)
                 ]),
                 []
             ],
             [
                 FilterQuery::make([
-                    Condition::make($fieldCategoryName, Operator::Equals, null)
+                    Condition::make($categoryExists, Operator::Equals, false)
+                ]),
+                [1]
+            ],
+             [
+                FilterQuery::make([
+                    Condition::make($categoryExists, Operator::Equals, false),
+                    Condition::make($categoryExists, Operator::Equals, true, Combiner::Or)
+                ]),
+                [1, 2]
+            ],
+        ];
+    }
+
+    public function filterApplierDataProviderMorphRelationField(): array
+    {
+        $fieldCategoryCommentContent = new MorphRelationField('content', 'commentable', [ModelFilterApplierTestCategory::class]);
+        $fieldProductCommentContent = new MorphRelationField('content', 'commentable', [ModelFilterApplierTestProduct::class]);
+
+        return [
+            [
+                FilterQuery::make([
+                    Condition::make($fieldCategoryCommentContent, Operator::StartWithOperator, 'comment'),
+                ]),
+                [1, 2]
+            ],
+            [
+                FilterQuery::make([
+                    Condition::make($fieldProductCommentContent, Operator::StartWithOperator, 'comment')
+                ]),
+                [3]
+            ],
+            [
+                FilterQuery::make([
+                    Condition::make($fieldProductCommentContent, Operator::StartWithOperator, 'comment'),
+                    Condition::make($fieldCategoryCommentContent, Operator::StartWithOperator, 'comment')
+                ]),
+                []
+            ],
+            [
+                FilterQuery::make([
+                    Condition::make($fieldProductCommentContent, Operator::StartWithOperator, 'not')
                 ]),
                 []
             ]
@@ -136,8 +173,8 @@ class FilterApplierTest extends TestCase
 
     /**
      * @dataProvider filterApplierDataProviderField()
-//     * @dataProvider filterApplierDataProviderRelationField()
-//     * @dataProvider filterApplierDataProviderMorphRelationField()
+     * @dataProvider filterApplierDataProviderRelationField()
+     * @dataProvider filterApplierDataProviderExistsRelation()
      */
     public function testFilterApplier(FilterQuery $filterQuery, array|string $expected)
     {
@@ -147,6 +184,22 @@ class FilterApplierTest extends TestCase
         }
 
         $result = array_column(ModelFilterApplierTestProduct::filter($filterQuery)->get()->toArray(), 'id');
+
+        $this->assertEquals($expected, $result);
+
+    }
+
+    /**
+     * @dataProvider filterApplierDataProviderMorphRelationField()
+     */
+    public function testFilterByMorphRelationApplier(FilterQuery $filterQuery, array|string $expected)
+    {
+
+        if (is_string($expected)) {
+            $this->expectException($expected);
+        }
+
+        $result = array_column(ModelFilterApplierTestComment::filter($filterQuery)->get()->toArray(), 'id');
 
         $this->assertEquals($expected, $result);
 
@@ -172,6 +225,7 @@ class FilterApplierTest extends TestCase
 
         $this->schema()->create('comments', function (Blueprint $table) {
             $table->increments('id');
+            $table->text('content');
             $table->morphs('commentable');
             $table->timestamps();
         });
@@ -185,14 +239,17 @@ class FilterApplierTest extends TestCase
         ModelFilterApplierTestComment::query()->insert([
             'commentable_type' => ModelFilterApplierTestCategory::class,
             'commentable_id' => 1,
+            'content' => 'comment to 1 category'
         ]);
         ModelFilterApplierTestComment::query()->insert([
             'commentable_type' => ModelFilterApplierTestCategory::class,
             'commentable_id' => 2,
+            'content' => 'comment to 2 category'
         ]);
         ModelFilterApplierTestComment::query()->insert([
             'commentable_type' => ModelFilterApplierTestProduct::class,
             'commentable_id' => 1,
+            'content' => 'comment to 1 product'
         ]);
     }
 
@@ -240,6 +297,11 @@ class ModelFilterApplierTestProduct extends Model
     {
         return $this->belongsTo(ModelFilterApplierTestCategory::class);
     }
+
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(ModelFilterApplierTestComment::class, 'commentable');
+    }
 }
 
 class ModelFilterApplierTestComment extends Model
@@ -250,6 +312,9 @@ class ModelFilterApplierTestComment extends Model
     {
         return ModelMetadata::make(static::class)
             ->fields(
+                FieldMetadata::make('content')
+                    ->required()
+                    ->fillable(),
                 FieldMetadata::make('commentable_type')
                     ->required()
                     ->fillable(),

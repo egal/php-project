@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->unsignedBigInteger('channel_id')->nullable();
+            $table->foreign('category_id')->on('categories')->references('id');
             $table->timestamps();
         });
     }

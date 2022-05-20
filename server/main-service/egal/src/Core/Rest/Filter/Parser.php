@@ -132,8 +132,6 @@ class Parser
                 $field = new Field($field);
                 break;
             default:
-                dump($field);
-                dump("/^" . self::RELATION_FIELD_PATTERN . "$/");
                 throw new FilterParseException();
         }
 

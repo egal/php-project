@@ -23,7 +23,8 @@ class Controller
         Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
-        $collection = $model::filter()->get();
+        $collection = $model::filter($filter)->get();
+        dump($model::filter($filter)->toSql());
 
         foreach ($collection as $object) {
             Gate::allowed(Auth::user(), Ability::Show, $object);

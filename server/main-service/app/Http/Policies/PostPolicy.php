@@ -10,7 +10,7 @@ class PostPolicy
 
     public function showAny(?User $user): bool
     {
-        return false;
+        return true;
     }
 
     public function createAny(?User $user): bool

@@ -37,9 +37,14 @@ class Condition
         return $this->operator;
     }
 
-    public function getValue(): float|bool|int|string|null
+    public function getValue(?Operator $operator = null): float|bool|int|string|null
     {
-        return $this->value;
+        return match ($operator) {
+            Operator::ContainOperator, Operator::ContainIgnoreCaseOperator, Operator::NotContainOperator, Operator::NotContainIgnoreCaseOperator => '%' . $this->value . '%',
+            Operator::StartWithOperator, Operator::StartWithIgnoreCaseOperator => $this->value . '%',
+            Operator::EndWithOperator, Operator::EqualIgnoreCaseOperator => '%' . $this->value,
+            default => $this->value,
+        };
     }
 
 }
