@@ -4,6 +4,8 @@ services:
     ports:
       - published: 5433
         target: 5432
+    volumes:
+      - database:/var/lib/postgresql/data
   main-service:
     build:
       args:
