@@ -6,6 +6,7 @@ namespace Egal\Core\Rest\Filter;
 
 
 use Egal\Core\Exceptions\FilterParseException;
+use Illuminate\Support\Facades\Log;
 
 class Parser
 {
@@ -55,7 +56,10 @@ class Parser
         }
 
         foreach ($queryMatches as $match) {
+            dump('$this->conditionRegPattern ' . $this->conditionRegPattern);
+            dump('$match ' . $match);
             if (preg_match($this->conditionRegPattern, $match, $conditionMatches)) {
+
                 $notEmptyFieldElementArray = array_filter([
                     $conditionMatches['field_element'],
                     $conditionMatches['relation_field_element'],

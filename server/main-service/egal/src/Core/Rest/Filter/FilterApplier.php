@@ -2,6 +2,7 @@
 
 namespace Egal\Core\Rest\Filter;
 
+use Egal\Core\Database\Metadata\Model;
 use Egal\Core\Exceptions\FilterApplyException;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -31,31 +32,19 @@ class FilterApplier
             $value = $condition->getValue($operator);
             $combiner = $condition->getCombiner()->value;
 
-            self::validateConditionFieldAndValue($query, $field, $value); #TODO передавать вместо query model metadata, перенести на уровень выше (проверять раньше)
-
             switch (true) {
                 case $field instanceof MorphRelationField:
                     $relation = $field->getRelation();
                     $types = $field->getTypes();
                     $fieldName = $field->getField();
-
                     $clause = static function ($query) use ($fieldName, $sqlOperator, $value): void {
                         $query->where($fieldName, $sqlOperator, $value);
                     };
-
-                    // TODO
-                    // $clause = static fn() => $query->where($fieldName, $operator, $value);
-
                     $query->hasMorph($relation, $types, '>=', 1, $combiner, $clause);
-                    break;
-                case $field instanceof ExistsRelation: //TODO навзвать класс агрегатных функций и реализовать только exists, не делаем, нужно через филды делать
-                    $relation = $field->getRelation();
-                    $query->has($relation, $value ? '>=' : '<', 1, $combiner);
                     break;
                 case $field instanceof RelationField:
                     $relation = $field->getRelation();
                     $fieldName = $field->getField();
-
                     $clause = static function ($query) use ($fieldName, $sqlOperator, $value): void {
                         $query->where($fieldName, $sqlOperator, $value);
                     };
@@ -63,7 +52,6 @@ class FilterApplier
                     break;
                 case $field instanceof Field:
                     $fieldName = $field->getName();
-
                     $query->where($fieldName, $sqlOperator, $value, $combiner);
                     break;
                 default:
@@ -72,8 +60,22 @@ class FilterApplier
         }
     }
 
-    private static function validateConditionFieldAndValue(Builder $query, AbstractField $field, $value)
+    public static function validateQuery(Model $modelMetadata, Query $filterQuery)
     {
+        $filterConditions = $filterQuery->getConditions();
+
+        foreach ($filterConditions as $condition) {
+            self::validateCondition($modelMetadata, $condition);
+        }
+    }
+
+    private static function validateCondition(Model $modelMetadata, Query|Condition $condition)
+    {
+//        if ($condition instanceof Query) {
+//            self::validateQuery($modelMetadata, $condition);
+//        } else {
+//
+//        }
     }
 
 }

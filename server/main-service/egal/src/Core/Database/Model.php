@@ -42,6 +42,8 @@ abstract class Model extends BaseModel
 
     public function scopeFilter(Builder $query, FilterQuery $filterQuery): Builder
     {
+//        FilterApplier::validateQuery($this->getMetadata(), $filterQuery);
+
         return FilterApplier::applyQuery($query, $filterQuery);
     }
 

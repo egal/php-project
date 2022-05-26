@@ -7,7 +7,6 @@ use Egal\Core\Database\Metadata\Model as ModelMetadata;
 use Egal\Core\Database\Model;
 use Egal\Core\Rest\Filter\Combiner;
 use Egal\Core\Rest\Filter\Condition;
-use Egal\Core\Rest\Filter\ExistsRelation;
 use Egal\Core\Rest\Filter\Field;
 use Egal\Core\Rest\Filter\MorphRelationField;
 use Egal\Core\Rest\Filter\Operator;
@@ -17,7 +16,6 @@ use Egal\Tests\DatabaseSchema;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Schema\Blueprint;
 use PHPUnit\Framework\TestCase;
 
 class FilterApplierTest extends TestCase
@@ -103,40 +101,6 @@ class FilterApplierTest extends TestCase
         ];
     }
 
-    public function filterApplierDataProviderExistsRelation(): array
-    {
-        $categoryExists = new ExistsRelation('category');
-
-        return [
-            [
-                FilterQuery::make([
-                    Condition::make($categoryExists, Operator::Equals, true),
-                ]),
-                [2]
-            ],
-            [
-                FilterQuery::make([
-                    Condition::make($categoryExists, Operator::Equals, false),
-                    Condition::make($categoryExists, Operator::Equals, true)
-                ]),
-                []
-            ],
-            [
-                FilterQuery::make([
-                    Condition::make($categoryExists, Operator::Equals, false)
-                ]),
-                [1]
-            ],
-             [
-                FilterQuery::make([
-                    Condition::make($categoryExists, Operator::Equals, false),
-                    Condition::make($categoryExists, Operator::Equals, true, Combiner::Or)
-                ]),
-                [1, 2]
-            ],
-        ];
-    }
-
     public function filterApplierDataProviderMorphRelationField(): array
     {
         $fieldCategoryCommentContent = new MorphRelationField('content', 'commentable', [ModelFilterApplierTestCategory::class]);
@@ -174,7 +138,6 @@ class FilterApplierTest extends TestCase
     /**
      * @dataProvider filterApplierDataProviderField()
      * @dataProvider filterApplierDataProviderRelationField()
-     * @dataProvider filterApplierDataProviderExistsRelation()
      */
     public function testFilterApplier(FilterQuery $filterQuery, array|string $expected)
     {
@@ -184,6 +147,9 @@ class FilterApplierTest extends TestCase
         }
 
         $result = array_column(ModelFilterApplierTestProduct::filter($filterQuery)->get()->toArray(), 'id');
+
+        dump($expected);
+        dump($result);
 
         $this->assertEquals($expected, $result);
 
@@ -208,56 +174,56 @@ class FilterApplierTest extends TestCase
     protected function createSchema(): void
     {
 
-        $this->schema()->create('categories', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->timestamps();
-        });
-
-        $this->schema()->create('products', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->unsignedBigInteger('category_id')->nullable();
-            $table->foreign('category_id')->on('categories')->references('id');
-
-            $table->timestamps();
-        });
-
-        $this->schema()->create('comments', function (Blueprint $table) {
-            $table->increments('id');
-            $table->text('content');
-            $table->morphs('commentable');
-            $table->timestamps();
-        });
-
-        ModelFilterApplierTestCategory::query()->insert(['name' => 'first ctg']);
-        ModelFilterApplierTestCategory::query()->insert(['name' => 'second ctg']);
-
-        ModelFilterApplierTestProduct::query()->insert(['name' => 'first prd']);
-        ModelFilterApplierTestProduct::query()->insert(['name' => 'second prd', 'category_id' => 1]);
-
-        ModelFilterApplierTestComment::query()->insert([
-            'commentable_type' => ModelFilterApplierTestCategory::class,
-            'commentable_id' => 1,
-            'content' => 'comment to 1 category'
-        ]);
-        ModelFilterApplierTestComment::query()->insert([
-            'commentable_type' => ModelFilterApplierTestCategory::class,
-            'commentable_id' => 2,
-            'content' => 'comment to 2 category'
-        ]);
-        ModelFilterApplierTestComment::query()->insert([
-            'commentable_type' => ModelFilterApplierTestProduct::class,
-            'commentable_id' => 1,
-            'content' => 'comment to 1 product'
-        ]);
+//        $this->schema()->create('categories', function (Blueprint $table) {
+//            $table->increments('id');
+//            $table->string('name');
+//            $table->timestamps();
+//        });
+//
+//        $this->schema()->create('products', function (Blueprint $table) {
+//            $table->increments('id');
+//            $table->string('name');
+//            $table->unsignedBigInteger('category_id')->nullable();
+//            $table->foreign('category_id')->on('categories')->references('id');
+//
+//            $table->timestamps();
+//        });
+//
+//        $this->schema()->create('comments', function (Blueprint $table) {
+//            $table->increments('id');
+//            $table->text('content');
+//            $table->morphs('commentable');
+//            $table->timestamps();
+//        });
+//
+//        ModelFilterApplierTestCategory::query()->insert(['name' => 'first ctg']);
+//        ModelFilterApplierTestCategory::query()->insert(['name' => 'second ctg']);
+//
+//        ModelFilterApplierTestProduct::query()->insert(['name' => 'first prd']);
+//        ModelFilterApplierTestProduct::query()->insert(['name' => 'second prd', 'category_id' => 1]);
+//
+//        ModelFilterApplierTestComment::query()->insert([
+//            'commentable_type' => ModelFilterApplierTestCategory::class,
+//            'commentable_id' => 1,
+//            'content' => 'comment to 1 category'
+//        ]);
+//        ModelFilterApplierTestComment::query()->insert([
+//            'commentable_type' => ModelFilterApplierTestCategory::class,
+//            'commentable_id' => 2,
+//            'content' => 'comment to 2 category'
+//        ]);
+//        ModelFilterApplierTestComment::query()->insert([
+//            'commentable_type' => ModelFilterApplierTestProduct::class,
+//            'commentable_id' => 1,
+//            'content' => 'comment to 1 product'
+//        ]);
     }
 
     protected function dropSchema(): void
     {
-        $this->schema()->drop('comments');
-        $this->schema()->drop('products');
-        $this->schema()->drop('categories');
+//        $this->schema()->drop('comments');
+//        $this->schema()->drop('products');
+//        $this->schema()->drop('categories');
     }
 }
 

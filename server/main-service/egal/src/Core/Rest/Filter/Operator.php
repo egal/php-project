@@ -26,36 +26,18 @@ enum Operator: string
 
     public function getSqlOperator(): string
     {
-        switch ($this) {
-            case self::Equals:
-                return '=';
-            case self::NotEquals:
-                return '!=';
-            case self::GreaterThenOperator:
-                return '>';
-            case self::LessThenOperator:
-                return '<';
-            case self::GreaterOrEqualOperator:
-                return '>=';
-            case self::LessOrEqualOperator:
-                return '<=';
-            case self::ContainOperator:
-            case self::StartWithOperator:
-            case self::EndWithOperator:
-                return 'LIKE';
-            case self::NotContainOperator:
-                return 'NOT LIKE';
-            case self::EqualIgnoreCaseOperator:
-            case self::ContainIgnoreCaseOperator:
-            case self::StartWithIgnoreCaseOperator:
-            case self::EndWithIgnoreCaseOperator:
-                return 'ILIKE';
-            case self::NotEqualIgnoreCaseOperator:
-            case self::NotContainIgnoreCaseOperator:
-                return 'NOT ILIKE';
-            default:
-                throw new FilterSqlOperatorNotFoundException();
-        }
+        return match ($this) {
+            self::Equals => '=',
+            self::NotEquals => '!=',
+            self::GreaterThenOperator => '>',
+            self::LessThenOperator => '<',
+            self::GreaterOrEqualOperator => '>=',
+            self::LessOrEqualOperator => '<=',
+            self::ContainOperator, self::StartWithOperator, self::EndWithOperator => 'LIKE',
+            self::NotContainOperator => 'NOT LIKE',
+            self::EqualIgnoreCaseOperator, self::ContainIgnoreCaseOperator, self::StartWithIgnoreCaseOperator, self::EndWithIgnoreCaseOperator => 'ILIKE',
+            self::NotEqualIgnoreCaseOperator, self::NotContainIgnoreCaseOperator => 'NOT ILIKE',
+        };
     }
 
 }
