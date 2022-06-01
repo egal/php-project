@@ -2,8 +2,9 @@
 
 namespace Egal\Core\Http;
 
+use Egal\Core\Facades\FilterParser;
 use Egal\Core\Facades\Rest;
-use Egal\Core\Rest\Filter\Parser as FilterParser;
+use Egal\Core\Facades\SelectParser;
 use Exception;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
@@ -14,7 +15,8 @@ class Controller extends BaseController
 
     public function index(Request $request, string $modelClass)
     {
-        $filter = (new FilterParser)->parse($request->get('filter'));
+        $filter = FilterParser::parse($request->get('filter'));
+//        $select = SelectParser::parse($request->get('select'));
         return response()->json(Rest::index($modelClass, $filter))->setStatusCode(Response::HTTP_OK);
     }
 

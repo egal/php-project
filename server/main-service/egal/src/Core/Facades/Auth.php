@@ -16,7 +16,7 @@ class Auth extends Facade
 
     protected static function getFacadeAccessor()
     {
-        return 'EgalAuth';
+        return 'egal.auth';
     }
 
     public static function user(): ?User

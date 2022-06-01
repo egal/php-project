@@ -4,6 +4,8 @@ namespace Egal\Core\Rest\Filter;
 
 class RelationField extends AbstractField
 {
+    public const REG_PATTERN = "(?<relation>[a-z_]+)\.{1}(?<relation_field>[a-z_]+)";
+
     protected string $relation;
     protected string $field;
 

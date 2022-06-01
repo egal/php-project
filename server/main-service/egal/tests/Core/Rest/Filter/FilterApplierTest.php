@@ -6,7 +6,7 @@ use Egal\Core\Database\Metadata\Field as FieldMetadata;
 use Egal\Core\Database\Metadata\Model as ModelMetadata;
 use Egal\Core\Database\Model;
 use Egal\Core\Rest\Filter\Combiner;
-use Egal\Core\Rest\Filter\Condition;
+use Egal\Core\Rest\Filter\FieldCondition;
 use Egal\Core\Rest\Filter\Field;
 use Egal\Core\Rest\Filter\MorphRelationField;
 use Egal\Core\Rest\Filter\Operator;
@@ -31,36 +31,36 @@ class FilterApplierTest extends TestCase
         return [
             [
                 FilterQuery::make([
-                    Condition::make($fieldName, Operator::Equals, 'first prd'),
+                    FieldCondition::make($fieldName, Operator::Equals, 'first prd'),
                 ]),
                 [1]
             ],
             [
                 FilterQuery::make([
-                    Condition::make($fieldName, Operator::Equals, 'first prd'),
-                    Condition::make($fieldName, Operator::Equals, 'second prd', Combiner::Or)
+                    FieldCondition::make($fieldName, Operator::Equals, 'first prd'),
+                    FieldCondition::make($fieldName, Operator::Equals, 'second prd', Combiner::Or)
                 ]),
                 [1, 2]
             ],
             [
                 FilterQuery::make([
-                    Condition::make($fieldName, Operator::Equals, 'first prd'),
-                    Condition::make($fieldName, Operator::Equals, 'second prd')
+                    FieldCondition::make($fieldName, Operator::Equals, 'first prd'),
+                    FieldCondition::make($fieldName, Operator::Equals, 'second prd')
                 ]),
                 []
             ],
             [
                 FilterQuery::make([
-                    Condition::make($fieldCategoryId, Operator::Equals, null)
+                    FieldCondition::make($fieldCategoryId, Operator::Equals, null)
                 ]),
                 [1]
             ],
             [
                 FilterQuery::make([
-                    Condition::make($fieldCategoryId, Operator::NotEquals, null),
+                    FieldCondition::make($fieldCategoryId, Operator::NotEquals, null),
                     FilterQuery::make([
-                        Condition::make($fieldName, Operator::Equals, 'first prd'),
-                        Condition::make($fieldName, Operator::Equals, 'second prd', Combiner::Or),
+                        FieldCondition::make($fieldName, Operator::Equals, 'first prd'),
+                        FieldCondition::make($fieldName, Operator::Equals, 'second prd', Combiner::Or),
                     ], Combiner::And),
                 ]),
                 [2]
@@ -75,27 +75,27 @@ class FilterApplierTest extends TestCase
         return [
             [
                 FilterQuery::make([
-                    Condition::make($fieldCategoryName, Operator::Equals, 'first ctg'),
+                    FieldCondition::make($fieldCategoryName, Operator::Equals, 'first ctg'),
                 ]),
                 [2]
             ],
             [
                 FilterQuery::make([
-                    Condition::make($fieldCategoryName, Operator::Equals, 'first ctg'),
-                    Condition::make($fieldCategoryName, Operator::Equals, 'second ctg', Combiner::Or)
+                    FieldCondition::make($fieldCategoryName, Operator::Equals, 'first ctg'),
+                    FieldCondition::make($fieldCategoryName, Operator::Equals, 'second ctg', Combiner::Or)
                 ]),
                 [2]
             ],
             [
                 FilterQuery::make([
-                    Condition::make($fieldCategoryName, Operator::Equals, 'first ctg'),
-                    Condition::make($fieldCategoryName, Operator::Equals, 'second ctg')
+                    FieldCondition::make($fieldCategoryName, Operator::Equals, 'first ctg'),
+                    FieldCondition::make($fieldCategoryName, Operator::Equals, 'second ctg')
                 ]),
                 []
             ],
             [
                 FilterQuery::make([
-                    Condition::make($fieldCategoryName, Operator::Equals, null)
+                    FieldCondition::make($fieldCategoryName, Operator::Equals, null)
                 ]),
                 []
             ]
@@ -110,26 +110,26 @@ class FilterApplierTest extends TestCase
         return [
             [
                 FilterQuery::make([
-                    Condition::make($fieldCategoryCommentContent, Operator::StartWithOperator, 'comment'),
+                    FieldCondition::make($fieldCategoryCommentContent, Operator::StartWithOperator, 'comment'),
                 ]),
                 [1, 2]
             ],
             [
                 FilterQuery::make([
-                    Condition::make($fieldProductCommentContent, Operator::StartWithOperator, 'comment')
+                    FieldCondition::make($fieldProductCommentContent, Operator::StartWithOperator, 'comment')
                 ]),
                 [3]
             ],
             [
                 FilterQuery::make([
-                    Condition::make($fieldProductCommentContent, Operator::StartWithOperator, 'comment'),
-                    Condition::make($fieldCategoryCommentContent, Operator::StartWithOperator, 'comment')
+                    FieldCondition::make($fieldProductCommentContent, Operator::StartWithOperator, 'comment'),
+                    FieldCondition::make($fieldCategoryCommentContent, Operator::StartWithOperator, 'comment')
                 ]),
                 []
             ],
             [
                 FilterQuery::make([
-                    Condition::make($fieldProductCommentContent, Operator::StartWithOperator, 'not')
+                    FieldCondition::make($fieldProductCommentContent, Operator::StartWithOperator, 'not')
                 ]),
                 []
             ]

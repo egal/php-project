@@ -5,14 +5,14 @@ namespace Egal\Core\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Egal\Core\Http\Route
+ * @see \Egal\Core\Rest\Filter\Parser
  */
-class Route extends Facade
+class FilterParser extends Facade
 {
 
     protected static function getFacadeAccessor()
     {
-        return 'egal.route';
+        return 'egal.filter.parser';
     }
 
 }

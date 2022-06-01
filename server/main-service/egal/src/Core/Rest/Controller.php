@@ -16,15 +16,14 @@ class Controller
     /**
      * TODO: Selecting (with relation loading), filtering, sorting, scoping.
      */
-    public function index(string $modelClass, ?FilterQuery $filter): array
+    public function index(string $modelClass, FilterQuery $filter): array
     {
-        #TODO: Test filter-query parsing.
-
         Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
-        $collection = $model::filter($filter)->get();
-        dump($model::filter($filter)->toSql());
+        $collection = $model::filter($filter)
+//            ->select()
+            ->get();
 
         foreach ($collection as $object) {
             Gate::allowed(Auth::user(), Ability::Show, $object);

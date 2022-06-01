@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Policies\PostPolicy;
+use App\Models\Channel;
+use App\Models\Comment;
 use App\Models\Post;
 use Egal\Core\Facades\Route as EgalRoute;
 use Illuminate\Http\Request;
@@ -23,6 +25,8 @@ use Illuminate\Support\Str;
 Route::get('/', fn() => response()->json(['message' => 'Hello!']));
 
 EgalRoute::rest(Post::class, PostPolicy::class);
+EgalRoute::rest(Comment::class, PostPolicy::class);
+EgalRoute::rest(Channel::class, PostPolicy::class);
 
 Route::post('/http-build-query', function (Request $request) {
     return response(http_build_query(json_decode($request->getContent(), true)), 200);

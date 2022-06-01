@@ -3,7 +3,7 @@
 namespace Egal\Core\Database;
 
 use Egal\Core\Database\Metadata\Model as ModelMetadata;
-use Egal\Core\Rest\Filter\FilterApplier;
+use Egal\Core\Rest\Filter\Applier;
 use Egal\Core\Rest\Filter\Query as FilterQuery;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
@@ -44,7 +44,13 @@ abstract class Model extends BaseModel
     {
 //        FilterApplier::validateQuery($this->getMetadata(), $filterQuery);
 
-        return FilterApplier::applyQuery($query, $filterQuery);
+        return Applier::applyQuery($query, $filterQuery);
     }
+
+//    public function scopeSelect(Builder $query, array $fields): Builder
+//    {
+//        $query->select();
+//        return Applier::applyQuery($query, $fields);
+//    }
 
 }

@@ -2,7 +2,7 @@
 
 namespace Egal\Core\Rest\Filter;
 
-class Condition
+class FieldCondition
 {
 
     use Combinable;

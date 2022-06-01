@@ -8,7 +8,7 @@ class Query
     use Combinable;
 
     /**
-     * @var array<int, Query|Condition>
+     * @var array<int, Query|FieldCondition>
      */
     private array $conditions = [];
 
@@ -17,13 +17,13 @@ class Query
         return $this->conditions;
     }
 
-    public function addCondition(Query|Condition $condition): void
+    public function addCondition(Query|FieldCondition|ScopeCondition $condition): void
     {
         $this->conditions[] = $condition;
     }
 
     /**
-     * @param array<int, Query|Condition> $conditions
+     * @param array<int, Query|FieldCondition> $conditions
      */
     public static function make(array $conditions = [], ?Combiner $combiner = Combiner::And): static
     {

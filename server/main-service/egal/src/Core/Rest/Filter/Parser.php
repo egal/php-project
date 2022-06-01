@@ -4,17 +4,10 @@ declare(strict_types=1);
 
 namespace Egal\Core\Rest\Filter;
 
-
 use Egal\Core\Exceptions\FilterParseException;
-use Illuminate\Support\Facades\Log;
 
 class Parser
 {
-    protected const FIELD_PATTERN = '[a-z_]+';
-    protected const RELATION_FIELD_PATTERN = "(?<relation>[a-z_]+)\.{1}(?<relation_field>[a-z_]+)";
-    protected const MORPH_RELATION_FIELD_PATTERN = "(?<morph_relation>[a-z_]+)\[(?<types>([a-z_,]+))\]\.(?<morph_relation_field>[a-z_]+)";
-    protected const EXISTS_RELATION_PATTERN = "(?<exists_relation>[a-z_]+)\.(exists)\(\)";
-
     private string $conditionRegPattern;
     private string $subQueryRegPattern;
     private string $queryRegPattern;
@@ -25,8 +18,8 @@ class Parser
         $combinersAsStrings = array_map(fn(Combiner $operator) => $operator->value, Combiner::cases());
 
         $operatorsPattern = implode('|', $operatorsAsStrings);
-        $fieldElementPattern = "((?<field_element>" . self::FIELD_PATTERN . ")|(?<relation_field_element>" . self::RELATION_FIELD_PATTERN . ")|(?<morph_relation_field_element>" . self::MORPH_RELATION_FIELD_PATTERN . ")|(?<exists_relation_element>" . self::EXISTS_RELATION_PATTERN . "))";
-        $this->conditionRegPattern = "/^((?<combiner>and|or) )?$fieldElementPattern (?<operator>$operatorsPattern) (?<value>.+)$/";
+        $fieldElementPattern = "((?<field_element>" . Field::REG_PATTERN . ")|(?<relation_field_element>" . RelationField::REG_PATTERN . ")|(?<morph_relation_field_element>" . MorphRelationField::REG_PATTERN . "))";
+        $this->conditionRegPattern = "/^(?<field_condition>((?<combiner>and|or) )?($fieldElementPattern) (?<operator>$operatorsPattern) (?<value>.+))|(?<scope_condition>" . ScopeCondition::REG_PATTERN . ")$/";
 
 
         $combinersSimplePattern = implode('|', $combinersAsStrings);
@@ -56,22 +49,31 @@ class Parser
         }
 
         foreach ($queryMatches as $match) {
-            dump('$this->conditionRegPattern ' . $this->conditionRegPattern);
-            dump('$match ' . $match);
             if (preg_match($this->conditionRegPattern, $match, $conditionMatches)) {
+                switch (true) {
+                    case !empty($conditionMatches['field_condition']):
+                        $notEmptyFieldElementArray = array_filter([
+                            $conditionMatches['field_element'],
+                            $conditionMatches['relation_field_element'],
+                            $conditionMatches['morph_relation_field_element']
+                        ]);
+                        $condition = $this->makeFieldConditionFromRaw(
+                            array_shift($notEmptyFieldElementArray),
+                            $conditionMatches['operator'],
+                            $conditionMatches['value'],
+                            $conditionMatches['combiner']
+                        );
+                        break;
+                    case !empty($conditionMatches['scope_condition']):
+                        $condition = $this->makeScopeConditionFromRaw(
+                            $conditionMatches['scope'],
+                            $conditionMatches['parameters']
+                        );
+                        break;
+                    default:
+                        throw new FilterParseException();
+                }
 
-                $notEmptyFieldElementArray = array_filter([
-                    $conditionMatches['field_element'],
-                    $conditionMatches['relation_field_element'],
-                    $conditionMatches['morph_relation_field_element'],
-                    $conditionMatches['exists_relation_element']
-                ]);
-                $condition = $this->makeConditionFromRaw(
-                    array_shift($notEmptyFieldElementArray),
-                    $conditionMatches['operator'],
-                    $conditionMatches['value'],
-                    $conditionMatches['combiner']
-                );
                 $query->addCondition($condition);
             } elseif (preg_match($this->subQueryRegPattern, $match, $subQueryStringMatches)) {
                 $subQuery = $this->parse(
@@ -87,7 +89,7 @@ class Parser
         return $query;
     }
 
-    private function makeConditionFromRaw(string $field, string $operator, string $value, string $combiner): Condition
+    private function makeFieldConditionFromRaw(string $field, string $operator, string $value, string $combiner): FieldCondition
     {
         $operator = Operator::from($operator);
 
@@ -96,8 +98,29 @@ class Parser
         $field = $this->makeFieldFromRaw($field);
 
         return $combiner === ''
-            ? Condition::make($field, $operator, $value)
-            : Condition::make($field, $operator, $value, Combiner::from($combiner));
+            ? FieldCondition::make($field, $operator, $value)
+            : FieldCondition::make($field, $operator, $value, Combiner::from($combiner));
+    }
+
+
+    private function makeScopeConditionFromRaw(string $scope, string $parametersString): ScopeCondition
+    {
+        preg_match_all(ScopeCondition::PARAMETER_REG_PATTERN, $parametersString, $matches, PREG_SET_ORDER, 0);
+
+        $parameters = [];
+
+        foreach($matches as $parameter) {
+            if (array_key_exists('key', $parameter) && array_key_exists('value', $parameter)) {
+                $parameters[] = [
+                    'key' => $parameter['key'],
+                    'value' => $this->makeValueFromRaw($parameter['value'])
+                ];
+            } else {
+                throw new FilterParseException();
+            }
+        }
+
+        return ScopeCondition::make($scope, $parameters);
     }
 
     private function makeValueFromRaw(string $value): string|int|bool|null|float
@@ -123,16 +146,14 @@ class Parser
     private function makeFieldFromRaw(string $field): AbstractField
     {
         switch (true) {
-            case preg_match("/^" . self::MORPH_RELATION_FIELD_PATTERN . "$/", $field, $matches):
-                $field = new MorphRelationField($matches['morph_relation_field'], $matches['morph_relation'], $matches['types']);
+            case preg_match("/^" . MorphRelationField::REG_PATTERN . "$/", $field, $matches):
+                $types = explode(MorphRelationField::TYPES_DELIMITER, $matches['types']);
+                $field = new MorphRelationField($matches['morph_relation_field'], $matches['morph_relation'], $types);
                 break;
-            case preg_match("/^" . self::EXISTS_RELATION_PATTERN . "$/", $field, $matches):
-                $field = new ExistsRelation($matches['exists_relation']);
-                break;
-            case preg_match("/^" . self::RELATION_FIELD_PATTERN . "$/", $field, $matches):
+            case preg_match("/^" . RelationField::REG_PATTERN . "$/", $field, $matches):
                 $field = new RelationField($matches['relation_field'], $matches['relation']);
                 break;
-            case preg_match("/^" . self::FIELD_PATTERN . "$/", $field):
+            case preg_match("/^" . Field::REG_PATTERN . "$/", $field):
                 $field = new Field($field);
                 break;
             default:

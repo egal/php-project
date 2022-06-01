@@ -4,6 +4,8 @@ namespace Egal\Core\Rest\Filter;
 
 class Field extends AbstractField
 {
+    public const REG_PATTERN = '[a-z_]+';
+
     protected string $name;
 
     public function __construct(string $name)

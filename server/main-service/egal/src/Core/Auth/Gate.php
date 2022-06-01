@@ -5,6 +5,7 @@ namespace Egal\Core\Auth;
 use Carbon\Carbon;
 use Egal\Core\Database\Model;
 use Egal\Core\Exceptions\NoAccessException;
+use Illuminate\Support\Facades\Log;
 
 class Gate
 {
@@ -33,11 +34,9 @@ class Gate
 
         $policy = $this->policies[is_object($model) ? get_class($model) : $model] ?? null; # TODO: Many policies.
 
-        if ($policy === null) {
+        if ($policy === null || !method_exists($policy, $ability->name)) {
             return false;
         }
-
-//        dd($policy->{$ability->name}($user));
 
         return is_object($model)
             ? $policy->{$ability->name}($user, $model)

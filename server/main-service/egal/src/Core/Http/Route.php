@@ -4,6 +4,7 @@ namespace Egal\Core\Http;
 
 use Egal\Core\Database\Model;
 use Egal\Core\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route as IlluminateRoute;
 
 class Route
@@ -34,7 +35,6 @@ class Route
         if (!is_iterable($policies)) {
             $policies = [$policies];
         }
-
         foreach ($policies as $policy) {
             Gate::registerPolicy($modelClass, $policy);
         }

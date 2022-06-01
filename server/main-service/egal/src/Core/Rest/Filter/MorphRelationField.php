@@ -4,6 +4,9 @@ namespace Egal\Core\Rest\Filter;
 
 class MorphRelationField extends AbstractField
 {
+    public const REG_PATTERN = "(?<morph_relation>[a-z_]+)\[(?<types>([a-z_,]+))\]\.(?<morph_relation_field>[a-z_]+)";
+    public const TYPES_DELIMITER = ",";
+
     protected string $relation;
     protected array  $types;
     protected string $field;

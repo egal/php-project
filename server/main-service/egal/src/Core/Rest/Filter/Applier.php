@@ -6,7 +6,7 @@ use Egal\Core\Database\Metadata\Model;
 use Egal\Core\Exceptions\FilterApplyException;
 use Illuminate\Database\Eloquent\Builder;
 
-class FilterApplier
+class Applier
 {
 
     public static function applyQuery(Builder $query, Query $filterQuery): Builder
@@ -21,7 +21,7 @@ class FilterApplier
         });
     }
 
-    private static function applyCondition(Builder $query, Query|Condition $condition)
+    private static function applyCondition(Builder $query, Query|FieldCondition $condition)
     {
         if ($condition instanceof Query) {
             self::applyQuery($query, $condition);
@@ -69,7 +69,7 @@ class FilterApplier
         }
     }
 
-    private static function validateCondition(Model $modelMetadata, Query|Condition $condition)
+    private static function validateCondition(Model $modelMetadata, Query|FieldCondition $condition)
     {
 //        if ($condition instanceof Query) {
 //            self::validateQuery($modelMetadata, $condition);

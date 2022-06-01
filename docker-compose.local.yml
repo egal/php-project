@@ -1,3 +1,6 @@
+volumes:
+  database: {}
+
 version: "3.7"
 services:
   postgres:
@@ -23,4 +26,4 @@ services:
     environment:
       APP_ENV: local
       APP_DEBUG: 'true'
-      LOG_CHANNEL: syslog
+      LOG_CHANNEL: stack

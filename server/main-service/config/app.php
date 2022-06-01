@@ -165,7 +165,7 @@ return [
         /*
          * Package Service Providers...
          */
-        Egal\Core\ServiceProvider::class,
+//        Egal\Core\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -188,10 +188,12 @@ return [
     |
     */
 
-    'aliases' => Illuminate\Support\Facades\Facade::defaultAliases()->merge([
-        'EgalRest' => Egal\Core\Rest\Controller::class,
-        'EgalAuth' => Egal\Core\Auth\Manager::class,
-        'EgalRoute' => Egal\Core\Http\Route::class,
-    ])->toArray(),
+//    'aliases' => Illuminate\Support\Facades\Facade::defaultAliases()->merge([
+//        'gate' => Egal\Core\Auth\Gate::class,
+//        'rest' => Egal\Core\Rest\Controller::class,
+//        'auth' => Egal\Core\Auth\Manager::class,
+//        'route' => Egal\Core\Http\Route::class,
+//        'filter.parser' => Egal\Core\Rest\Filter\Parser::class,
+//    ])->toArray(),
 
 ];
