@@ -21,11 +21,11 @@ class Applier
         });
     }
 
-    private static function applyCondition(Builder $query, Query|FieldCondition $condition)
+    private static function applyCondition(Builder $query, Query|FieldCondition|ScopeCondition $condition)
     {
         if ($condition instanceof Query) {
             self::applyQuery($query, $condition);
-        } else {
+        } elseif ($condition instanceof FieldCondition) {
             $field = $condition->getField();
             $operator = $condition->getOperator();
             $sqlOperator = $operator->getSqlOperator();
@@ -57,6 +57,14 @@ class Applier
                 default:
                     throw new FilterApplyException();
             }
+        } else {
+            // TODO передавать combiner как параметр с ключом combiner, в доке указать, что нужно в проекте его использовать
+            $scope = $condition->getName();
+            $combiner = $condition->getCombiner()->value;
+            $parameters = $condition->getParameters();
+            dump($query->getModel()::query()->category($parameters)->toSql());
+            array_unshift($parameters, $query);
+            $query->getModel()->{'scope'.ucfirst($scope)}(...$parameters);
         }
     }
 

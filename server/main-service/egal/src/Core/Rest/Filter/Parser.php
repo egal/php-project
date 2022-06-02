@@ -19,7 +19,7 @@ class Parser
 
         $operatorsPattern = implode('|', $operatorsAsStrings);
         $fieldElementPattern = "((?<field_element>" . Field::REG_PATTERN . ")|(?<relation_field_element>" . RelationField::REG_PATTERN . ")|(?<morph_relation_field_element>" . MorphRelationField::REG_PATTERN . "))";
-        $this->conditionRegPattern = "/^(?<field_condition>((?<combiner>and|or) )?($fieldElementPattern) (?<operator>$operatorsPattern) (?<value>.+))|(?<scope_condition>" . ScopeCondition::REG_PATTERN . ")$/";
+        $this->conditionRegPattern = "/^(?<field_condition>((?<field_condition_combiner>and|or) )?($fieldElementPattern) (?<operator>$operatorsPattern) (?<value>.+))|(?<scope_condition>((?<scope_condition_combiner>and|or) )?" . ScopeCondition::REG_PATTERN . ")$/";
 
 
         $combinersSimplePattern = implode('|', $combinersAsStrings);
@@ -61,13 +61,14 @@ class Parser
                             array_shift($notEmptyFieldElementArray),
                             $conditionMatches['operator'],
                             $conditionMatches['value'],
-                            $conditionMatches['combiner']
+                            $conditionMatches['field_condition_combiner']
                         );
                         break;
                     case !empty($conditionMatches['scope_condition']):
                         $condition = $this->makeScopeConditionFromRaw(
                             $conditionMatches['scope'],
-                            $conditionMatches['parameters']
+                            $conditionMatches['parameters'],
+                            $conditionMatches['scope_condition_combiner']
                         );
                         break;
                     default:
@@ -103,7 +104,7 @@ class Parser
     }
 
 
-    private function makeScopeConditionFromRaw(string $scope, string $parametersString): ScopeCondition
+    private function makeScopeConditionFromRaw(string $scope, string $parametersString, string $combiner): ScopeCondition
     {
         preg_match_all(ScopeCondition::PARAMETER_REG_PATTERN, $parametersString, $matches, PREG_SET_ORDER, 0);
 
@@ -120,7 +121,9 @@ class Parser
             }
         }
 
-        return ScopeCondition::make($scope, $parameters);
+        return $combiner === ''
+            ? ScopeCondition::make($scope, $parameters)
+            : ScopeCondition::make($scope, $parameters, Combiner::from($combiner));
     }
 
     private function makeValueFromRaw(string $value): string|int|bool|null|float

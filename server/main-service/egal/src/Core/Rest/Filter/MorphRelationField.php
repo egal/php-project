@@ -20,7 +20,9 @@ class MorphRelationField extends AbstractField
 
     public static function fromString(string $fieldString): MorphRelationField
     {
-
+        preg_match_all(self::REG_PATTERN, $fieldString, $matches);
+        $types = explode(self::TYPES_DELIMITER, $matches['types']);
+        return new self($matches['morph_relation_field'], $matches['morph_relation'], $types);
     }
 
 

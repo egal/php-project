@@ -4,6 +4,7 @@ namespace Egal\Core;
 
 use Egal\Core\Auth\Gate;
 use Egal\Core\Auth\Manager;
+use Egal\Core\Exceptions\Handler;
 use Egal\Core\Http\Route;
 use Egal\Core\Rest\Controller;
 use Egal\Core\Rest\Filter\Parser as FilterParser;
@@ -26,6 +27,8 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->singleton('egal.route', fn($app) => new Route());
         $this->app->singleton('egal.filter.parser', fn($app) => new FilterParser());
         $this->app->singleton('egal.select.parser', fn($app) => new SelectParser());
+
+        $this->app->singleton(\Illuminate\Contracts\Debug\ExceptionHandler::class, Handler::class);
     }
 
     /**

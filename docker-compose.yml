@@ -38,7 +38,7 @@ services:
       APP_NAME: backend
       APP_ENV: local
       APP_KEY: base64:gyfC6aPWu5HqUYBaortYHjt4ICUUg/+34gze1GDWW08=
-      APP_DEBUG: 'true'
+      APP_DEBUG: 'false'
       APP_TIMEZONE: UTC
       APP_URL: http://localhost
       LOG_CHANNEL: stack

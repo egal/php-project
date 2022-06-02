@@ -25,5 +25,5 @@ services:
     command: sh -c "/wait && php artisan octane:start --host=0.0.0.0 --port=8080 --watch"
     environment:
       APP_ENV: local
-      APP_DEBUG: 'true'
+      APP_DEBUG: 'false'
       LOG_CHANNEL: stack

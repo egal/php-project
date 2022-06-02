@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Egal\Core\Database\Model;
 use Egal\Core\Database\Metadata\Model as ModelMetadata;
 use Egal\Core\Database\Metadata\Field as FieldMetadata;
@@ -29,6 +30,12 @@ class Post extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function scopeCreatedAfterToday($query)
+    {
+//        return $query->where('created_at', '>', Carbon::today()->toDateString());
+        return $query->inRandomOrder()->limit(1);
     }
 
 }

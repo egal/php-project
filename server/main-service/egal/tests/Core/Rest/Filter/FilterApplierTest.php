@@ -2,6 +2,7 @@
 
 namespace Egal\Tests\Core\Rest\Filter;
 
+use Carbon\Carbon;
 use Egal\Core\Database\Metadata\Field as FieldMetadata;
 use Egal\Core\Database\Metadata\Model as ModelMetadata;
 use Egal\Core\Database\Model;
@@ -12,6 +13,7 @@ use Egal\Core\Rest\Filter\MorphRelationField;
 use Egal\Core\Rest\Filter\Operator;
 use Egal\Core\Rest\Filter\Query as FilterQuery;
 use Egal\Core\Rest\Filter\RelationField;
+use Egal\Core\Rest\Filter\ScopeCondition;
 use Egal\Tests\DatabaseSchema;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -136,9 +138,42 @@ class FilterApplierTest extends TestCase
         ];
     }
 
+    public function filterApplierDataProviderScope(): array
+    {
+
+        return [
+            [
+                FilterQuery::make([
+                    ScopeCondition::make('category', ['key' => 'categoryName', 'value' => 'first ctg']),
+                ]),
+                [2]
+            ],
+//            [
+//                FilterQuery::make([
+//                    FieldCondition::make($fieldProductCommentContent, Operator::StartWithOperator, 'comment')
+//                ]),
+//                [3]
+//            ],
+//            [
+//                FilterQuery::make([
+//                    FieldCondition::make($fieldProductCommentContent, Operator::StartWithOperator, 'comment'),
+//                    FieldCondition::make($fieldCategoryCommentContent, Operator::StartWithOperator, 'comment')
+//                ]),
+//                []
+//            ],
+//            [
+//                FilterQuery::make([
+//                    FieldCondition::make($fieldProductCommentContent, Operator::StartWithOperator, 'not')
+//                ]),
+//                []
+//            ]
+        ];
+    }
+
     /**
      * @dataProvider filterApplierDataProviderField()
      * @dataProvider filterApplierDataProviderRelationField()
+     * @dataProvider filterApplierDataProviderScope()
      */
     public function testFilterApplier(FilterQuery $filterQuery, array|string $expected)
     {
@@ -148,9 +183,6 @@ class FilterApplierTest extends TestCase
         }
 
         $result = array_column(ModelFilterApplierTestProduct::filter($filterQuery)->get()->toArray(), 'id');
-
-        dump($expected);
-        dump($result);
 
         $this->assertEquals($expected, $result);
 
@@ -267,6 +299,18 @@ class ModelFilterApplierTestProduct extends Model
     public function comments(): MorphMany
     {
         return $this->morphMany(ModelFilterApplierTestComment::class, 'commentable');
+    }
+
+    public function scopeCategory(\Illuminate\Database\Eloquent\Builder $query, string $categoryName)
+    {
+        return $query->whereHas('categories', function($query) use ($categoryName) {
+            $query->where('name', '=', $categoryName);
+        });
+    }
+
+    public function scopeTodayCreated(\Illuminate\Database\Eloquent\Builder $query)
+    {
+        return $query->where('created_at', Carbon::today());
     }
 }
 
