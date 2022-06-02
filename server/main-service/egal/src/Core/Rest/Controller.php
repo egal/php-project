@@ -5,10 +5,13 @@ namespace Egal\Core\Rest;
 use Egal\Core\Auth\Ability;
 use Egal\Core\Database\Model;
 use Egal\Core\Exceptions\ObjectNotFoundException;
+use Egal\Core\Exceptions\ValidateException;
 use Egal\Core\Facades\Auth;
 use Egal\Core\Facades\Gate;
 use Egal\Core\Rest\Filter\Query as FilterQuery;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use function response;
 
 class Controller
 {
@@ -16,27 +19,25 @@ class Controller
     /**
      * TODO: Selecting (with relation loading), filtering, sorting, scoping.
      */
-    public function index(string $modelClass, FilterQuery $filter): \Illuminate\Http\JsonResponse
+    public function index(string $modelClass, FilterQuery $filter): array
     {
         Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
         $collection = $model::filter($filter)
 //            ->select()
+//            ->order()
+//            ->paginate()
             ->get();
 
         foreach ($collection as $object) {
             Gate::allowed(Auth::user(), Ability::Show, $object);
         }
 
-        return  \response()->json([
-            'message' => null,
-            'data' => $collection->toArray(),
-            'meta' => '',
-        ]);
+        return  $collection->toArray();
     }
 
-    public function show(string $modelClass, $key): \Illuminate\Http\JsonResponse
+    public function show(string $modelClass, $key): array
     {
         Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
 
@@ -45,14 +46,10 @@ class Controller
 
         Gate::allowed(Auth::user(), Ability::Show, $object);
 
-        return  \response()->json([
-            'message' => null,
-            'data' => $object->toArray(),
-            'meta' => '',
-        ]);
+        return  $object->toArray();
     }
 
-    public function create(string $modelClass, array $attributes = []): \Illuminate\Http\JsonResponse
+    public function create(string $modelClass, array $attributes = []): array
     {
         Gate::allowed(Auth::user(), Ability::CreateAny, $modelClass);
 
@@ -61,20 +58,24 @@ class Controller
 
         # TODO: Add messages.
         # TODO: What is $customAttributes param in Validator::make.
-        Validator::make($attributes, $metadata->getValidationRules())->validate();
+        $validator = Validator::make($attributes, $metadata->getValidationRules());
+
+        if ($validator->fails()) {
+            $exception = new ValidateException();
+            $exception->setMessageBag($validator->errors());
+
+            throw $exception;
+        }
 
         $object = $model->fill($attributes);
+        $object->save();
 
         Gate::allowed(Auth::user(), Ability::Create, $object);
 
-        return  \response()->json([
-            'message' => 'Created successfully',
-            'data' => [ "id" => $object->id ],  //TODO primaryKey instead id
-            'meta' => '',
-        ]);
+        return  ["id" => $object->id];
     }
 
-    public function update(string $modelClass, $key, array $attributes = []): \Illuminate\Http\JsonResponse
+    public function update(string $modelClass, $key, array $attributes = []): array
     {
         Gate::allowed(Auth::user(), Ability::UpdateAny, $modelClass);
 
@@ -84,18 +85,21 @@ class Controller
         Gate::allowed(Auth::user(), Ability::Update, $object);
 
         $metadata = $model->getMetadata();
-        Validator::make($attributes, $metadata->getValidationRules())->validate();
+        $validator = Validator::make($attributes, $metadata->getValidationRules());
+
+        if ($validator->fails()) {
+            $exception = new ValidateException();
+            $exception->setMessageBag($validator->errors());
+
+            throw $exception;
+        }
 
         $object->update($attributes);
 
-        return  \response()->json([
-            'message' => 'Updated successfully',
-            'data' => [ "id" => $object->id ],  //TODO primaryKey instead id
-            'meta' => '',
-        ]);
+        return  [ "id" => $object->id ];
     }
 
-    public function delete(string $modelClass, $key): \Illuminate\Http\JsonResponse
+    public function delete(string $modelClass, $key): void
     {
         Gate::allowed(Auth::user(), Ability::DeleteAny, $modelClass);
 
@@ -105,12 +109,6 @@ class Controller
         Gate::allowed(Auth::user(), Ability::Delete, $object);
 
         $object->delete();
-
-        return  \response()->json([
-            'message' => 'Deleted successfully',
-            'data' => null,  //TODO primaryKey instead id
-            'meta' => '',
-        ]);
     }
 
     protected function newModelInstance(string $modelClass): Model

@@ -20,12 +20,12 @@ class PostPolicy
 
     public function updateAny(?User $user): bool
     {
-        return false;
+        return true;
     }
 
     public function deleteAny(?User $user): bool
     {
-        return false;
+        return true;
     }
 
     public function show(?User $user, Post $post): bool
@@ -35,17 +35,17 @@ class PostPolicy
 
     public function create(?User $user, Post $post): bool
     {
-        return false;
+        return true;
     }
 
     public function update(?User $user, Post $post): bool
     {
-        return false;
+        return true;
     }
 
     public function delete(?User $user, Post $post): bool
     {
-        return false;
+        return true;
     }
 
 

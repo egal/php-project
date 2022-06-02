@@ -3,7 +3,6 @@
 namespace Egal\Core\Exceptions;
 
 use App\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class Handler extends ExceptionHandler

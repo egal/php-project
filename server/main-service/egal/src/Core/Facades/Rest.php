@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static array index(string $modelClass, FilterQuery $filter = null)
- * @method static void create(string $modelClass, array $attributes = [])
+ * @method static array create(string $modelClass, array $attributes = [])
  * @method static array show(string $modelClass, $key)
- * @method static void update(string $modelClass, $key, array $attributes = [])
+ * @method static array update(string $modelClass, $key, array $attributes = [])
  * @method static void delete(string $modelClass, $key)
  *
  * @see Controller

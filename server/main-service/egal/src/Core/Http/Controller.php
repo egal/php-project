@@ -17,7 +17,18 @@ class Controller extends BaseController
     {
         $filter = FilterParser::parse($request->get('filter'));
 //        $select = SelectParser::parse($request->get('select'));
-        return response()->json(Rest::index($modelClass, $filter))->setStatusCode(Response::HTTP_OK);
+        return response()->json([
+            'message' => null,
+            'data' => Rest::index($modelClass, $filter)
+        ]);
+    }
+
+    public function show(Request $request, $key, string $modelClass)
+    {
+        return response()->json([
+            'message' => null,
+            'data' => Rest::show($modelClass, $key)
+        ]);
     }
 
     public function create(Request $request, string $modelClass)
@@ -28,14 +39,10 @@ class Controller extends BaseController
 
         $attributes = json_decode($request->getContent(), true);
 
-        Rest::create($modelClass, $attributes);
-
-        return response()->noContent(Response::HTTP_CREATED);
-    }
-
-    public function show(Request $request, $key, string $modelClass)
-    {
-        return response()->json(Rest::show($modelClass, $key))->setStatusCode(Response::HTTP_OK);
+        return response()->json([
+            'message' => 'Created successfully',
+            'data' => Rest::create($modelClass, $attributes)
+        ]);
     }
 
     public function update(Request $request, $key, string $modelClass)
@@ -46,16 +53,20 @@ class Controller extends BaseController
 
         $attributes = json_decode($request->getContent(), true);
 
-        Rest::update($modelClass, $key, $attributes);
-
-        return response()->noContent();
+        return response()->json([
+            'message' => 'Updated successfully',
+            'data' => Rest::update($modelClass, $key, $attributes)
+        ]);
     }
 
     public function delete(Request $request, $key, string $modelClass)
     {
         Rest::delete($modelClass, $key);
 
-        return response()->noContent();
+        return response()->json([
+            'message' => 'Deleted successfully',
+            'data' => null
+        ]);
     }
 
 }

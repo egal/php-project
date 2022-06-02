@@ -40,6 +40,7 @@ abstract class Model extends BaseModel
         $this->mergeFillable($metadata->getFillableFieldsNames());
     }
 
+    //TODO пользователь может переопределить, нужно что-то придумать
     public function scopeFilter(Builder $query, FilterQuery $filterQuery): Builder
     {
 //        FilterApplier::validateQuery($this->getMetadata(), $filterQuery);
