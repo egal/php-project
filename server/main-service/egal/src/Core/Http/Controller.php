@@ -17,17 +17,30 @@ class Controller extends BaseController
     {
         $filter = FilterParser::parse($request->get('filter'));
 //        $select = SelectParser::parse($request->get('select'));
+
+        try {
+            $indexData = Rest::index($modelClass, $filter);
+        } catch (Exception $exception) {
+            return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
+        }
+
         return response()->json([
             'message' => null,
-            'data' => Rest::index($modelClass, $filter)
+            'data' => $indexData
         ]);
     }
 
     public function show(Request $request, $key, string $modelClass)
     {
+        try {
+            $showData = Rest::show($modelClass, $key);
+        } catch (Exception $exception) {
+            return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
+        }
+
         return response()->json([
             'message' => null,
-            'data' => Rest::show($modelClass, $key)
+            'data' => $showData
         ]);
     }
 
@@ -39,9 +52,15 @@ class Controller extends BaseController
 
         $attributes = json_decode($request->getContent(), true);
 
+        try {
+            $createData = Rest::create($modelClass, $attributes);
+        } catch (Exception $exception) {
+            return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
+        }
+
         return response()->json([
             'message' => 'Created successfully',
-            'data' => Rest::create($modelClass, $attributes)
+            'data' => $createData
         ]);
     }
 
@@ -53,15 +72,25 @@ class Controller extends BaseController
 
         $attributes = json_decode($request->getContent(), true);
 
+        try {
+            $updateData = Rest::update($modelClass, $key, $attributes);
+        } catch (Exception $exception) {
+            return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
+        }
+
         return response()->json([
             'message' => 'Updated successfully',
-            'data' => Rest::update($modelClass, $key, $attributes)
+            'data' => $updateData
         ]);
     }
 
     public function delete(Request $request, $key, string $modelClass)
     {
-        Rest::delete($modelClass, $key);
+        try {
+            Rest::delete($modelClass, $key);
+        } catch (Exception $exception) {
+            return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
+        }
 
         return response()->json([
             'message' => 'Deleted successfully',
