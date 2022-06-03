@@ -11,7 +11,6 @@ use Egal\Core\Facades\Gate;
 use Egal\Core\Rest\Filter\Query as FilterQuery;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use function response;
 
 class Controller
 {
@@ -19,13 +18,14 @@ class Controller
     /**
      * TODO: Selecting (with relation loading), filtering, sorting, scoping.
      */
-    public function index(string $modelClass, FilterQuery $filter): array
+    public function index(string $modelClass, array $scope = [], FilterQuery $filter = null, array $select = []): array
     {
         Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
-        $collection = $model::filter($filter)
-//            ->select()
+        $collection = $model::restScopes($scope)
+            ->restfilters($filter)
+            ->restSelects($select)
 //            ->order()
 //            ->paginate()
             ->get();
@@ -37,12 +37,17 @@ class Controller
         return  $collection->toArray();
     }
 
-    public function show(string $modelClass, $key): array
+    public function show(string $modelClass, $key, array $select = []): array
     {
         Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
-        $object = $this->getModelObjectById($model, $key);
+        $object = $model::restSelects($select)
+            ->find($key);
+
+        if (!$object) {
+            throw new ObjectNotFoundException();
+        }
 
         Gate::allowed(Auth::user(), Ability::Show, $object);
 
@@ -80,7 +85,11 @@ class Controller
         Gate::allowed(Auth::user(), Ability::UpdateAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
-        $object = $this->getModelObjectById($model, $key);
+        $object = $model->newQuery()->find($key);
+
+        if (!$object) {
+            throw new ObjectNotFoundException();
+        }
 
         Gate::allowed(Auth::user(), Ability::Update, $object);
 
@@ -104,7 +113,11 @@ class Controller
         Gate::allowed(Auth::user(), Ability::DeleteAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
-        $object = $this->getModelObjectById($model, $key);
+        $object = $model->newQuery()->find($key);
+
+        if (!$object) {
+            throw new ObjectNotFoundException();
+        }
 
         Gate::allowed(Auth::user(), Ability::Delete, $object);
 
@@ -114,16 +127,6 @@ class Controller
     protected function newModelInstance(string $modelClass): Model
     {
         return new $modelClass();
-    }
-
-    protected function getModelObjectById(Model $model, $key): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array
-    {
-        $object = $model->newQuery()->find($key);
-
-        if (!$object) {
-            throw new ObjectNotFoundException();
-        }
-        return $object;
     }
 
 }

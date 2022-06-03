@@ -11,7 +11,7 @@ use Egal\Core\Rest\Filter\Operator;
 use Egal\Core\Rest\Filter\Parser;
 use Egal\Core\Rest\Filter\Query;
 use Egal\Core\Rest\Filter\RelationField;
-use Egal\Core\Rest\Filter\ScopeCondition;
+use Egal\Core\Rest\Filter\ScopeFunction;
 use PHPUnit\Framework\TestCase;
 
 class FilterQueryStringParserTest extends TestCase
@@ -281,21 +281,21 @@ class FilterQueryStringParserTest extends TestCase
             [
                 "scope(parameterFirst=1,parameterSecond='two')",
                 Query::make([
-                    ScopeCondition::make('scope', [['key' => 'parameterFirst', 'value' => 1], ['key' => 'parameterSecond', 'value' => 'two']], Combiner::And),
+                    ScopeFunction::make('scope', [['key' => 'parameterFirst', 'value' => 1], ['key' => 'parameterSecond', 'value' => 'two']], Combiner::And),
                 ], Combiner::And),
             ],
             [
                 "relation[type].field eq null and scope(parameter=true)",
                 Query::make([
                     FieldCondition::make($morphRelationField, Operator::Equals, null, Combiner::And),
-                    ScopeCondition::make('scope', [['key' => 'parameter', 'value' => true]], Combiner::And),
+                    ScopeFunction::make('scope', [['key' => 'parameter', 'value' => true]], Combiner::And),
                 ], Combiner::And),
             ],
             [
                 "scopeOne(parameter=1) or scopeSecond()",
                 Query::make([
-                    ScopeCondition::make('scopeOne', [['key' => 'parameter', 'value' => 1]], Combiner::And),
-                    ScopeCondition::make('scopeSecond', [], Combiner::Or),
+                    ScopeFunction::make('scopeOne', [['key' => 'parameter', 'value' => 1]], Combiner::And),
+                    ScopeFunction::make('scopeSecond', [], Combiner::Or),
                 ], Combiner::And),
             ],
             [
@@ -303,17 +303,17 @@ class FilterQueryStringParserTest extends TestCase
                 Query::make([
                     FieldCondition::make($field, Operator::Equals, 1, Combiner::And),
                     FieldCondition::make($relationField, Operator::Equals, 2, Combiner::And),
-                    ScopeCondition::make('scope', [['key' => 'parameter', 'value' => 1]], Combiner::Or),
+                    ScopeFunction::make('scope', [['key' => 'parameter', 'value' => 1]], Combiner::Or),
                 ], Combiner::And),
             ],
             [
                 "first eq 1 and scopeOne(parameter=1) and relation.field eq 3 and (scopeSecond(parameter=2) or (relation.field eq 5 or sixth eq 6))",
                 Query::make([
                     FieldCondition::make($firstField, Operator::Equals, 1, Combiner::And),
-                    ScopeCondition::make('scopeOne', [['key' => 'parameter', 'value' => 1]], Combiner::And),
+                    ScopeFunction::make('scopeOne', [['key' => 'parameter', 'value' => 1]], Combiner::And),
                     FieldCondition::make($relationField, Operator::Equals, 3, Combiner::And),
                     Query::make([
-                        ScopeCondition::make('scopeSecond', [['key' => 'parameter', 'value' => 2]], Combiner::And),
+                        ScopeFunction::make('scopeSecond', [['key' => 'parameter', 'value' => 2]], Combiner::And),
                         Query::make([
                             FieldCondition::make($relationField, Operator::Equals, 5, Combiner::And),
                             FieldCondition::make($sixthField, Operator::Equals, 6, Combiner::Or),

@@ -8,6 +8,7 @@ use Egal\Core\Database\Metadata\Model as ModelMetadata;
 use Egal\Core\Database\Metadata\Field as FieldMetadata;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Post extends Model
 {
@@ -27,14 +28,23 @@ class Post extends Model
         return $this->belongsTo(Channel::class);
     }
 
-    public function comments(): HasMany
+    public function comments(): MorphMany
     {
-        return $this->hasMany(Comment::class);
+        return $this->morphMany(Comment::class, 'commentable');
     }
 
     public function scopeCreatedAfterToday($query)
     {
-//        return $query->where('created_at', '>', Carbon::today()->toDateString());
+        return $query->where('created_at', '>', Carbon::today()->toDateString());
+    }
+
+    public function scopeTitleStartWithK($query)
+    {
+        return $query->where('title', 'like', 'К%');
+    }
+
+    public function scopeRandomOne($query)
+    {
         return $query->inRandomOrder()->limit(1);
     }
 

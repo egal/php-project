@@ -13,7 +13,7 @@ use Egal\Core\Rest\Filter\MorphRelationField;
 use Egal\Core\Rest\Filter\Operator;
 use Egal\Core\Rest\Filter\Query as FilterQuery;
 use Egal\Core\Rest\Filter\RelationField;
-use Egal\Core\Rest\Filter\ScopeCondition;
+use Egal\Core\Rest\Filter\ScopeFunction;
 use Egal\Tests\DatabaseSchema;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -144,7 +144,7 @@ class FilterApplierTest extends TestCase
         return [
             [
                 FilterQuery::make([
-                    ScopeCondition::make('category', ['key' => 'categoryName', 'value' => 'first ctg']),
+                    ScopeFunction::make('category', ['key' => 'categoryName', 'value' => 'first ctg']),
                 ]),
                 [2]
             ],

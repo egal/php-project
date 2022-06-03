@@ -50,6 +50,7 @@
                 "EgalAuth": "Egal\\Core\\Facades\\Auth",
                 "EgalFilterParser": "Egal\\Core\\Facades\\FilterParser",
                 "EgalSelectParser": "Egal\\Core\\Facades\\SelectParser",
+                "EgalScopeParser": "Egal\\Core\\Facades\\ScopeParser",
                 "EgalGate": "Egal\\Core\\Facades\\Gate",
                 "EgalRest": "Egal\\Core\\Facades\\Rest",
                 "EgalRoute": "Egal\\Core\\Facades\\Route"

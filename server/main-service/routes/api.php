@@ -25,8 +25,8 @@ use Illuminate\Support\Str;
 Route::get('/', fn() => response()->json(['message' => 'Hello!']));
 
 EgalRoute::rest(Post::class, PostPolicy::class);
-EgalRoute::rest(Comment::class, PostPolicy::class);
-EgalRoute::rest(Channel::class, PostPolicy::class);
+EgalRoute::rest(Comment::class, \App\Http\Policies\CommentPolicy::class);
+EgalRoute::rest(Channel::class, \App\Http\Policies\ChannelPolicy::class);
 
 Route::post('/http-build-query', function (Request $request) {
     return response(http_build_query(json_decode($request->getContent(), true)), 200);

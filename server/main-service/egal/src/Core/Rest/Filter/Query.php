@@ -17,7 +17,7 @@ class Query
         return $this->conditions;
     }
 
-    public function addCondition(Query|FieldCondition|ScopeCondition $condition): void
+    public function addCondition(Query|FieldCondition $condition): void
     {
         $this->conditions[] = $condition;
     }

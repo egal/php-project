@@ -3,10 +3,13 @@
 namespace Egal\Core\Database;
 
 use Egal\Core\Database\Metadata\Model as ModelMetadata;
-use Egal\Core\Rest\Filter\Applier;
+use Egal\Core\Rest\Filter\Applier as FilterApplier;
 use Egal\Core\Rest\Filter\Query as FilterQuery;
+use Egal\Core\Rest\Select\Applier as SelectApplier;
+use Egal\Core\Rest\Scope\Applier as ScopeApplier;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
+use Illuminate\Support\Facades\Log;
 
 /**
  * #TODO: Реализовать EnumModel.
@@ -41,17 +44,23 @@ abstract class Model extends BaseModel
     }
 
     //TODO пользователь может переопределить, нужно что-то придумать
-    public function scopeFilter(Builder $query, FilterQuery $filterQuery): Builder
+    public function scopeRestFilters(Builder $query, FilterQuery $filterQuery): Builder
     {
 //        FilterApplier::validateQuery($this->getMetadata(), $filterQuery);
 
-        return Applier::applyQuery($query, $filterQuery);
+        return FilterApplier::applyQuery($query, $filterQuery);
     }
 
-//    public function scopeSelect(Builder $query, array $fields): Builder
-//    {
-//        $query->select();
-//        return Applier::applyQuery($query, $fields);
-//    }
+    public function scopeRestSelects(Builder $query, array $fields): Builder
+    {
+        Log::debug('scopeApplySelects');
+        return SelectApplier::apply($query, $fields);
+    }
+
+    public function scopeRestScopes(Builder $query, array $scopes): Builder
+    {
+        Log::debug('scopeApplyScopes', $scopes);
+        return ScopeApplier::apply($query, $scopes);
+    }
 
 }

@@ -19,7 +19,7 @@ class Parser
 
         $operatorsPattern = implode('|', $operatorsAsStrings);
         $fieldElementPattern = "((?<field_element>" . Field::REG_PATTERN . ")|(?<relation_field_element>" . RelationField::REG_PATTERN . ")|(?<morph_relation_field_element>" . MorphRelationField::REG_PATTERN . "))";
-        $this->conditionRegPattern = "/^(?<field_condition>((?<field_condition_combiner>and|or) )?($fieldElementPattern) (?<operator>$operatorsPattern) (?<value>.+))|(?<scope_condition>((?<scope_condition_combiner>and|or) )?" . ScopeCondition::REG_PATTERN . ")$/";
+        $this->conditionRegPattern = "/^(?<field_condition>((?<field_condition_combiner>and|or) )?($fieldElementPattern) (?<operator>$operatorsPattern) (?<value>.+))$/";
 
 
         $combinersSimplePattern = implode('|', $combinersAsStrings);
@@ -50,30 +50,16 @@ class Parser
 
         foreach ($queryMatches as $match) {
             if (preg_match($this->conditionRegPattern, $match, $conditionMatches)) {
-                switch (true) {
-                    case !empty($conditionMatches['field_condition']):
-                        $notEmptyFieldElementArray = array_filter([
-                            $conditionMatches['field_element'],
-                            $conditionMatches['relation_field_element'],
-                            $conditionMatches['morph_relation_field_element']
-                        ]);
-                        $condition = $this->makeFieldConditionFromRaw(
-                            array_shift($notEmptyFieldElementArray),
-                            $conditionMatches['operator'],
-                            $conditionMatches['value'],
-                            $conditionMatches['field_condition_combiner']
-                        );
-                        break;
-                    case !empty($conditionMatches['scope_condition']):
-                        $condition = $this->makeScopeConditionFromRaw(
-                            $conditionMatches['scope'],
-                            $conditionMatches['parameters'],
-                            $conditionMatches['scope_condition_combiner']
-                        );
-                        break;
-                    default:
-                        throw new FilterParseException();
-                }
+                $notEmptyFieldElementArray = array_filter([
+                    $conditionMatches['field_element'],
+                    $conditionMatches['relation_field_element'],
+                    $conditionMatches['morph_relation_field_element']
+                ]);
+                $condition = $this->makeFieldConditionFromRaw(
+                    array_shift($notEmptyFieldElementArray),
+                    $conditionMatches['operator'],
+                    $conditionMatches['value'],
+                    $conditionMatches['field_condition_combiner']);
 
                 $query->addCondition($condition);
             } elseif (preg_match($this->subQueryRegPattern, $match, $subQueryStringMatches)) {
@@ -101,29 +87,6 @@ class Parser
         return $combiner === ''
             ? FieldCondition::make($field, $operator, $value)
             : FieldCondition::make($field, $operator, $value, Combiner::from($combiner));
-    }
-
-
-    private function makeScopeConditionFromRaw(string $scope, string $parametersString, string $combiner): ScopeCondition
-    {
-        preg_match_all(ScopeCondition::PARAMETER_REG_PATTERN, $parametersString, $matches, PREG_SET_ORDER, 0);
-
-        $parameters = [];
-
-        foreach($matches as $parameter) {
-            if (array_key_exists('key', $parameter) && array_key_exists('value', $parameter)) {
-                $parameters[] = [
-                    'key' => $parameter['key'],
-                    'value' => $this->makeValueFromRaw($parameter['value'])
-                ];
-            } else {
-                throw new FilterParseException();
-            }
-        }
-
-        return $combiner === ''
-            ? ScopeCondition::make($scope, $parameters)
-            : ScopeCondition::make($scope, $parameters, Combiner::from($combiner));
     }
 
     private function makeValueFromRaw(string $value): string|int|bool|null|float

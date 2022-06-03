@@ -2,7 +2,7 @@
 
 namespace Egal\Core\Rest\Select;
 
-use Egal\Core\Exceptions\FilterParseException;
+use Egal\Core\Exceptions\SelectParseException;
 use Egal\Core\Rest\Filter\Field;
 use Egal\Core\Rest\Filter\RelationField;
 
@@ -30,7 +30,7 @@ class Parser
                     $fields[] = new Field($field);
                     break;
                 default:
-                    throw new FilterParseException();
+                    throw new SelectParseException();
             }
         }
 

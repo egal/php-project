@@ -7,9 +7,9 @@ use Egal\Core\Rest\Filter\Query as FilterQuery;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static array index(string $modelClass, FilterQuery $filter = null)
+ * @method static array index(string $modelClass, array $scope = [], FilterQuery $filter = null, array $select = [])
  * @method static array create(string $modelClass, array $attributes = [])
- * @method static array show(string $modelClass, $key)
+ * @method static array show(string $modelClass, $key, array $select = [])
  * @method static array update(string $modelClass, $key, array $attributes = [])
  * @method static void delete(string $modelClass, $key)
  *

@@ -5,22 +5,25 @@ namespace Egal\Core\Http;
 use Egal\Core\Facades\FilterParser;
 use Egal\Core\Facades\Rest;
 use Egal\Core\Facades\SelectParser;
+use Egal\Core\Facades\ScopeParser;
 use Exception;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
 
 class Controller extends BaseController
 {
 
     public function index(Request $request, string $modelClass)
     {
+        $scope = ScopeParser::parse($request->get('scope'));
         $filter = FilterParser::parse($request->get('filter'));
-//        $select = SelectParser::parse($request->get('select'));
+        $select = SelectParser::parse($request->get('select'));
 
         try {
-            $indexData = Rest::index($modelClass, $filter);
+            $indexData = Rest::index($modelClass, $scope, $filter, $select);
         } catch (Exception $exception) {
+            Log::debug($exception->getMessage());
             return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
         }
 
@@ -32,8 +35,10 @@ class Controller extends BaseController
 
     public function show(Request $request, $key, string $modelClass)
     {
+        $select = SelectParser::parse($request->get('select'));
+
         try {
-            $showData = Rest::show($modelClass, $key);
+            $showData = Rest::show($modelClass, $key, $select);
         } catch (Exception $exception) {
             return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
         }

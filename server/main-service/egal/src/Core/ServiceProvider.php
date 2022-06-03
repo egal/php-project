@@ -8,6 +8,7 @@ use Egal\Core\Http\Route;
 use Egal\Core\Rest\Controller;
 use Egal\Core\Rest\Filter\Parser as FilterParser;
 use Egal\Core\Rest\Select\Parser as SelectParser;
+use Egal\Core\Rest\Scope\Parser as ScopeParser;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
@@ -26,6 +27,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->singleton('egal.route', fn($app) => new Route());
         $this->app->singleton('egal.filter.parser', fn($app) => new FilterParser());
         $this->app->singleton('egal.select.parser', fn($app) => new SelectParser());
+        $this->app->singleton('egal.scope.parser', fn($app) => new ScopeParser());
     }
 
     /**
