@@ -9,7 +9,6 @@ use Egal\Core\Facades\ScopeParser;
 use Exception;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class Controller extends BaseController
 {
@@ -23,7 +22,6 @@ class Controller extends BaseController
         try {
             $indexData = Rest::index($modelClass, $scope, $filter, $select);
         } catch (Exception $exception) {
-            Log::debug($exception->getMessage());
             return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
         }
 
@@ -100,6 +98,20 @@ class Controller extends BaseController
         return response()->json([
             'message' => 'Deleted successfully',
             'data' => null
+        ]);
+    }
+
+    public function metadata(Request $request, string $modelClass)
+    {
+        try {
+            $metadata = Rest::metadata($modelClass);
+        } catch (Exception $exception) {
+            return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
+        }
+
+        return response()->json([
+            'message' => null,
+            'data' => $metadata
         ]);
     }
 

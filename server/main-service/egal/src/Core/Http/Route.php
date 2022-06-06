@@ -32,6 +32,9 @@ class Route
         IlluminateRoute::patch("/$pluralName/{key}", [Controller::class, 'update'])
             ->defaults('model_class', $modelClass);
 
+        IlluminateRoute::get("metadata/$pluralName", [Controller::class, 'metadata'])
+            ->defaults('model_class', $modelClass);
+
         if (!is_iterable($policies)) {
             $policies = [$policies];
         }

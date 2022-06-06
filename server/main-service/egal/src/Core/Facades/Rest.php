@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array show(string $modelClass, $key, array $select = [])
  * @method static array update(string $modelClass, $key, array $attributes = [])
  * @method static void delete(string $modelClass, $key)
+ * @method static void metadata(string $modelClass)
  *
  * @see Controller
  */

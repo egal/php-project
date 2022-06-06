@@ -124,6 +124,11 @@ class Controller
         $object->delete();
     }
 
+    public function metadata(string $modelClass): array
+    {
+        return $this->newModelInstance($modelClass)->getMetadata()->toArray();
+    }
+
     protected function newModelInstance(string $modelClass): Model
     {
         return new $modelClass();

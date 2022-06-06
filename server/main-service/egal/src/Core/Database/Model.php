@@ -9,7 +9,6 @@ use Egal\Core\Rest\Select\Applier as SelectApplier;
 use Egal\Core\Rest\Scope\Applier as ScopeApplier;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
-use Illuminate\Support\Facades\Log;
 
 /**
  * #TODO: Реализовать EnumModel.
@@ -46,7 +45,7 @@ abstract class Model extends BaseModel
     //TODO пользователь может переопределить, нужно что-то придумать
     public function scopeRestFilters(Builder $query, FilterQuery $filterQuery): Builder
     {
-//        FilterApplier::validateQuery($this->getMetadata(), $filterQuery);
+        FilterApplier::validateQuery($this->getMetadata(), $filterQuery);
 
         return FilterApplier::applyQuery($query, $filterQuery);
     }
