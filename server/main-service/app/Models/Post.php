@@ -9,6 +9,7 @@ use Egal\Core\Database\Metadata\Field as FieldMetadata;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Log;
 
 class Post extends Model
 {
@@ -41,9 +42,9 @@ class Post extends Model
         return $query->where('created_at', '>', Carbon::today()->toDateString());
     }
 
-    public function scopeTitleStartWithK($query)
+    public function scopeTitleStartWithCharacter($query, $character)
     {
-        return $query->where('title', 'like', 'К%');
+        return $query->where('title', 'like', $character . '%');
     }
 
     public function scopeRandomOne($query)

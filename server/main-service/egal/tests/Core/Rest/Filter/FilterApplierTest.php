@@ -2,9 +2,6 @@
 
 namespace Egal\Tests\Core\Rest\Filter;
 
-use App\Models\Channel;
-use App\Models\Comment;
-use Carbon\Carbon;
 use Egal\Core\Database\Metadata\Field as FieldMetadata;
 use Egal\Core\Database\Metadata\Model as ModelMetadata;
 use Egal\Core\Database\Model;
@@ -261,28 +258,14 @@ class ModelFilterApplierTestPost extends Model
 
     public function channel(): BelongsTo
     {
-        return $this->belongsTo(Channel::class);
+        return $this->belongsTo(ModelFilterApplierTestChannel::class);
     }
 
     public function comments(): MorphMany
     {
-        return $this->morphMany(Comment::class, 'commentable');
+        return $this->morphMany(ModelFilterApplierTestComment::class, 'commentable');
     }
 
-    public function scopeCreatedAfterToday($query)
-    {
-        return $query->where('created_at', '>', Carbon::today()->toDateString());
-    }
-
-    public function scopeTitleStartWithK($query)
-    {
-        return $query->where('title', 'like', 'К%');
-    }
-
-    public function scopeRandomOne($query)
-    {
-        return $query->inRandomOrder()->limit(1);
-    }
 }
 
 class ModelFilterApplierTestComment extends Model

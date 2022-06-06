@@ -21,7 +21,7 @@ class FilterQueryStringParserTest extends TestCase
      * @dataProvider relationFieldDataProvider
      * @dataProvider morphRelationFieldDataProvider
      */
-    public function testParsingStringQueryToArrayQuery(?string $stringQuery, Query|string $expected): void
+    public function testParsingStringQueryToFilterQuery(?string $stringQuery, Query|string $expected): void
     {
         if (is_string($expected)) {
             $this->expectException($expected);

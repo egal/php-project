@@ -58,7 +58,6 @@ abstract class Model extends BaseModel
 
     public function scopeRestScopes(Builder $query, array $scopes): Builder
     {
-        Log::debug('scopeApplyScopes', $scopes);
         return ScopeApplier::apply($query, $scopes);
     }
 

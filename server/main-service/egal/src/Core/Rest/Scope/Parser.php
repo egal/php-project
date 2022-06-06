@@ -3,7 +3,6 @@
 namespace Egal\Core\Rest\Scope;
 
 use Egal\Core\Exceptions\ScopeParseException;
-use Illuminate\Support\Facades\Log;
 
 class Parser
 {
@@ -15,27 +14,17 @@ class Parser
         if ($queryString === '' || $queryString === null) {
             return $scopes;
         }
+        preg_match_all(ScopeFunction::REG_PATTERN, $queryString, $scopesRaw, PREG_SET_ORDER, 0);
 
-        preg_match_all(ScopeFunction::REG_PATTERN, $queryString, $scopesRaw,PREG_SET_ORDER, 0);
+        //TODO нужна др.реализация проверки queryString
+        $scopesString = implode(ScopeFunction::SCOPES_DELIMITER, array_column($scopesRaw, 0));
+        if ($scopesString !== $queryString) {
+            throw new ScopeParseException();
+        }
 
-        foreach ($scopesRaw as $scope) {
-            $parameters = [];
-
-            if (array_key_exists('parameter', $scope)) {
-                preg_match_all(ScopeFunction::PARAMETER_REG_PATTERN, $scope['parameter'], $matches, PREG_SET_ORDER, 0);
-
-                foreach($matches as $parameter) {
-                    if (array_key_exists('key', $parameter) && array_key_exists('value', $parameter)) {
-                        $parameters[] = [
-                            'key' => $parameter['key'],
-                            'value' => $this->makeValueFromRaw($parameter['value'])
-                        ];
-                    } else {
-                        throw new ScopeParseException();
-                    }
-                }
-            }
-            $scopes[] = ScopeFunction::make($scope['scope'], $parameters);
+        foreach ($scopesRaw as $scopeRaw) {
+            $parameters = $this->parseScopeParameters($scopeRaw);
+            $scopes[] = ScopeFunction::make($scopeRaw['scope'], $parameters);
         }
 
         return $scopes;
@@ -59,5 +48,24 @@ class Parser
             throw new ScopeParseException();
         }
         return $value;
+    }
+
+    private function parseScopeParameters(array $scope): array
+    {
+        $parameters = [];
+        if (array_key_exists('parameters', $scope) && $scope['parameters'] != null) {
+            foreach (explode(ScopeFunction::PARAMETERS_DELIMITER, $scope['parameters']) as $parameterString) {
+
+                if (preg_match(ScopeFunction::PARAMETER_REG_PATTERN, $parameterString, $parameter)) {
+                    $parameters[] = [
+                        'key' => $parameter['key'],
+                        'value' => $this->makeValueFromRaw($parameter['value'])
+                    ];
+                } else {
+                    throw new ScopeParseException();
+                }
+            }
+        }
+        return $parameters;
     }
 }
