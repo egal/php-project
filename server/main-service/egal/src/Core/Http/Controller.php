@@ -17,9 +17,9 @@ class Controller extends BaseController
     public function index(Request $request, string $modelClass)
     {
         $scope = ScopeParser::parse($request->get('scope'));
+        $pagination = PaginationParams::make($request->get('per_page'), $request->get('page'));
         $filter = FilterParser::parse($request->get('filter'));
         $select = SelectParser::parse($request->get('select'));
-        $pagination = PaginationParams::make($request->get('per_page'), $request->get('page'));
 
         try {
             $indexData = Rest::index($modelClass, $pagination, $scope, $filter, $select);
