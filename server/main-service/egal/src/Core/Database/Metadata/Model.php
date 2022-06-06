@@ -106,7 +106,7 @@ class Model
             'model_class' => $this->class,
             'model_short_name' => $this->name,
             'fields' => $this->fields,
-            'validation_rules' => $this->getValidationRules()
+//            'scopes' => $this->scopes
         ];
     }
 

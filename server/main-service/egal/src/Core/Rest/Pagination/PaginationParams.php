@@ -7,7 +7,7 @@ class PaginationParams
     private ?int $perPage = null;
     private ?int $page = null;
 
-    public static function make(int $perPage, int $page)
+    public static function make(int $perPage = null, int $page = null): static
     {
         $paginationParams = new static();
         $paginationParams->perPage = $perPage;

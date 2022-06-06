@@ -7,9 +7,7 @@ use Egal\Core\Database\Model;
 use Egal\Core\Database\Metadata\Model as ModelMetadata;
 use Egal\Core\Database\Metadata\Field as FieldMetadata;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Facades\Log;
 
 class Post extends Model
 {

@@ -2,8 +2,6 @@
 
 namespace Egal\Core\Rest\Scope;
 
-use Illuminate\Support\Facades\Log;
-
 class Applier
 {
 

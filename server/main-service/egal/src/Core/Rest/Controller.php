@@ -9,7 +9,7 @@ use Egal\Core\Exceptions\ValidateException;
 use Egal\Core\Facades\Auth;
 use Egal\Core\Facades\Gate;
 use Egal\Core\Rest\Filter\Query as FilterQuery;
-use Illuminate\Support\Facades\Log;
+use Egal\Core\Rest\Pagination\PaginationParams;
 use Illuminate\Support\Facades\Validator;
 
 class Controller
@@ -18,16 +18,16 @@ class Controller
     /**
      * TODO: Selecting (with relation loading), filtering, sorting, scoping.
      */
-    public function index(string $modelClass, array $scope = [], FilterQuery $filter = null, array $select = []): array
+    public function index(string $modelClass, PaginationParams $pagination, array $scope = [], FilterQuery $filter = null, array $select = []): array
     {
         Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
-        $collection = $model::restScopes($scope)
-            ->restFilters($filter)
-            ->restSelects($select)
+        $collection = $model::restScope($scope)
+            ->restFilter($filter)
+            ->restSelect($select)
 //            ->order()
-//            ->paginate()
+            ->restPagination($pagination)
             ->get();
 
         foreach ($collection as $object) {
@@ -42,7 +42,7 @@ class Controller
         Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
-        $object = $model::restSelects($select)
+        $object = $model::restSelect($select)
             ->find($key);
 
         if (!$object) {
