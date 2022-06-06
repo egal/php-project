@@ -18,7 +18,7 @@ class Parser
             return $fields;
         }
 
-        $fieldsRaw = explode(self::FIELDS_DELIMITER, $queryString);
+        $fieldsRaw = explode(self::FIELDS_DELIMITER, str_replace(' ','',$queryString));
 
         foreach ($fieldsRaw as $field) {
             switch (true) {

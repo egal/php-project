@@ -24,7 +24,7 @@ class Controller
 
         $model = $this->newModelInstance($modelClass);
         $collection = $model::restScopes($scope)
-            ->restfilters($filter)
+            ->restFilters($filter)
             ->restSelects($select)
 //            ->order()
 //            ->paginate()

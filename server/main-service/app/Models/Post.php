@@ -19,6 +19,9 @@ class Post extends Model
             ->fields(
                 FieldMetadata::make('title')
                     ->required()
+                    ->fillable(),
+                FieldMetadata::make('channel_id')
+                    ->required()
                     ->fillable()
             );
     }

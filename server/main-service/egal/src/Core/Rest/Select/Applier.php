@@ -2,17 +2,17 @@
 
 namespace Egal\Core\Rest\Select;
 
+use Egal\Core\Exceptions\EmptySelectException;
 use Egal\Core\Rest\Filter\Field;
 use Egal\Core\Rest\Filter\RelationField;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Log;
 
 class Applier
 {
     public static function apply(Builder $query, array $fieldObjects): Builder
     {
         if ($fieldObjects === []) {
-            throw new \Exception('Select fields not specified!', 400);
+            throw new EmptySelectException('Select fields not specified!', 400);
         }
 
         $selectRelationFields = [];

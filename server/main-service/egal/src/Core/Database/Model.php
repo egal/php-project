@@ -53,7 +53,6 @@ abstract class Model extends BaseModel
 
     public function scopeRestSelects(Builder $query, array $fields): Builder
     {
-        Log::debug('scopeApplySelects');
         return SelectApplier::apply($query, $fields);
     }
 
