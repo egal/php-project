@@ -9,6 +9,7 @@ use Egal\Core\Rest\Pagination\PaginationParams;
 use Egal\Core\Rest\Select\Applier as SelectApplier;
 use Egal\Core\Rest\Scope\Applier as ScopeApplier;
 use Egal\Core\Rest\Pagination\Applier as PaginationApplier;
+use Egal\Core\Rest\Order\Applier as OrderApplier;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
@@ -67,4 +68,8 @@ abstract class Model extends BaseModel
         return PaginationApplier::apply($query, $pagination);
     }
 
+    public function scopeRestOrder(Builder $query, array $orders): Builder
+    {
+        return OrderApplier::apply($query, $orders);
+    }
 }

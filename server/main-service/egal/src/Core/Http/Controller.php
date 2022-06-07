@@ -6,6 +6,7 @@ use Egal\Core\Facades\FilterParser;
 use Egal\Core\Facades\Rest;
 use Egal\Core\Facades\SelectParser;
 use Egal\Core\Facades\ScopeParser;
+use Egal\Core\Facades\OrderParser;
 use Egal\Core\Rest\Pagination\PaginationParams;
 use Exception;
 use Illuminate\Routing\Controller as BaseController;
@@ -20,9 +21,10 @@ class Controller extends BaseController
         $pagination = PaginationParams::make($request->get('per_page'), $request->get('page'));
         $filter = FilterParser::parse($request->get('filter'));
         $select = SelectParser::parse($request->get('select'));
+        $order = OrderParser::parse($request->get('sort_by'));
 
         try {
-            $indexData = Rest::index($modelClass, $pagination, $scope, $filter, $select);
+            $indexData = Rest::index($modelClass, $pagination, $scope, $filter, $select, $order);
         } catch (Exception $exception) {
             return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
         }

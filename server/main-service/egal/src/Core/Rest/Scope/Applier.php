@@ -2,10 +2,12 @@
 
 namespace Egal\Core\Rest\Scope;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class Applier
 {
 
-    public static function apply(\Illuminate\Database\Eloquent\Builder $query, array $scopeObjects)
+    public static function apply(Builder $query, array $scopeObjects)
     {
         $scopes = [];
         foreach ($scopeObjects as $scopeObject) {

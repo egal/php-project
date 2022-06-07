@@ -18,7 +18,7 @@ class Controller
     /**
      * TODO: Selecting (with relation loading), filtering, sorting, scoping.
      */
-    public function index(string $modelClass, PaginationParams $pagination, array $scope = [], FilterQuery $filter = null, array $select = []): array
+    public function index(string $modelClass, PaginationParams $pagination, array $scope = [], FilterQuery $filter = null, array $select = [], array $order = []): array
     {
         Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
 
@@ -26,7 +26,7 @@ class Controller
         $collection = $model::restScope($scope)
             ->restFilter($filter)
             ->restSelect($select)
-//            ->order()
+            ->restOrder($order)
             ->restPagination($pagination)
             ->get();
 
@@ -77,7 +77,8 @@ class Controller
 
         Gate::allowed(Auth::user(), Ability::Create, $object);
 
-        return  ["id" => $object->id];
+        $keyName = $model->getKeyName();
+        return  [$keyName => $object->$keyName];
     }
 
     public function update(string $modelClass, $key, array $attributes = []): array
@@ -105,7 +106,8 @@ class Controller
 
         $object->update($attributes);
 
-        return  [ "id" => $object->id ];
+        $keyName = $model->getKeyName();
+        return  [$keyName => $object->$keyName];
     }
 
     public function delete(string $modelClass, $key): void
