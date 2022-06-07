@@ -21,7 +21,7 @@ class Controller extends BaseController
         $pagination = PaginationParams::make($request->get('per_page'), $request->get('page'));
         $filter = FilterParser::parse($request->get('filter'));
         $select = SelectParser::parse($request->get('select'));
-        $order = OrderParser::parse($request->get('sort_by'));
+        $order = OrderParser::parse($request->get('order'));
 
         try {
             $indexData = Rest::index($modelClass, $pagination, $scope, $filter, $select, $order);

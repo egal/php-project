@@ -5,7 +5,7 @@ namespace Egal\Core\Rest\Order;
 class ColumnOrder
 {
     public const ORDERS_DELIMITER = ",";
-    public const REG_PATTERN = "(?<direction>(asc|desc))\((?<column>[a-z_]+)\)";
+    public const REG_PATTERN = "/(?<direction>(asc|desc))\((?<column>[a-z_]+)\)/m";
 
     private string $column;
     private Direction $direction;

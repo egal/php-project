@@ -14,8 +14,6 @@ class Model
 
     private string $class;
 
-    private string $primaryKey = 'id';
-
     /**
      * @var Field[]
      */

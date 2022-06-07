@@ -9,7 +9,7 @@ class Applier
     public static function apply(Builder $query, array $orders): Builder
     {
         foreach ($orders as $order) {
-            $query->orderBy($order->getColumn(), $order->getDirection());
+            $query->orderBy($order->getColumn(), $order->getDirection()->value);
         }
 
         return $query;
