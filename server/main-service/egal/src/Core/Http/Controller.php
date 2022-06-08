@@ -69,7 +69,7 @@ class Controller extends BaseController
         }
 
         return response()->json([
-            'message' => 'Created successfully',
+            'message' => isset($exceptionResponseData) ? null : 'Created successfully',
             'data' => $createData ?? null,
             'exception' => $exceptionResponseData ?? null
         ])->setStatusCode(isset($exceptionResponseData) ? $exceptionResponseData['code'] : Response::HTTP_CREATED);
@@ -89,7 +89,7 @@ class Controller extends BaseController
         }
 
         return response()->json([
-            'message' => 'Updated successfully',
+            'message' => isset($exceptionResponseData) ? null : 'Updated successfully',
             'data' => $updateData ?? null,
             'exception' => $exceptionResponseData ?? null
         ])->setStatusCode(isset($exceptionResponseData) ? $exceptionResponseData['code'] : Response::HTTP_OK);
@@ -104,7 +104,7 @@ class Controller extends BaseController
         }
 
         return response()->json([
-            'message' => 'Deleted successfully',
+            'message' => isset($exceptionResponseData) ? null : 'Deleted successfully',
             'data' => null,
             'exception' => $exceptionResponseData ?? null
         ])->setStatusCode(isset($exceptionResponseData) ? $exceptionResponseData['code'] : Response::HTTP_OK);
