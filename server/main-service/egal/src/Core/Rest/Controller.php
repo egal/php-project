@@ -16,9 +16,6 @@ use Illuminate\Support\Facades\Validator;
 class Controller
 {
 
-    /**
-     * TODO: Selecting (with relation loading), filtering, sorting, scoping.
-     */
     public function index(string $modelClass, PaginationParams $pagination, array $scope = [], FilterQuery $filter = null, array $select = [], array $order = []): array
     {
         Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);

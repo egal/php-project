@@ -2,6 +2,7 @@
 
 namespace Egal\Core\Database\Metadata;
 
+use Egal\Core\Exceptions\MetadataException;
 use Illuminate\Validation\Rule as ValidationRule;
 use Illuminate\Contracts\Validation\Rule as ValidationRuleContract;
 
@@ -14,10 +15,10 @@ class Field
 
     public static function make(string $name): self
     {
-        $model = new self();
-        $model->setName($name);
+        $field = new self();
+        $field->setName($name);
 
-        return $model;
+        return $field;
     }
 
     private function setName(string $name): self
@@ -75,6 +76,25 @@ class Field
     public function isFillable(): bool
     {
         return $this->fillable;
+    }
+
+    private function getTypeFromValidationRules()
+    {
+        $typesValidationRule = array_intersect($this->getValidationRules(), array_column(DataType::cases(), 'value'));
+
+        if (count($typesValidationRule) > 1) {
+            throw new MetadataException();
+        }
+
+        return array_shift($typesValidationRule);
+    }
+
+    public function toArray()
+    {
+        return [
+          'name' => $this->getName(),
+          'type' => $this->getTypeFromValidationRules(),
+        ];
     }
 
 }

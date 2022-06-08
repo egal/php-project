@@ -17,13 +17,13 @@ class Controller extends BaseController
 
     public function index(Request $request, string $modelClass)
     {
-        $scope = ScopeParser::parse($request->get('scope'));
-        $pagination = PaginationParams::make($request->get('per_page'), $request->get('page'));
-        $filter = FilterParser::parse($request->get('filter'));
-        $select = SelectParser::parse($request->get('select'));
-        $order = OrderParser::parse($request->get('order'));
-
         try {
+            $pagination = PaginationParams::make($request->get('per_page'), $request->get('page'));
+
+            $scope = ScopeParser::parse($request->get('scope'));
+            $filter = FilterParser::parse($request->get('filter'));
+            $select = SelectParser::parse($request->get('select'));
+            $order = OrderParser::parse($request->get('order'));
             $indexData = Rest::index($modelClass, $pagination, $scope, $filter, $select, $order);
         } catch (Exception $exception) {
             return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
@@ -37,9 +37,8 @@ class Controller extends BaseController
 
     public function show(Request $request, $key, string $modelClass)
     {
-        $select = SelectParser::parse($request->get('select'));
-
         try {
+            $select = SelectParser::parse($request->get('select'));
             $showData = Rest::show($modelClass, $key, $select);
         } catch (Exception $exception) {
             return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
@@ -53,13 +52,12 @@ class Controller extends BaseController
 
     public function create(Request $request, string $modelClass)
     {
-        if ($request->getContentType() !== 'json') {
-            throw new Exception('Unsupported content type!'); # TODO: Replace to additional exception class!
-        }
-
-        $attributes = json_decode($request->getContent(), true);
-
         try {
+            if ($request->getContentType() !== 'json') {
+                throw new Exception('Unsupported content type!'); # TODO: Replace to additional exception class!
+            }
+
+            $attributes = json_decode($request->getContent(), true);
             $createData = Rest::create($modelClass, $attributes);
         } catch (Exception $exception) {
             return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
@@ -73,13 +71,12 @@ class Controller extends BaseController
 
     public function update(Request $request, $key, string $modelClass)
     {
-        if ($request->getContentType() !== 'json') {
-            throw new Exception('Unsupported content type!'); # TODO: Replace to additional exception class!
-        }
-
-        $attributes = json_decode($request->getContent(), true);
-
         try {
+            if ($request->getContentType() !== 'json') {
+                throw new Exception('Unsupported content type!'); # TODO: Replace to additional exception class!
+            }
+
+            $attributes = json_decode($request->getContent(), true);
             $updateData = Rest::update($modelClass, $key, $attributes);
         } catch (Exception $exception) {
             return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());

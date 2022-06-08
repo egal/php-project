@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Egal\Core\Database\Metadata\DataType;
+use Egal\Core\Database\Metadata\ScopeParam;
 use Egal\Core\Database\Model;
 use Egal\Core\Database\Metadata\Model as ModelMetadata;
 use Egal\Core\Database\Metadata\Field as FieldMetadata;
+use Egal\Core\Database\Metadata\Relation as RelationMetadata;
+use Egal\Core\Database\Metadata\Scope as ScopeMetadata;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
@@ -18,10 +22,17 @@ class Post extends Model
             ->fields(
                 FieldMetadata::make('title')
                     ->required()
+                    ->validationRules(['string'])
                     ->fillable(),
                 FieldMetadata::make('channel_id')
                     ->required()
                     ->fillable()
+            )
+            ->relations(
+                RelationMetadata::make('channel', Channel::class)
+            )
+            ->scopes(
+                ScopeMetadata::make('titleStartWithCharacter', [ScopeParam::make('character', DataType::String)])
             );
     }
 
