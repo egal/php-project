@@ -4,14 +4,14 @@ namespace Egal\Core\Rest\Pagination;
 
 class PaginationParams
 {
-    private ?int $perPage = null;
-    private ?int $page = null;
+    private ?int $perPage = 15;
+    private ?int $page = 1;
 
     public static function make(int $perPage = null, int $page = null): static
     {
         $paginationParams = new static();
-        $paginationParams->perPage = $perPage;
-        $paginationParams->page = $page;
+        $paginationParams->perPage ??= $perPage;
+        $paginationParams->page ??= $page;
 
         return $paginationParams;
     }

@@ -10,6 +10,9 @@ use Egal\Core\Rest\Filter\Parser as FilterParser;
 use Egal\Core\Rest\Select\Parser as SelectParser;
 use Egal\Core\Rest\Scope\Parser as ScopeParser;
 use Egal\Core\Rest\Order\Parser as OrderParser;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
@@ -30,6 +33,21 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->singleton('egal.select.parser', fn($app) => new SelectParser());
         $this->app->singleton('egal.scope.parser', fn($app) => new ScopeParser());
         $this->app->singleton('egal.order.parser', fn($app) => new OrderParser());
+
+        Collection::macro('paginate', function (int $perPage = 15, string $pageName = 'page', int $page = null, int $total = null, array $options = []): LengthAwarePaginator {
+            $page = $page ?: LengthAwarePaginator::resolveCurrentPage($pageName);
+
+            $results = $this->forPage($page, $perPage)->values();
+
+            $total = $total ?: $this->count();
+
+            $options += [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+                'pageName' => $pageName,
+            ];
+
+            return new LengthAwarePaginator($results, $total, $perPage, $page, $options);
+        });
     }
 
     /**
@@ -39,7 +57,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function boot()
     {
-        //
+
     }
 
 }

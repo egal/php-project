@@ -43,26 +43,4 @@ abstract class Model extends BaseModel
         $this->mergeFillable($metadata->getFillableFieldsNames());
     }
 
-    //TODO пользователь может переопределить, нужно что-то придумать
-    public function scopeRestFilter(Builder $query, FilterQuery $filterQuery): Builder
-    {
-        FilterApplier::validateQuery($this->getMetadata(), $filterQuery);
-
-        return FilterApplier::applyQuery($query, $filterQuery);
-    }
-
-    public function scopeRestSelect(Builder $query, array $fields): Builder
-    {
-        return SelectApplier::apply($query, $fields);
-    }
-
-    public function scopeRestScope(Builder $query, array $scopes): Builder
-    {
-        return ScopeApplier::apply($query, $scopes);
-    }
-
-    public function scopeRestOrder(Builder $query, array $orders): Builder
-    {
-        return OrderApplier::apply($query, $orders);
-    }
 }

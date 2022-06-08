@@ -8,9 +8,13 @@ use Egal\Core\Exceptions\ObjectNotFoundException;
 use Egal\Core\Exceptions\ValidateException;
 use Egal\Core\Facades\Auth;
 use Egal\Core\Facades\Gate;
+use Egal\Core\Rest\Filter\Applier as FilterApplier;
 use Egal\Core\Rest\Filter\Query as FilterQuery;
+use Egal\Core\Rest\Order\Applier as OrderApplier;
 use Egal\Core\Rest\Pagination\PaginationParams;
-use Illuminate\Database\Eloquent\Collection;
+use Egal\Core\Rest\Scope\Applier as ScopeApplier;
+use Egal\Core\Rest\Select\Applier as SelectApplier;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class Controller
@@ -21,13 +25,16 @@ class Controller
         Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
-        $paginator = $model::restScope($scope)
-            ->restFilter($filter)
-            ->restSelect($select)
-            ->restOrder($order)
-            ->paginate($pagination->getPerPage(), ['*'], 'page', $pagination->getPage());
+        $builder = $model::query();
 
-        $collection = $paginator->items();
+        ScopeApplier::apply($builder, $scope);
+        FilterApplier::validateQuery($model->getMetadata(), $filter);
+        FilterApplier::applyQuery($builder, $filter);
+        SelectApplier::apply($builder, $select);
+        OrderApplier::apply($builder, $order);
+
+        $collection = $builder->get();
+        $paginator = $collection->paginate($pagination->getPerPage(), 'page', $pagination->getPage());
 
         foreach ($collection as $object) {
             Gate::allowed(Auth::user(), Ability::Show, $object);
@@ -46,8 +53,11 @@ class Controller
         Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
-        $object = $model::restSelect($select)
-            ->find($key);
+        $builder = $model::query();
+
+        SelectApplier::apply($builder, $select);
+
+        $object = $builder->find($key);
 
         if (!$object) {
             throw new ObjectNotFoundException();
