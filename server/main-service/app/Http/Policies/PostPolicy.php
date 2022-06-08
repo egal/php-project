@@ -4,8 +4,6 @@ namespace App\Http\Policies;
 
 use App\Models\Post;
 use Egal\Core\Auth\User;
-use Egal\Core\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class PostPolicy
 {

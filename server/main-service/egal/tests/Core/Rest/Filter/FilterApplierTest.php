@@ -5,6 +5,7 @@ namespace Egal\Tests\Core\Rest\Filter;
 use Egal\Core\Database\Metadata\Field as FieldMetadata;
 use Egal\Core\Database\Metadata\Model as ModelMetadata;
 use Egal\Core\Database\Model;
+use Egal\Core\Rest\Filter\Applier as FilterApplier;
 use Egal\Core\Rest\Filter\Combiner;
 use Egal\Core\Rest\Filter\FieldCondition;
 use Egal\Core\Rest\Filter\Field;
@@ -34,7 +35,10 @@ class FilterApplierTest extends TestCase
             $this->expectException($expected);
         }
 
-        $result = array_column(ModelFilterApplierTestPost::restFilter($filterQuery)->get()->toArray(), 'id');
+        $model = new ModelFilterApplierTestPost();
+        FilterApplier::validateQuery($model->getMetadata(), $filterQuery);
+        $query = FilterApplier::applyQuery($model::query(), $filterQuery);
+        $result = array_column($query->get()->toArray(), 'id');
 
         $this->assertEquals($expected, $result);
 
@@ -50,7 +54,10 @@ class FilterApplierTest extends TestCase
             $this->expectException($expected);
         }
 
-        $result = array_column(ModelFilterApplierTestComment::restFilters($filterQuery)->get()->toArray(), 'id');
+        $model = new ModelFilterApplierTestComment();
+        FilterApplier::validateQuery($model->getMetadata(), $filterQuery);
+        $query = FilterApplier::applyQuery($model::query(), $filterQuery);
+        $result = array_column($query->get()->toArray(), 'id');
 
         $this->assertEquals($expected, $result);
 

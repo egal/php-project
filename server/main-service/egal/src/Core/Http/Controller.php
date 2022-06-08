@@ -2,6 +2,8 @@
 
 namespace Egal\Core\Http;
 
+use Egal\Core\Exceptions\HasData;
+use Egal\Core\Exceptions\HasInternalCode;
 use Egal\Core\Facades\FilterParser;
 use Egal\Core\Facades\Rest;
 use Egal\Core\Facades\SelectParser;
@@ -9,9 +11,9 @@ use Egal\Core\Facades\ScopeParser;
 use Egal\Core\Facades\OrderParser;
 use Egal\Core\Rest\Pagination\PaginationParams;
 use Exception;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class Controller extends BaseController
 {
@@ -27,14 +29,14 @@ class Controller extends BaseController
             $order = OrderParser::parse($request->get('order'));
             $indexData = Rest::index($modelClass, $pagination, $scope, $filter, $select, $order);
         } catch (Exception $exception) {
-            Log::debug($exception->getMessage());
-            return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
+            $exceptionResponseData = $this->getExceptionResponseData($exception);
         }
 
         return response()->json([
             'message' => null,
-            'data' => $indexData
-        ]);
+            'data' => $indexData ?? null,
+            'exception' => $exceptionResponseData ?? null
+        ])->setStatusCode(isset($exceptionResponseData) ? $exceptionResponseData['code'] : Response::HTTP_OK);
     }
 
     public function show(Request $request, $key, string $modelClass)
@@ -43,13 +45,14 @@ class Controller extends BaseController
             $select = SelectParser::parse($request->get('select'));
             $showData = Rest::show($modelClass, $key, $select);
         } catch (Exception $exception) {
-            return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
+            $exceptionResponseData = $this->getExceptionResponseData($exception);
         }
 
         return response()->json([
             'message' => null,
-            'data' => $showData
-        ]);
+            'data' => $showData ?? null,
+            'exception' => $exceptionResponseData ?? null
+        ])->setStatusCode(isset($exceptionResponseData) ? $exceptionResponseData['code'] : Response::HTTP_OK);
     }
 
     public function create(Request $request, string $modelClass)
@@ -62,13 +65,14 @@ class Controller extends BaseController
             $attributes = json_decode($request->getContent(), true);
             $createData = Rest::create($modelClass, $attributes);
         } catch (Exception $exception) {
-            return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
+            $exceptionResponseData = $this->getExceptionResponseData($exception);
         }
 
         return response()->json([
             'message' => 'Created successfully',
-            'data' => $createData
-        ]);
+            'data' => $createData ?? null,
+            'exception' => $exceptionResponseData ?? null
+        ])->setStatusCode(isset($exceptionResponseData) ? $exceptionResponseData['code'] : Response::HTTP_CREATED);
     }
 
     public function update(Request $request, $key, string $modelClass)
@@ -81,13 +85,14 @@ class Controller extends BaseController
             $attributes = json_decode($request->getContent(), true);
             $updateData = Rest::update($modelClass, $key, $attributes);
         } catch (Exception $exception) {
-            return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
+            $exceptionResponseData = $this->getExceptionResponseData($exception);
         }
 
         return response()->json([
             'message' => 'Updated successfully',
-            'data' => $updateData
-        ]);
+            'data' => $updateData ?? null,
+            'exception' => $exceptionResponseData ?? null
+        ])->setStatusCode(isset($exceptionResponseData) ? $exceptionResponseData['code'] : Response::HTTP_OK);
     }
 
     public function delete(Request $request, $key, string $modelClass)
@@ -95,13 +100,14 @@ class Controller extends BaseController
         try {
             Rest::delete($modelClass, $key);
         } catch (Exception $exception) {
-            return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
+            $exceptionResponseData = $this->getExceptionResponseData($exception);
         }
 
         return response()->json([
             'message' => 'Deleted successfully',
-            'data' => null
-        ]);
+            'data' => null,
+            'exception' => $exceptionResponseData ?? null
+        ])->setStatusCode(isset($exceptionResponseData) ? $exceptionResponseData['code'] : Response::HTTP_OK);
     }
 
     public function metadata(Request $request, string $modelClass)
@@ -109,13 +115,24 @@ class Controller extends BaseController
         try {
             $metadata = Rest::metadata($modelClass);
         } catch (Exception $exception) {
-            return response()->json(['exception' => $exception->getMessage()])->setStatusCode($exception->getCode());
+            $exceptionResponseData = $this->getExceptionResponseData($exception);
         }
 
         return response()->json([
             'message' => null,
-            'data' => $metadata
-        ]);
+            'data' => $metadata ?? null,
+            'exception' => $exceptionResponseData ?? null
+        ])->setStatusCode(isset($exceptionResponseData) ? $exceptionResponseData['code'] : Response::HTTP_OK);
+    }
+
+    private function getExceptionResponseData(Exception $exception): array
+    {
+        return [
+            'message' => $exception->getMessage(),
+            'code' => $exception->getCode(),
+            'internal_code' => $exception instanceof HasInternalCode ? $exception->getInternalCode() : null,
+            'data' => $exception instanceof HasData ? $exception->getData() : null
+        ];
     }
 
 }

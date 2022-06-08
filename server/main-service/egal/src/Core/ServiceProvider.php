@@ -12,7 +12,6 @@ use Egal\Core\Rest\Scope\Parser as ScopeParser;
 use Egal\Core\Rest\Order\Parser as OrderParser;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider

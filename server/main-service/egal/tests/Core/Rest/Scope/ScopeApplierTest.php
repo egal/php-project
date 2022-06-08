@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Egal\Core\Database\Model;
 use Egal\Core\Database\Metadata\Field as FieldMetadata;
 use Egal\Core\Database\Metadata\Model as ModelMetadata;
+use Egal\Core\Rest\Scope\Applier as ScopeApplier;
 use Egal\Core\Rest\Scope\ScopeFunction;
 use Egal\Tests\DatabaseSchema;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,7 +29,9 @@ class ScopeApplierTest extends TestCase
             $this->expectException($expected);
         }
 
-        $result = array_column(ModelScopeApplierTestPost::restScope($scopes)->get()->toArray(), 'id');
+        $model = new ModelScopeApplierTestPost();
+        $query = ScopeApplier::apply($model::query(), $scopes);
+        $result = array_column($query->get()->toArray(), 'id');
 
         $this->assertEquals($expected, $result);
 

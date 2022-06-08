@@ -11,6 +11,7 @@ use Egal\Core\Database\Model;
 use Egal\Core\Exceptions\EmptySelectException;
 use Egal\Core\Rest\Filter\Field;
 use Egal\Core\Rest\Filter\RelationField;
+use Egal\Core\Rest\Select\Applier as SelectApplier;
 use Egal\Tests\DatabaseSchema;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -33,7 +34,9 @@ class SelectApplierTest extends TestCase
             $this->expectException($expected);
         }
 
-        $result = ModelSelectApplierTestPost::restSelect($fields)->first()->toArray();
+        $model = new ModelSelectApplierTestPost();
+        $query = SelectApplier::apply($model::query(), $fields);
+        $result = $query->first()->toArray();
 
         $this->assertEquals($expected, array_keys($result));
 
