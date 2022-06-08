@@ -22,6 +22,8 @@ class Applier
                 $relation = $fieldObject->getRelation();
                 $fieldName = $fieldObject->getField();
                 $selectRelationFields[$relation][] = $fieldName;
+
+                $selectRelationFields[$relation] = array_merge($selectRelationFields[$relation], );
             } elseif ($fieldObject instanceof Field) {
                 $selectFields[] = $fieldObject->getName();
             }

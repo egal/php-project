@@ -28,7 +28,7 @@ class ScopeApplierTest extends TestCase
             $this->expectException($expected);
         }
 
-        $result = array_column(ModelScopeApplierTestPost::restScopes($scopes)->get()->toArray(), 'id');
+        $result = array_column(ModelScopeApplierTestPost::restScope($scopes)->get()->toArray(), 'id');
 
         $this->assertEquals($expected, $result);
 

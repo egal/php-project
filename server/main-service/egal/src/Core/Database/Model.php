@@ -63,11 +63,6 @@ abstract class Model extends BaseModel
         return ScopeApplier::apply($query, $scopes);
     }
 
-    public function scopeRestPagination(Builder $query, PaginationParams $pagination): Builder
-    {
-        return PaginationApplier::apply($query, $pagination);
-    }
-
     public function scopeRestOrder(Builder $query, array $orders): Builder
     {
         return OrderApplier::apply($query, $orders);

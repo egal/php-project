@@ -10,6 +10,7 @@ use Egal\Core\Facades\Auth;
 use Egal\Core\Facades\Gate;
 use Egal\Core\Rest\Filter\Query as FilterQuery;
 use Egal\Core\Rest\Pagination\PaginationParams;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Validator;
 
 class Controller
@@ -23,18 +24,24 @@ class Controller
         Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
-        $collection = $model::restScope($scope)
+        $paginator = $model::restScope($scope)
             ->restFilter($filter)
             ->restSelect($select)
             ->restOrder($order)
-            ->restPagination($pagination)
-            ->get();
+            ->paginate($pagination->getPerPage(), ['*'], 'page', $pagination->getPage());
+
+        $collection = $paginator->items();
 
         foreach ($collection as $object) {
             Gate::allowed(Auth::user(), Ability::Show, $object);
         }
 
-        return  $collection->toArray();
+        return  [
+            'items' => $collection,
+            'current_page' => $paginator->currentPage(),
+            'total_count' => $paginator->total(),
+            'per_page' => $paginator->perPage(),
+        ];
     }
 
     public function show(string $modelClass, $key, array $select = []): array

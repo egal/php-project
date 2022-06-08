@@ -34,7 +34,7 @@ class FilterApplierTest extends TestCase
             $this->expectException($expected);
         }
 
-        $result = array_column(ModelFilterApplierTestPost::restFilters($filterQuery)->get()->toArray(), 'id');
+        $result = array_column(ModelFilterApplierTestPost::restFilter($filterQuery)->get()->toArray(), 'id');
 
         $this->assertEquals($expected, $result);
 

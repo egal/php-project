@@ -14,6 +14,11 @@ class Gate
 
     private array $policies = [];
 
+    public function __construct()
+    {
+//        $this->enabled = config('auth.gate_is_enabled');
+    }
+
     /**
      * @param class-string $class
      * @param class-string $policy
