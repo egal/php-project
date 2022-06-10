@@ -14,7 +14,6 @@ use Egal\Core\Rest\Order\Applier as OrderApplier;
 use Egal\Core\Rest\Pagination\PaginationParams;
 use Egal\Core\Rest\Scope\Applier as ScopeApplier;
 use Egal\Core\Rest\Select\Applier as SelectApplier;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class Controller

@@ -25,6 +25,7 @@ use Illuminate\Support\Str;
 Route::get('/', fn() => response()->json(['message' => 'Hello!']));
 
 EgalRoute::rest(Post::class, PostPolicy::class);
+EgalRoute::rest(Post::class, PostPolicy::class);
 EgalRoute::rest(Comment::class, \App\Http\Policies\CommentPolicy::class);
 EgalRoute::rest(Channel::class, \App\Http\Policies\ChannelPolicy::class);
 
@@ -53,3 +54,5 @@ Route::get('/interface-metadata{route_line}', function (Request $request) {
 
     return response()->json($config);
 })->where('route_line', '.*');
+
+EgalRoute::rest(\App\Models\Like::class, \App\Http\Policies\LikePolicy::class);

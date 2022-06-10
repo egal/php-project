@@ -14,9 +14,11 @@ class MakePolicyCommand extends MakeCommand
 
     public function handle(): void
     {
-        $this->fileBaseName = (string) $this->argument('model-name') . 'Policy';
-        $this->filePath = base_path('app/Policies') . '/' . $this->fileBaseName . '.php';
-        $this->fileContents = str_replace('{{ model }}', $this->fileBaseName, $this->fileContents);
+        $model = (string)$this->argument('model-name');
+        $this->fileBaseName = $model . 'Policy';
+        $this->filePath = base_path('app/Http/Policies') . '/' . $this->fileBaseName . '.php';
+        $this->fileContents = str_replace('{{ class }}', $this->fileBaseName, $this->fileContents);
+        $this->fileContents = str_replace('{{ model }}', $model, $this->fileContents);
         $this->writeFile();
     }
 

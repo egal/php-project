@@ -14,6 +14,7 @@ use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class Controller extends BaseController
 {
@@ -29,6 +30,7 @@ class Controller extends BaseController
             $order = OrderParser::parse($request->get('order'));
             $indexData = Rest::index($modelClass, $pagination, $scope, $filter, $select, $order);
         } catch (Exception $exception) {
+            Log::debug($exception->getMessage());
             $exceptionResponseData = $this->getExceptionResponseData($exception);
         }
 

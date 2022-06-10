@@ -1,24 +1,49 @@
 <?php
 
-namespace App\Models;
+namespace App\Http\Policies;
 
-use Egal\Core\Database\Model;
+use App\Models\{{ model }};
+use Egal\Core\Auth\User;
 
-class {{ class }} extends Model
+class {{ class }}
 {
-    public function initializeMetadata(): ModelMetadata
-    {
-        return ModelMetadata::make(static::class)
-            ->fields(
-                FieldMetadata::make('id')
-                    ->required()
-                    ->validationRules(['integer']),
-                FieldMetadata::make('name')
-                    ->required()
-                    ->fillable()
-                    ->validationRules(['string']),
-                FieldMetadata::make('created_at'),
-                FieldMetadata::make('updated_at'),
-            );
-    }
+     public function showAny(?User $user): bool
+        {
+            return false;
+        }
+
+        public function createAny(?User $user): bool
+        {
+            return false;
+        }
+
+        public function updateAny(?User $user): bool
+        {
+            return false;
+        }
+
+        public function deleteAny(?User $user): bool
+        {
+            return false;
+        }
+
+        public function show(?User $user, {{ model }} $post): bool
+        {
+            return false;
+        }
+
+        public function create(?User $user, {{ model }} $post): bool
+        {
+            return false;
+        }
+
+        public function update(?User $user, {{ model }} $post): bool
+        {
+            return false;
+        }
+
+        public function delete(?User $user, {{ model }} $post): bool
+        {
+            return false;
+        }
 }

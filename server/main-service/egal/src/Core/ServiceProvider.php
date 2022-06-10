@@ -17,11 +17,6 @@ use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 class ServiceProvider extends BaseServiceProvider
 {
 
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
     public function register()
     {
         $this->app->singleton('egal.gate', fn($app) => new Gate());
@@ -32,6 +27,12 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->singleton('egal.select.parser', fn($app) => new SelectParser());
         $this->app->singleton('egal.scope.parser', fn($app) => new ScopeParser());
         $this->app->singleton('egal.order.parser', fn($app) => new OrderParser());
+
+        if ($this->app->runningInConsole()) {
+            if (class_exists('Egal\Core\Console\ServiceProvider')) {
+                $this->app->register('Egal\Core\Console\ServiceProvider');
+            }
+        }
 
         Collection::macro('paginate', function (int $perPage = 15, string $pageName = 'page', int $page = null, int $total = null, array $options = []): LengthAwarePaginator {
             $page = $page ?: LengthAwarePaginator::resolveCurrentPage($pageName);
