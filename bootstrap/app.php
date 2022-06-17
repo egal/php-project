@@ -23,8 +23,7 @@ $app = new Egal\Core\Application(
     dirname(__DIR__)
 );
 
-// $app->withFacades();
-
+$app->withFacades();
 $app->withEloquent();
 
 /*
