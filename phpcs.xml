@@ -12,6 +12,8 @@
     <rule ref="PSR12">
         <exclude name="PSR12.Traits.UseDeclaration.UseAfterBrace"/>
         <exclude name="PSR12.Classes.OpeningBraceSpace.Found"/>
+        <exclude name="PSR12.Files.FileHeader.SpacingAfterBlock"/>
+        <exclude name="PSR12.Files.OpenTag.NotAlone"/>
     </rule>
 
     <rule ref="PEAR.Functions.FunctionCallSignature">
