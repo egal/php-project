@@ -31,6 +31,7 @@ class Applier
 
         $query->select($selectFields);
 
+        //TODO без указания ключей не работает
         foreach ($selectRelationFields as $relation => $fields) {
             $query->with($relation . ':' . implode(',', $fields));
         }

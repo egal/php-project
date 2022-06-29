@@ -7,7 +7,6 @@ use App\Models\Post;
 use Egal\Core\Facades\Route as EgalRoute;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,13 +33,11 @@ Route::post('/http-build-query', function (Request $request) {
 });
 
 # TODO: Вынести в библиотеку.
-Route::post('/login', function (Request $request) {
-    $user = new \Egal\Core\Auth\User(Str::uuid(), []);
-    return response()->json([
-        'access_token' => $user->makeAccessToken(),
-        'refresh_token' => $user->makeRefreshToken(),
-    ]);
-});
+Route::post('/register', [\Egal\Core\Auth\SessionController::class, 'register']);
+Route::post('/login', [\Egal\Core\Auth\SessionController::class, 'login']);
+Route::post('/jwt/register', [\Egal\Core\Auth\TokenController::class, 'register']);
+Route::post('/jwt/login', [\Egal\Core\Auth\TokenController::class, 'login']);
+
 
 # TODO: Отдельный сервис.
 Route::get('/interface-metadata{route_line}', function (Request $request) {

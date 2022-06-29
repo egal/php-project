@@ -3,12 +3,6 @@
 namespace Egal\Core\Database;
 
 use Egal\Core\Database\Metadata\Model as ModelMetadata;
-use Egal\Core\Rest\Filter\Applier as FilterApplier;
-use Egal\Core\Rest\Filter\Query as FilterQuery;
-use Egal\Core\Rest\Select\Applier as SelectApplier;
-use Egal\Core\Rest\Scope\Applier as ScopeApplier;
-use Egal\Core\Rest\Order\Applier as OrderApplier;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
 /**

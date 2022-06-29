@@ -1,5 +1,7 @@
 <?php
 
+use Egal\Core\Auth\User;
+
 return [
 
     /*
@@ -40,6 +42,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'token' => [
+            'provider' => 'users',
+            'driver' => 'jwt_token',
+        ],
+
     ],
 
     /*
@@ -62,7 +70,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => User::class,
         ],
 
         // 'users' => [
@@ -111,4 +119,5 @@ return [
     'private_key' => env('AUTH_PRIVATE_KEY'),
     'public_key' => env('AUTH_PUBLIC_KEY'),
 
+    'user_model_class' => User::class
 ];

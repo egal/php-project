@@ -5,14 +5,23 @@ namespace Egal\Core\Auth;
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use Illuminate\Auth\GuardHelpers;
+use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Http\Request;
 
-class Manager
+class JwtTokenGuard implements Guard
 {
+    use GuardHelpers;
+    private Request $request;
 
-    private ?User $user;
+    public function __construct (Request $request) {
+        $this->request = $request;
+    }
 
-    public function authenticate(?string $token): User|null
+    public function user()
     {
+        $token = $this->request->header('Authorization') ?? $this->request->session()->get('access_token');
+
         if ($token === null) {
             $this->user = null;
             return $this->user;
@@ -26,24 +35,23 @@ class Manager
 
         $userModel = null;
 
-        if ($userModelClass = config('auth.user_model_class')) {
+        if ($userModelClass = config('auth.user_model_class', User::class)) {
             $userModel = new $userModelClass();
 
             if (!($userModel instanceof UserModelInterface)) {
                 throw new Exception('Error! User model class must be implements of ' . UserModelInterface::class . '!');
             }
 
-            $userModel = $userModel->findBySub($decoded->sub);
+            $userModel = $userModel->findById($decoded->id);
         }
 
-        $this->user = new User($decoded->sub, $decoded->roles, $userModel);
+        $this->user = $userModel;
 
         return $this->user;
     }
 
-    public function getUser(): ?User
+    public function validate(array $credentials = [])
     {
-        return $this->user;
+        // TODO: Implement validate() method.
     }
-
 }

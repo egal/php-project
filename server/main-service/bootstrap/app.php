@@ -53,6 +53,7 @@ $app->singleton(
 | from the actual running of the application and sending responses.
 |
 */
+$app->register(Egal\Core\ServiceProvider::class);
 $app->register(PolymorphicRelationServiceProvider::class);
 
 return $app;

@@ -47,7 +47,6 @@
                 "Egal\\Core\\ServiceProvider"
             ],
             "aliases": {
-                "EgalAuth": "Egal\\Core\\Facades\\Auth",
                 "EgalFilterParser": "Egal\\Core\\Facades\\FilterParser",
                 "EgalSelectParser": "Egal\\Core\\Facades\\SelectParser",
                 "EgalScopeParser": "Egal\\Core\\Facades\\ScopeParser",

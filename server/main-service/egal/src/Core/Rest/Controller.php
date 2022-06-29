@@ -6,7 +6,6 @@ use Egal\Core\Auth\Ability;
 use Egal\Core\Database\Model;
 use Egal\Core\Exceptions\ObjectNotFoundException;
 use Egal\Core\Exceptions\ValidateException;
-use Egal\Core\Facades\Auth;
 use Egal\Core\Facades\Gate;
 use Egal\Core\Rest\Filter\Applier as FilterApplier;
 use Egal\Core\Rest\Filter\Query as FilterQuery;
@@ -14,6 +13,7 @@ use Egal\Core\Rest\Order\Applier as OrderApplier;
 use Egal\Core\Rest\Pagination\PaginationParams;
 use Egal\Core\Rest\Scope\Applier as ScopeApplier;
 use Egal\Core\Rest\Select\Applier as SelectApplier;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class Controller
@@ -21,7 +21,7 @@ class Controller
 
     public function index(string $modelClass, PaginationParams $pagination, array $scope = [], FilterQuery $filter = null, array $select = [], array $order = []): array
     {
-        Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
+        Gate::allowed(Auth::guard('token')->user(), Ability::ShowAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
         $builder = $model::query();
@@ -36,7 +36,7 @@ class Controller
         $paginator = $collection->paginate($pagination->getPerPage(), 'page', $pagination->getPage());
 
         foreach ($collection as $object) {
-            Gate::allowed(Auth::user(), Ability::Show, $object);
+            Gate::allowed(Auth::guard('token')->user(), Ability::Show, $object);
         }
 
         return  [
@@ -49,7 +49,7 @@ class Controller
 
     public function show(string $modelClass, $key, array $select = []): array
     {
-        Gate::allowed(Auth::user(), Ability::ShowAny, $modelClass);
+        Gate::allowed(Auth::guard('token')->user(), Ability::ShowAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
         $builder = $model::query();
@@ -62,14 +62,14 @@ class Controller
             throw new ObjectNotFoundException();
         }
 
-        Gate::allowed(Auth::user(), Ability::Show, $object);
+        Gate::allowed(Auth::guard('token')->user(), Ability::Show, $object);
 
         return  $object->toArray();
     }
 
     public function create(string $modelClass, array $attributes = []): array
     {
-        Gate::allowed(Auth::user(), Ability::CreateAny, $modelClass);
+        Gate::allowed(Auth::guard('token')->user(), Ability::CreateAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
         $metadata = $model->getMetadata();
@@ -88,7 +88,7 @@ class Controller
         $object = $model->fill($attributes);
         $object->save();
 
-        Gate::allowed(Auth::user(), Ability::Create, $object);
+        Gate::allowed(Auth::guard('token')->user(), Ability::Create, $object);
 
         $keyName = $model->getKeyName();
         return  [$keyName => $object->$keyName];
@@ -96,7 +96,7 @@ class Controller
 
     public function update(string $modelClass, $key, array $attributes = []): array
     {
-        Gate::allowed(Auth::user(), Ability::UpdateAny, $modelClass);
+        Gate::allowed(Auth::guard('token')->user(), Ability::UpdateAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
         $object = $model->newQuery()->find($key);
@@ -105,7 +105,7 @@ class Controller
             throw new ObjectNotFoundException();
         }
 
-        Gate::allowed(Auth::user(), Ability::Update, $object);
+        Gate::allowed(Auth::guard('token')->user(), Ability::Update, $object);
 
         $metadata = $model->getMetadata();
         $validator = Validator::make($attributes, $metadata->getValidationRules());
@@ -125,7 +125,7 @@ class Controller
 
     public function delete(string $modelClass, $key): void
     {
-        Gate::allowed(Auth::user(), Ability::DeleteAny, $modelClass);
+        Gate::allowed(Auth::guard('token')->user(), Ability::DeleteAny, $modelClass);
 
         $model = $this->newModelInstance($modelClass);
         $object = $model->newQuery()->find($key);
@@ -134,7 +134,7 @@ class Controller
             throw new ObjectNotFoundException();
         }
 
-        Gate::allowed(Auth::user(), Ability::Delete, $object);
+        Gate::allowed(Auth::guard('token')->user(), Ability::Delete, $object);
 
         $object->delete();
     }

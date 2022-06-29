@@ -4,13 +4,15 @@ namespace App\Http\Policies;
 
 use App\Models\Post;
 use Egal\Core\Auth\User;
+use Illuminate\Support\Facades\Log;
 
 class PostPolicy
 {
 
     public function showAny(?User $user): bool
     {
-        return true;
+        Log::debug($user);
+        return false;
     }
 
     public function createAny(?User $user): bool
