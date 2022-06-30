@@ -27,6 +27,8 @@ class JwtTokenGuard implements Guard
             return $this->user;
         }
 
+        // TODO проверка времени жизни токена
+
         $decoded = JWT::decode($token, new Key(config('auth.public_key'), 'RS256'));
 
         if ($decoded->typ !== 'access') {

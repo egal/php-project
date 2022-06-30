@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 class TokenController extends BaseController
 {
+    // TODO обновление токена
     public function register(Request $request)
     {
         // TODO должно из метаданных подтягиваться

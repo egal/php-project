@@ -43,6 +43,7 @@ return [
             'provider' => 'users',
         ],
 
+        // TODO: Должен подключаться в ServiceProvider фреймворка
         'token' => [
             'provider' => 'users',
             'driver' => 'jwt_token',

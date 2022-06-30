@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 
 class SessionController extends BaseController
 {
+    // TODO обновление токена
     public function register(Request $request)
     {
         // TODO должно из метаданных подтягиваться

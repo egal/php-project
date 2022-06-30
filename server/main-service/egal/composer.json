@@ -44,7 +44,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Egal\\Core\\ServiceProvider"
+                "Egal\\Core\\ServiceProvider",
+                "Egal\\InterfaceMetadata\\ServiceProvider"
             ],
             "aliases": {
                 "EgalFilterParser": "Egal\\Core\\Facades\\FilterParser",
@@ -53,7 +54,8 @@
                 "EgalOrderParser": "Egal\\Core\\Facades\\OrderParser",
                 "EgalGate": "Egal\\Core\\Facades\\Gate",
                 "EgalRest": "Egal\\Core\\Facades\\Rest",
-                "EgalRoute": "Egal\\Core\\Facades\\Route"
+                "EgalRoute": "Egal\\Core\\Facades\\Route",
+                "EgalInterfaceMetadataManger": "Egal\\InterfaceMetadata\\Facades\\Manager"
             }
         }
     },
