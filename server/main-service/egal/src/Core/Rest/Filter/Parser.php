@@ -38,7 +38,6 @@ class Parser
             return $query;
         }
 
-        dump($this->queryRegPattern);
         preg_match_all($this->queryRegPattern, $queryString, $queryMatches);
         $queryMatches = $queryMatches[0];
 

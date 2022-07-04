@@ -40,16 +40,6 @@ Route::post('/jwt/login', [\Egal\Core\Auth\TokenController::class, 'login']);
 
 
 # TODO: Отдельный сервис.
-Route::get('/interface-metadata{route_line}', function (Request $request) {
-    $segments = $request->segments();
-    $segments[0] = 'interface_metadata';
-    $config = config(implode('.', $segments));
-
-    if (!$config) {
-        return response()->noContent(404);
-    }
-
-    return response()->json($config);
-})->where('route_line', '.*');
+Route::get('/interface-metadata/{label}', [\Egal\Interface\Http\Controller::class, 'show']);
 
 EgalRoute::rest(\App\Models\Like::class, \App\Http\Policies\LikePolicy::class);

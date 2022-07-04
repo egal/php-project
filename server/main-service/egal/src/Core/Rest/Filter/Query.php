@@ -33,4 +33,14 @@ class Query
 
         return $query;
     }
+
+    public function toArray(): array
+    {
+        $result = [];
+        foreach ($this->conditions as $condition) {
+            $result[] = [
+
+            ];
+        }
+    }
 }

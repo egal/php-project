@@ -1,6 +1,6 @@
 <?php
 
-namespace Egal\InterfaceMetadata\Facades;
+namespace Egal\Interface\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

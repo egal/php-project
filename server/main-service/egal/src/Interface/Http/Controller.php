@@ -1,21 +1,22 @@
 <?php
 
-namespace Egal\InterfaceMetadata\Http;
+namespace Egal\Interface\Http;
 
 use Egal\Core\Exceptions\HasData;
 use Egal\Core\Exceptions\HasInternalCode;
-use Egal\InterfaceMetadata\ComponentMetadata;
+use Egal\Interface\Facades\Manager;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class Controller
 {
-    public function show(Request $request)
+    public function show(Request $request, $label)
     {
         try {
-            $componentName = $request->input('component');
-            $component = static::findComponentMetadata($componentName);
+            Log::debug('components', Manager::getComponents());
+            $component = Manager::getComponentByLabel($label);
         } catch (Exception $exception) {
             $exceptionResponseData = [
                 'message' => $exception->getMessage(),
@@ -32,8 +33,4 @@ class Controller
         ])->setStatusCode(isset($exceptionResponseData) ? $exceptionResponseData['code'] : Response::HTTP_OK);
     }
 
-    private static function findComponentMetadata(mixed $componentName): ComponentMetadata
-    {
-        // TODO call MetadataManager (singleton) method findComponent (при инициалиции приложения addComponent из файла наподобие routes/api.php)
-    }
 }

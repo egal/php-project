@@ -54,6 +54,7 @@ $app->singleton(
 |
 */
 $app->register(Egal\Core\ServiceProvider::class);
+$app->register(Egal\Interface\ServiceProvider::class);
 $app->register(PolymorphicRelationServiceProvider::class);
 
 return $app;

@@ -45,7 +45,7 @@
         "laravel": {
             "providers": [
                 "Egal\\Core\\ServiceProvider",
-                "Egal\\InterfaceMetadata\\ServiceProvider"
+                "Egal\\Interface\\ServiceProvider"
             ],
             "aliases": {
                 "EgalFilterParser": "Egal\\Core\\Facades\\FilterParser",
@@ -55,7 +55,7 @@
                 "EgalGate": "Egal\\Core\\Facades\\Gate",
                 "EgalRest": "Egal\\Core\\Facades\\Rest",
                 "EgalRoute": "Egal\\Core\\Facades\\Route",
-                "EgalInterfaceMetadataManger": "Egal\\InterfaceMetadata\\Facades\\Manager"
+                "EgalInterfaceMetadataManger": "Egal\\Interface\\Facades\\Manager"
             }
         }
     },
