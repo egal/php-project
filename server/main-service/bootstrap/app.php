@@ -11,8 +11,6 @@
 |
 */
 
-use App\Providers\PolymorphicRelationServiceProvider;
-
 $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
@@ -55,6 +53,6 @@ $app->singleton(
 */
 $app->register(Egal\Core\ServiceProvider::class);
 $app->register(Egal\Interface\ServiceProvider::class);
-$app->register(PolymorphicRelationServiceProvider::class);
+$app->register(App\Providers\PolymorphicRelationServiceProvider::class);
 
 return $app;
