@@ -15,7 +15,7 @@ services:
         DEBUG: 'true'
     user: ${UID}:${GID}
     volumes:
-      - ./server/main-service:/app:rw
+      - .:/app:rw
     ports:
       - published: 80
         target: 8080
