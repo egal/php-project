@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Models\Channel;
 use App\Models\Post;
-use Egal\Core\ServiceProvider;
+use Carbon\Laravel\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 class PolymorphicRelationServiceProvider extends ServiceProvider

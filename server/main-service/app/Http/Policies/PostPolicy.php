@@ -11,8 +11,7 @@ class PostPolicy
 
     public function showAny(?User $user): bool
     {
-        Log::debug($user);
-        return false;
+        return true;
     }
 
     public function createAny(?User $user): bool

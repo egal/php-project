@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use Egal\Core\Http\ForceJsonMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -18,6 +19,7 @@ class Kernel extends HttpKernel
         \Fruitcake\Cors\HandleCors::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class
+
     ];
 
     /**
@@ -30,7 +32,6 @@ class Kernel extends HttpKernel
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
-        // TODO: Должны подключаться в ServiceProvider фреймворка
         'session' => [
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
